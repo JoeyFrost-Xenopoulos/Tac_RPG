@@ -66,6 +66,13 @@ function Draw.units()
             love.graphics.rectangle("line", x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4)
         end
 
+        if unit.attackRange == 1 then
+            if unit.team == "player" then
+                love.graphics.setColor(1,1,1)
+                love.graphics.print("H", x + 5, y + 5)
+            end
+        end
+
         if unit.attackRange > 1 then
             love.graphics.setColor(1, 1, 1)
             love.graphics.print("R", x + 5, y + 5)

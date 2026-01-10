@@ -18,8 +18,10 @@ function love.load()
     Grid.init()
 
     Units.create({ name = "Hero", team = "player", x = 3, y = 4, move = 4 })
-    Units.create({ name = "Archer", team = "player", x = 4, y = 6, move = 3, attackRange = 4 })
+    Units.create({ name = "Archer", team = "player", x = 4, y = 6, move = 3, attackRange = 2 })
     Units.create({ name = "Enemy", team = "enemy", x = 7, y = 4, move = 3 })
+    Units.create({ name = "Enemy", team = "enemy", x = 8, y = 4, move = 3, attackRange = 2 })
+
 
     Turn.start()
 end
