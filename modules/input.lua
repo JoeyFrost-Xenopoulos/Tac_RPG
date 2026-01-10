@@ -2,9 +2,22 @@
 
 Input = {}
 
+local lastHoveredTile = nil
+
 function Input.update()
     local mx, my = love.mouse.getPosition()
-    Game.hoveredTile = Grid.screenToGrid(mx, my)
+    local tile = Grid.screenToGrid(mx, my)
+    Game.hoveredTile = tile
+
+    if tile then
+        if not lastHoveredTile or lastHoveredTile.x ~= tile.x or lastHoveredTile.y ~= tile.y then
+            Effects.cursor((tile.x - 1) * TILE_SIZE, (tile.y - 1) * TILE_SIZE)
+            lastHoveredTile = {x = tile.x, y = tile.y}
+        end
+    else
+        lastHoveredTile = nil
+        Effects.cursorEffect = nil
+    end
 end
 
 function Input.mousepressed(x, y, button)

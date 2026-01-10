@@ -4,7 +4,7 @@ Grid = {}
 
 Grid.terrainTypes = {
     grass = { walkable = true, color = {0.3, 0.8, 0.3} },
-    river = { walkable = false, color = {0.3, 0.5, 0.9} },
+    river = { walkable = false, color = {0.3, 0.4, 0.9} },
     forest = { walkable = true, color = {0.1, 0.6, 0.1} },
     mountain = { walkable = false, color = {0.25, 0.25, 0.25} }
 }
