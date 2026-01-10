@@ -40,41 +40,34 @@ function Draw.units()
         local x = (unit.x - 1) * TILE_SIZE
         local y = (unit.y - 1) * TILE_SIZE
 
-        local teamColor
-        if unit.team == "enemy" then
-            teamColor = {1, 0, 0}
-        else
-            teamColor = {0, 0, 1}
-        end
+        local teamColor = (unit.team == "enemy") and {1, 0, 0} or {0, 0, 1}
 
-        local classColor
-        local classSymbol = ""
+        local classColor, classSymbol
         if unit.class == "Soldier" then
-            classColor = {0.2, 0.8, 0.2}
-            classSymbol = "S"
+            classColor, classSymbol = {0.2, 0.8, 0.2}, "S"
         elseif unit.class == "Archer" then
-            classColor = {0.8, 0.8, 0.2}
-            classSymbol = "A"
+            classColor, classSymbol = {0.8, 0.8, 0.2}, "A"
         elseif unit.class == "Mage" then
-            classColor = {0.6, 0.2, 0.8}  
-            classSymbol = "M"
+            classColor, classSymbol = {0.6, 0.2, 0.8}, "M"
         else
-            classColor = {1, 1, 1}        
-            classSymbol = "?"
+            classColor, classSymbol = {1, 1, 1}, "?"
         end
-
-        local shrink = 0.1 * TILE_SIZE 
-        local rectSize = TILE_SIZE - shrink * 2
 
         if unit.hasActed and unit.team == "player" then
             classColor = {0.2, 0.2, 0.2}
         end
 
-        love.graphics.setColor(classColor)
-        love.graphics.rectangle("fill", x + shrink, y + shrink, rectSize, rectSize)
-        love.graphics.setLineWidth(4)
-        love.graphics.setColor(teamColor)
-        love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)
+        local shrink = 0.1 * TILE_SIZE
+        local rectSize = TILE_SIZE - shrink * 2
+
+        if not unit.animations then
+            love.graphics.setColor(classColor)
+            love.graphics.rectangle("fill", x + shrink, y + shrink, rectSize, rectSize)
+
+            love.graphics.setLineWidth(4)
+            love.graphics.setColor(teamColor)
+            love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)
+        end
 
         if Game.selectedUnit == unit then
             love.graphics.setLineWidth(4)
@@ -82,15 +75,15 @@ function Draw.units()
             love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)
         end
 
-        love.graphics.setColor(teamColor)
-        love.graphics.print(
-            classSymbol,
-            x + TILE_SIZE / 2 - 4,
-            y + TILE_SIZE / 2 - 8
-        )
+        if not unit.animations then
+            love.graphics.setColor(teamColor)
+            love.graphics.print(classSymbol, x + TILE_SIZE / 2 - 4, y + TILE_SIZE / 2 - 8)
+        end
+
         love.graphics.setLineWidth(1)
     end
 end
+
 
 function Draw.hover()
     if not Game.hoveredTile then return end

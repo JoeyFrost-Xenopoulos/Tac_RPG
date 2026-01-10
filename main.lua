@@ -12,14 +12,19 @@ require("modules.draw")
 require("modules.effects")
 require("modules.weaponselector")
 require("modules.hoverinfo")
+require("modules.character")
 
 function love.load()
     love.window.setTitle("Tactical RPG Prototype")
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 
     Grid.init()
+    Character.init()
+    
+    local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 })
+    Character.assignToUnit(hero, "hero")
 
-    Units.create({ name = "Hero", class = "Soldier", team = "player", x = 3, y = 4 })
+    --Units.create({ name = "Hero", class = "Soldier", team = "player", x = 3, y = 4 })
     Units.create({ name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
     Units.create({ name = "Mage1", class = "Mage", team = "player", x = 2, y = 5 })
 
@@ -35,6 +40,10 @@ function love.update(dt)
     Units.update(dt)
     Effects.update(dt)
     Game.flashTimer = Game.flashTimer + dt
+
+    for _, unit in ipairs(Units.list) do
+        Character.update(dt, unit)
+    end
 end
 
 function love.draw()
@@ -49,6 +58,12 @@ function love.draw()
     WeaponSelector.draw()
 
     love.graphics.setColor(1, 1, 1)
+
+    for _, unit in ipairs(Units.list) do
+        if unit.animations then
+            Character.draw(unit, 0.5, 0.5)
+        end
+    end
 end
 
 function love.mousepressed(x, y, button)
