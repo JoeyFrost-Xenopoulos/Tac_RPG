@@ -3,36 +3,58 @@ Units = {
     list = {}
 }
 
+Units.CLASSES = {
+    Soldier = {
+        attackRange = 1,
+        damage = 5,   -- avg strength
+        hp = 15       -- high defense
+    },
+    Archer = {
+        attackRange = 2,
+        damage = 3,   -- low strength
+        hp = 10       -- avg defense
+    },
+    Mage = {
+        attackRange = 2, -- can also be 1, we can randomize or pick 2
+        damage = 4,      -- avg strength
+        hp = 8           -- low defense
+    }
+}
+
 function Units.create(data)
+    local classData = Units.CLASSES[data.class] or {}
+
     local unit = {
         id = #Units.list + 1,
         name = data.name or "Unit",
+        class = data.class or "Soldier",
         team = data.team or "player",
         x = data.x,
         y = data.y,
         pixelX = (data.x - 1) * TILE_SIZE,
         pixelY = (data.y - 1) * TILE_SIZE,
-        
+
         path = nil,
         isMoving = false,
 
-        attackRange = data.attackRange or 1,
-        damage = data.damage or Combat.BASE_DAMAGE,
-        hp = data.hp or 10,
-        maxHp = data.hp or 10,
+        attackRange = data.attackRange or classData.attackRange or 1,
+        damage = data.damage or classData.damage or Combat.BASE_DAMAGE,
+        hp = data.hp or classData.hp or 10,
+        maxHp = data.hp or classData.hp or 10,
         move = data.move or 4,
         movePoints = data.move or 4,
         hasActed = false
     }
 
     table.insert(Units.list, unit)
-    
+
     if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
         Game.grid[unit.y][unit.x].unit = unit
     end
 
     return unit
 end
+
 
 function Units.remove(unit)
     if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
