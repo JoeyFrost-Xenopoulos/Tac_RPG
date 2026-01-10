@@ -13,10 +13,11 @@ function Units.create(data)
         pixelX = (data.x - 1) * TILE_SIZE,
         pixelY = (data.y - 1) * TILE_SIZE,
         
-        -- Animation State
         path = nil,
         isMoving = false,
-        
+
+        attackRange = data.attackRange or 1,
+        damage = data.damage or Combat.BASE_DAMAGE,
         hp = data.hp or 10,
         maxHp = data.hp or 10,
         move = data.move or 4,
@@ -26,7 +27,6 @@ function Units.create(data)
 
     table.insert(Units.list, unit)
     
-    -- Register on grid
     if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
         Game.grid[unit.y][unit.x].unit = unit
     end
@@ -57,21 +57,18 @@ function Units.update(dt)
                 local targetPixelX = (targetStep.x - 1) * TILE_SIZE
                 local targetPixelY = (targetStep.y - 1) * TILE_SIZE
 
-                -- Move visual X
                 if unit.pixelX < targetPixelX then
                     unit.pixelX = math.min(unit.pixelX + MOVE_SPEED * dt, targetPixelX)
                 elseif unit.pixelX > targetPixelX then
                     unit.pixelX = math.max(unit.pixelX - MOVE_SPEED * dt, targetPixelX)
                 end
 
-                -- Move visual Y
                 if unit.pixelY < targetPixelY then
                     unit.pixelY = math.min(unit.pixelY + MOVE_SPEED * dt, targetPixelY)
                 elseif unit.pixelY > targetPixelY then
                     unit.pixelY = math.max(unit.pixelY - MOVE_SPEED * dt, targetPixelY)
                 end
 
-                -- Check if reached target
                 if unit.pixelX == targetPixelX and unit.pixelY == targetPixelY then
                     Game.grid[unit.y][unit.x].unit = nil -- leave old tile
                     

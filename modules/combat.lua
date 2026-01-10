@@ -7,25 +7,26 @@ Combat.BASE_DAMAGE = 3
 
 function Combat.getAttackableTiles(unit)
     local tiles = {}
+    local range = unit.attackRange or 1
 
-    local directions = {
-        { x = 1, y = 0 },
-        { x = -1, y = 0 },
-        { x = 0, y = 1 },
-        { x = 0, y = -1 }
-    }
+    for dy = -range, range do
+        for dx = -range, range do
+            local dist = math.abs(dx) + math.abs(dy)
+            
+            if dist > 0 and dist <= range then
+                local tx = unit.x + dx
+                local ty = unit.y + dy
 
-    for _, d in ipairs(directions) do
-        local tx = unit.x + d.x
-        local ty = unit.y + d.y
-
-        local target = Units.getAt(tx, ty)
-        if target and target.team ~= unit.team then
-            table.insert(tiles, {
-                x = tx,
-                y = ty,
-                target = target
-            })
+                local target = Units.getAt(tx, ty)
+                -- Only add to list if there is an enemy there
+                if target and target.team ~= unit.team then
+                    table.insert(tiles, {
+                        x = tx,
+                        y = ty,
+                        target = target
+                    })
+                end
+            end
         end
     end
 
