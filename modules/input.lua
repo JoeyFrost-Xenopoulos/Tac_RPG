@@ -36,11 +36,18 @@ function Input.mousepressed(x, y, button)
     if unit and (unit.phase == "ready" or unit.phase == "moved") and Game.attackTiles then
         for _, t in ipairs(Game.attackTiles) do
             if t.x == tile.x and t.y == tile.y then
-                Combat.attack(unit, t.target)
-                Turn.endUnitTurn(unit)
-                Game.movementTiles = nil
-                Game.attackTiles = nil
-                return
+
+                -- If unit is a Soldier, open weapon menu
+                if unit.class == "Soldier" then
+                    WeaponSelector.open(unit, t.target)
+                    return  -- wait for weapon selection
+                else
+                    Combat.attack(unit, t.target)
+                    Turn.endUnitTurn(unit)
+                    Game.movementTiles = nil
+                    Game.attackTiles = nil
+                    return
+                end
             end
         end
     end
@@ -85,6 +92,11 @@ function Input.keypressed(key)
         Game.selectedUnit = nil
         Game.movementTiles = nil
         Game.attackTiles = nil
+    end
+
+    if WeaponSelector.active then
+        WeaponSelector.keypressed(key)
+        return
     end
 end
 

@@ -10,6 +10,8 @@ require("modules.combat")
 require("modules.input")
 require("modules.draw")
 require("modules.effects")
+require("modules.weaponselector")
+require("modules.hoverinfo")
 
 function love.load()
     love.window.setTitle("Tactical RPG Prototype")
@@ -43,6 +45,8 @@ function love.draw()
     Draw.attacks()
     Draw.units()
     Effects.draw()
+    HoverInfo.draw()
+    WeaponSelector.draw()
 
     love.graphics.setColor(1, 1, 1)
 end
