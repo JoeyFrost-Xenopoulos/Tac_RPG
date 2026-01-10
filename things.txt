@@ -1,0 +1,9 @@
+Turn system (lock movement per turn)
+
+Path visualization (show chosen path)
+
+Terrain costs (forest, water, roads)
+
+Attack range & combat
+
+Enemy AI movement
