@@ -27,56 +27,68 @@ function Draw.grid()
             local px = (x - 1) * TILE_SIZE
             local py = (y - 1) * TILE_SIZE
 
-            -- Set color based on terrain
             local color = Grid.terrainTypes[tile.terrain].color
             love.graphics.setColor(color)
             love.graphics.rectangle("fill", px, py, TILE_SIZE, TILE_SIZE)
-
-
         end
     end
 
 end
-
 
 function Draw.units()
     for _, unit in ipairs(Units.list) do
         local x = (unit.x - 1) * TILE_SIZE
         local y = (unit.y - 1) * TILE_SIZE
 
+        local teamColor
         if unit.team == "enemy" then
-            if Turn.currentTeam == "enemy" and not unit.hasActed then
-                love.graphics.setColor(1, 0.3, 0.3)
-            else
-                love.graphics.setColor(0.8, 0.1, 0.1)
-            end
+            teamColor = {1, 0, 0}
         else
-            if unit.hasActed then
-                love.graphics.setColor(0.5, 0.5, 0.5)
-            else
-                love.graphics.setColor(0.2, 0, 1)
-            end
+            teamColor = {0, 0, 1}
         end
 
-        love.graphics.rectangle("fill", x + 4, y + 4, TILE_SIZE - 8, TILE_SIZE - 8)
+        local classColor
+        local classSymbol = ""
+        if unit.class == "Soldier" then
+            classColor = {0.2, 0.8, 0.2}
+            classSymbol = "S"
+        elseif unit.class == "Archer" then
+            classColor = {0.8, 0.8, 0.2}
+            classSymbol = "A"
+        elseif unit.class == "Mage" then
+            classColor = {0.6, 0.2, 0.8}  
+            classSymbol = "M"
+        else
+            classColor = {1, 1, 1}        
+            classSymbol = "?"
+        end
 
-        -- Outline for selected unit
+        local shrink = 0.1 * TILE_SIZE 
+        local rectSize = TILE_SIZE - shrink * 2
+
+        if unit.hasActed and unit.team == "player" then
+            classColor = {0.2, 0.2, 0.2}
+        end
+
+        love.graphics.setColor(classColor)
+        love.graphics.rectangle("fill", x + shrink, y + shrink, rectSize, rectSize)
+        love.graphics.setLineWidth(4)
+        love.graphics.setColor(teamColor)
+        love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)
+
         if Game.selectedUnit == unit then
+            love.graphics.setLineWidth(4)
             love.graphics.setColor(1, 1, 0)
-            love.graphics.rectangle("line", x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4)
+            love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)
         end
 
-        if unit.attackRange == 1 then
-            if unit.team == "player" then
-                love.graphics.setColor(1,1,1)
-                love.graphics.print("H", x + 5, y + 5)
-            end
-        end
-
-        if unit.attackRange > 1 then
-            love.graphics.setColor(1, 1, 1)
-            love.graphics.print("R", x + 5, y + 5)
-        end
+        love.graphics.setColor(teamColor)
+        love.graphics.print(
+            classSymbol,
+            x + TILE_SIZE / 2 - 4,
+            y + TILE_SIZE / 2 - 8
+        )
+        love.graphics.setLineWidth(1)
     end
 end
 
@@ -114,7 +126,6 @@ function Draw.movement()
         local x = (tile.x - 1) * TILE_SIZE
         local y = (tile.y - 1) * TILE_SIZE
 
-        -- Determine base color
         local baseColor
         local isAttackable = isAdjacentToEnemy(tile, Game.selectedUnit.team)
         if isAttackable then
@@ -123,12 +134,10 @@ function Draw.movement()
             baseColor = {0.2, 0.8, 1}  -- blue
         end
 
-        -- Calculate diagonal shimmer factor
         local diagonalPos = (tile.x + tile.y) / (GRID_WIDTH + GRID_HEIGHT)  -- 0..1
         local wave = math.sin((Game.flashTimer * speed) + diagonalPos * math.pi * 2)
         local brightness = 0.8 + 0.2 * wave  -- oscillate 0.6..1.0
 
-        -- Apply brightness to base color
         local r = math.min(baseColor[1] * brightness, 1)
         local g = math.min(baseColor[2] * brightness, 1)
         local b = math.min(baseColor[3] * brightness, 1)

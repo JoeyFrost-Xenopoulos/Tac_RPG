@@ -2,7 +2,6 @@ Effects = {}
 
 local activeEffects = {}
 
--- Create a damage effect
 function Effects.damage(x, y, amount)
     table.insert(activeEffects, {
         x = x,
@@ -14,7 +13,6 @@ function Effects.damage(x, y, amount)
     })
 end
 
--- Update all active effects
 function Effects.update(dt)
     for i = #activeEffects, 1, -1 do
         local effect = activeEffects[i]
@@ -28,11 +26,10 @@ function Effects.update(dt)
     end
 end
 
--- Draw all active effects
 function Effects.draw()
     for _, effect in ipairs(activeEffects) do
         love.graphics.setColor(1, 0, 0, effect.alpha) -- red for damage
         love.graphics.print(effect.text, effect.x, effect.y)
     end
-    love.graphics.setColor(1, 1, 1, 1) -- reset color
+    love.graphics.setColor(1, 1, 1, 1)
 end

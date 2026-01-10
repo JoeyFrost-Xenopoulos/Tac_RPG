@@ -9,11 +9,13 @@ function Combat.getAttackableTiles(unit)
     local tiles = {}
     local range = unit.attackRange or 1
 
+    local minRange = (unit.class == "Archer") and 2 or 1
+
     for dy = -range, range do
         for dx = -range, range do
             local dist = math.abs(dx) + math.abs(dy)
             
-            if dist > 0 and dist <= range then
+            if dist >= minRange and dist <= range then
                 local tx = unit.x + dx
                 local ty = unit.y + dy
 
@@ -34,12 +36,13 @@ function Combat.getAttackableTiles(unit)
 end
 
 function Combat.attack(attacker, defender)
-    defender.hp = defender.hp - Combat.BASE_DAMAGE
-    
+    local damageAmount = attacker.damage or Combat.BASE_DAMAGE
+    defender.hp = defender.hp - damageAmount
+
     Effects.damage(
-        defender.x * TILE_SIZE,      
-        defender.y * TILE_SIZE - 20, 
-        Combat.BASE_DAMAGE           
+        defender.pixelX + TILE_SIZE / 2,
+        defender.pixelY,                 
+        damageAmount                       
     )
 
     if defender.hp <= 0 then
