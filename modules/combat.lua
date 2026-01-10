@@ -39,10 +39,25 @@ function Combat.attack(attacker, defender)
     local damageAmount = attacker.damage or Combat.BASE_DAMAGE
     defender.hp = defender.hp - damageAmount
 
+    -- Determine attack type
+    local attackType = "melee"
+    if attacker.class == "Archer" then
+        attackType = "archer"
+    elseif attacker.class == "Mage" then
+        attackType = "mage"
+    end
+
     Effects.damage(
         defender.pixelX + TILE_SIZE / 2,
-        defender.pixelY,                 
-        damageAmount                       
+        defender.pixelY,
+        damageAmount,
+        "damage"
+    )
+
+    Effects.spawnParticles(
+        defender.pixelX + TILE_SIZE / 2,
+        defender.pixelY + TILE_SIZE / 2,
+        attackType
     )
 
     if defender.hp <= 0 then
