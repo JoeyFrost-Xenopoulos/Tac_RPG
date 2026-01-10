@@ -8,6 +8,9 @@ function Input.update()
 end
 
 function Input.mousepressed(x, y, button)
+    local unit = Game.selectedUnit
+    if unit and unit.isMoving then return end
+
     if button ~= 1 then return end
     if Turn.currentTeam ~= "player" then return end
 
@@ -33,15 +36,14 @@ function Input.mousepressed(x, y, button)
     if unit and (unit.phase == "ready" or unit.phase == "moved") and Game.movementTiles then
         for _, t in ipairs(Game.movementTiles) do
             if t.x == tile.x and t.y == tile.y then
-                local moved = Movement.moveUnit(unit, tile.x, tile.y)
-                if moved then
-                    unit.phase = "moved"
-                    Game.movementTiles = Movement.getReachableTiles(unit)
-                    Game.attackTiles = Combat.getAttackableTiles(unit)
-                    Input.checkUnitTurn(unit)
+                    local moved = Movement.moveUnit(unit, tile.x, tile.y)
+                    if moved then
+                        unit.phase = "moved"
+                        Game.movementTiles = nil 
+                        Game.attackTiles = nil
+                    end
+                    return
                 end
-                return
-            end
         end
     end
 

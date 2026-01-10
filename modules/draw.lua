@@ -20,7 +20,6 @@ local function isAdjacentToEnemy(tile, unitTeam)
     return false
 end
 
-
 function Draw.grid()
     for y = 1, GRID_HEIGHT do
         for x = 1, GRID_WIDTH do
@@ -90,8 +89,11 @@ function Draw.selection()
 end
 
 function Draw.movement()
+    local unit = Game.selectedUnit
+    if not unit or not Game.movementTiles or unit.isMoving then 
+        return 
+    end
     if not Game.movementTiles then return end
-
     -- shimmer speed
     local speed = 2
     local shimmerWidth = 0.4 
@@ -122,6 +124,7 @@ function Draw.movement()
         love.graphics.setColor(r, g, b, 0.8)
         love.graphics.rectangle("fill", x, y, TILE_SIZE, TILE_SIZE)
     end
+
 end
 
 function Draw.attacks()
