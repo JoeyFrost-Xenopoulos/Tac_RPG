@@ -101,7 +101,12 @@ end
 
 function Effects.draw()
     for _, effect in ipairs(activeEffects) do
-        love.graphics.setColor(1, 0, 0, effect.alpha)
+        if effect.type == "heal" then
+            love.graphics.setColor(0.2, 1, 0.4, effect.alpha)
+        else
+            love.graphics.setColor(1, 0, 0, effect.alpha)
+        end
+
         love.graphics.print(effect.text, effect.x, effect.y)
     end
 

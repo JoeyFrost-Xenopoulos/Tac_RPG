@@ -108,27 +108,20 @@ function Units.update(dt)
                 unit.path = nil
             end
 
-            if #unit.path == 0 then
-                unit.isMoving = false
-                unit.path = nil
-
-                if unit.pendingAction then
-                    if unit.pendingAction.type == "heal" then
-                        Combat.heal(unit, unit.pendingAction.target)
-                    end
-                    unit.pendingAction = nil
-                end
-
-                if unit.team == "player" and Game.selectedUnit == unit then
-                    if unit.movePoints > 0 then
-                        Game.movementTiles = Movement.getReachableTiles(unit)
-                    else
-                        Game.movementTiles = nil
-                    end
-                    Game.attackTiles = Combat.getAttackableTiles(unit)
-                    Input.checkUnitTurn(unit)
-                end
+        if #unit.path == 0 then
+            unit.isMoving = false
+            unit.path = nil
+        
+        if unit.team == "player" and Game.selectedUnit == unit then
+            if unit.movePoints > 0 then
+                Game.movementTiles = Movement.getReachableTiles(unit)
+            else
+                Game.movementTiles = nil
             end
+            Game.attackTiles = Combat.getAttackableTiles(unit)            
+            Input.checkUnitTurn(unit) 
+        end
+    end
         end
     end
 end

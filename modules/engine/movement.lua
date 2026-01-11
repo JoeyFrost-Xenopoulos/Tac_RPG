@@ -104,22 +104,17 @@ end
 
 function Movement.moveUnit(unit, targetX, targetY)
     if unit.isMoving then return false end
-    if unit.movePoints <= 0 then return false end
+
+    -- Check if reachable
+    local dist = math.abs(targetX - unit.x) + math.abs(targetY - unit.y)
+    if dist > unit.movePoints then return false end
 
     local path = Movement.findPath(unit.x, unit.y, targetX, targetY)
     if not path then return false end
 
-    if #path > unit.movePoints then
-        for i = #path, unit.movePoints + 1, -1 do
-            table.remove(path, i)
-        end
-    end
-
-    if #path == 0 then return false end
-
     unit.path = path
     unit.isMoving = true
-    unit.moveDirX = path[1].x - unit.x
+    unit.moveDirX = targetX - unit.x
 
     return true
 end

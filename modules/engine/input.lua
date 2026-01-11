@@ -32,34 +32,13 @@ function Input.mousepressed(x, y, button)
 
     local unit = Game.selectedUnit
 
-    -- PHASE: Heal (Mage)
+    -- PHASE: Heal
     if unit and unit.class == "Mage"
-    and (unit.phase == "ready" or unit.phase == "moved") then
-
-        local target = Units.getAt(tile.x, tile.y)
-
-        if target and target.team == unit.team and target ~= unit then
-            local dist =
-                math.abs(target.x - unit.x) +
-                math.abs(target.y - unit.y)
-
-            if dist == 1 then
-                Combat.heal(unit, target)
-                Game.movementTiles = nil
-                Game.attackTiles = nil
-                Game.healTiles = nil
-                return
-            end
-
-            local adj = Combat.getAdjacentFreeTile(target, unit)
-            if adj then
-                unit.pendingAction = {
-                    type = "heal",
-                    target = target
-                }
-
-                Movement.moveUnit(unit, adj.x, adj.y)
-
+    and (unit.phase == "ready" or unit.phase == "moved")
+    and Game.healTiles then
+        for _, t in ipairs(Game.healTiles) do
+            if t.x == tile.x and t.y == tile.y then
+                Combat.heal(unit, t.target)
                 Game.movementTiles = nil
                 Game.attackTiles = nil
                 Game.healTiles = nil
@@ -67,7 +46,7 @@ function Input.mousepressed(x, y, button)
             end
         end
     end
-
+    
     -- PHASE: Attack
     if unit and (unit.phase == "ready" or unit.phase == "moved") and Game.attackTiles then
         for _, t in ipairs(Game.attackTiles) do

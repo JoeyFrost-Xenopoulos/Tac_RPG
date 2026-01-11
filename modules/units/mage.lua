@@ -127,8 +127,10 @@ function Mage.update(dt, unit)
         if unit.attackTarget then
             local color
 
-            if unit.actionType == "attack" then
-                color = {1, 0.4, 0.4}
+            if unit.actionType == "attack" and unit.attackTarget.team ~= unit.team then
+                color = {1, 0.6, 0}
+            elseif unit.actionType == "heal" then
+                color = {1, 1, 1}
             else
                 color = {1, 1, 1}
             end
@@ -137,7 +139,6 @@ function Mage.update(dt, unit)
         end
     end
 
-    -- Animation progression
     unit.frameTimer = unit.frameTimer + dt
     if unit.frameTimer >= anim.speed then
         unit.currentFrame = unit.currentFrame + 1

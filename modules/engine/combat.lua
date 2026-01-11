@@ -83,14 +83,11 @@ function Combat.attack(attacker, defender)
     defender.hp = defender.hp - damageAmount
 
     defender.isHurt = true
-    if defender.x < attacker.x then
-        attacker.attackDirX = -1
-    else
-        attacker.attackDirX = 1
-    end
+    attacker.attackDirX = (defender.x < attacker.x) and -1 or 1
 
     attacker.isAttacking = true
     attacker.attackTarget = defender
+    attacker.actionType = "attack"  -- ✅ Add this
 
     Effects.damage(defender.pixelX + TILE_SIZE / 2, defender.pixelY, damageAmount, "damage")
     Effects.spawnParticles(defender.pixelX + TILE_SIZE / 2, defender.pixelY + TILE_SIZE / 2, "melee")
@@ -100,22 +97,21 @@ function Combat.attack(attacker, defender)
     end
 end
 
+
 function Combat.heal(healer, target)
-    target.hp = math.min(
-        target.maxHp or target.hp,
-        target.hp + Combat.HEAL_AMOUNT
-    )
+    local dx = math.abs(target.x - healer.x)
+    local dy = math.abs(target.y - healer.y)
+    if dx + dy ~= 1 then return end
+
+    target.hp = math.min(target.maxHp or target.hp, target.hp + Combat.HEAL_AMOUNT)
 
     healer.isAttacking = true
     healer.attackTarget = target
     healer.attackDirX = (target.x < healer.x) and -1 or 1
+    healer.actionType = "heal"  -- ✅ Add this
 
-    Effects.damage(
-        target.pixelX + TILE_SIZE / 2,
-        target.pixelY,
-        Combat.HEAL_AMOUNT,
-        "heal"
-    )
+    Effects.damage(target.pixelX + TILE_SIZE / 2, target.pixelY, Combat.HEAL_AMOUNT, "heal")
 
     Turn.endUnitTurn(healer)
 end
+
