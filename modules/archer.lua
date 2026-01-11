@@ -17,7 +17,7 @@ function Archer.init()
                     {x=768, y=0, width=80, height=110},
                     {x=960, y=0, width=80, height=110},
                 },
-                speed = 0.12
+                speed = 0.20
             },
 
             walk = {

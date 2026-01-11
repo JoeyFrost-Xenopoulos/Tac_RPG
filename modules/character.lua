@@ -112,7 +112,7 @@ function Character.update(dt, unit)
             unit.frameTimer = 0
         end
     elseif unit.isMoving then
-        unit.idleDelayTimer = 0
+        unit.idleDelayTimer = 0.5
         if unit.currentAnimation ~= "walk" then
             unit.currentAnimation = "walk"
             unit.currentFrame = 1

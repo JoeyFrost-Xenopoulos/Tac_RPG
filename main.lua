@@ -15,6 +15,7 @@ require("modules.hoverinfo")
 require("modules.character")
 require("modules.enemy")
 require("modules.archer")
+require("modules.mage")
 
 function love.load()
     love.window.setTitle("Tactical RPG Prototype")
@@ -24,6 +25,7 @@ function love.load()
     Character.init()
     Enemy.init()
     Archer.init()
+    Mage.init()
 
     local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 })
     Character.assignToUnit(hero, "hero")
@@ -31,18 +33,14 @@ function love.load()
     local archer = Units.create({name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
     Archer.assignToUnit(archer, "archer")
 
+    local mage1 = Units.create({ name="Mage1", class="Mage", team="player", x=2, y=5 })
+    Mage.assignToUnit(mage1, "mage")
+
     local enemy1 = Units.create({ name="Enemy1", class="Soldier", team="enemy", x=7, y=4 })
     Enemy.assignToUnit(enemy1, "soldier")
 
     local enemy2 = Units.create({ name="Enemy2", class="Soldier", team="enemy", x=8, y=4 })
     Enemy.assignToUnit(enemy2, "soldier")
-
-    --Units.create({ name = "Hero", class = "Soldier", team = "player", x = 3, y = 4 })
-    --Units.create({ name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
-    Units.create({ name = "Mage1", class = "Mage", team = "player", x = 2, y = 5 })
-
-    --Units.create({ name = "Enemy1", class = "Soldier", team = "enemy", x = 7, y = 4 })
-    --Units.create({ name = "Enemy2", class = "Archer", team = "enemy", x = 8, y = 4 })
 
     Turn.start()
 end
@@ -52,6 +50,13 @@ function love.update(dt)
     Turn.updateEnemyTurn()
     Units.update(dt)
     Effects.update(dt)
+
+    for _, unit in ipairs(Units.list) do
+        if unit.class == "Mage" then
+            Mage.update(dt, unit)
+        end
+    end
+    Mage.updateSpells(dt)
 
     for _, unit in ipairs(Units.list) do
         if unit.class == "Archer" then
@@ -87,7 +92,7 @@ function love.draw()
     end
 
     Archer.drawProjectiles()
-
+    Mage.drawSpells()
 end
 
 function love.mousepressed(x, y, button)
