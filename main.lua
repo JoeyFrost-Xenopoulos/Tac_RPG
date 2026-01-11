@@ -80,11 +80,11 @@ function love.draw()
     Draw.selection()
     Draw.movement()
     Draw.attacks()
-    Draw.heals()
     Draw.units()
     Effects.draw()
     HoverInfo.draw()
     WeaponSelector.draw()
+    Draw.heals()
 
     love.graphics.setColor(1, 1, 1)
 

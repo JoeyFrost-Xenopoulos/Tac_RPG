@@ -46,7 +46,11 @@ function Combat.getHealableTiles(unit)
                 local ty = unit.y + dy
 
                 local target = Units.getAt(tx, ty)
-                if target and target.team == unit.team and target ~= unit then
+                if target 
+                   and target.team == unit.team 
+                   and target ~= unit
+                   and target.hp < target.maxHp  -- only include if missing HP
+                then
                     table.insert(tiles, {
                         x = tx,
                         y = ty,

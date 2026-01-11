@@ -159,7 +159,6 @@ function Character.draw(unit, scaleX, scaleY)
     scaleX = scaleX or 1
     scaleY = scaleY or 1
 
-    -- Safety checks
     if not unit.animations or not unit.currentAnimation then return end
 
     local anim = unit.animations[unit.currentAnimation]
@@ -180,9 +179,12 @@ function Character.draw(unit, scaleX, scaleY)
         finalScaleX = -scaleX
     end
 
-    local colorMod = (unit.hasActed and unit.team == "player") and 0.3 or 1
+    local colorMod = 1
+    if unit.hasActed and unit.team == "player" and unit.currentAnimation ~= "attack" and unit.currentAnimation ~= "hurt" then
+        colorMod = 0.3
+    end
+
     love.graphics.setColor(colorMod, colorMod, colorMod, 1)
     love.graphics.draw(anim.img, quad, px, py, 0, finalScaleX, scaleY, offsetX, offsetY)
-
     love.graphics.setColor(1, 1, 1, 1)
 end

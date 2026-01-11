@@ -85,13 +85,27 @@ function Draw.units()
 end
 
 function Draw.heals()
-    if not Game.healTiles then return end
+    local unit = Game.selectedUnit
+    if not unit or not Game.healTiles or unit.isMoving then
+        return
+    end
+
+    local speed = 2
+    local shimmerWidth = 0.4
 
     for _, tile in ipairs(Game.healTiles) do
         local x = (tile.x - 1) * TILE_SIZE
         local y = (tile.y - 1) * TILE_SIZE
 
-        love.graphics.setColor(0.2, 1, 0.4, 0.5)
+        local diagonalPos = (tile.x + tile.y) / (GRID_WIDTH + GRID_HEIGHT)
+        local wave = math.sin((Game.flashTimer * speed) + diagonalPos * math.pi * 2)
+        local brightness = 0.8 + 0.2 * wave
+
+        local r = math.min(0.2 * brightness, 1)
+        local g = math.min(1 * brightness, 1)
+        local b = math.min(0.4 * brightness, 1)
+
+        love.graphics.setColor(r, g, b, 0.5)
         love.graphics.rectangle("fill", x, y, TILE_SIZE, TILE_SIZE)
     end
 end

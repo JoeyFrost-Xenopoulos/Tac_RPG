@@ -72,56 +72,60 @@ end
 
 function Units.update(dt)
     for _, unit in ipairs(Units.list) do
-        -- Handle Movement Animation
-        if unit.isMoving and unit.path then
+        if unit.isMoving and unit.path and #unit.path > 0 then
             local targetStep = unit.path[1]
-            
-            if targetStep then
-                local targetPixelX = (targetStep.x - 1) * TILE_SIZE
-                local targetPixelY = (targetStep.y - 1) * TILE_SIZE
+            local targetPixelX = (targetStep.x - 1) * TILE_SIZE
+            local targetPixelY = (targetStep.y - 1) * TILE_SIZE
 
-                if unit.pixelX < targetPixelX then
-                    unit.pixelX = math.min(unit.pixelX + MOVE_SPEED * dt, targetPixelX)
-                elseif unit.pixelX > targetPixelX then
-                    unit.pixelX = math.max(unit.pixelX - MOVE_SPEED * dt, targetPixelX)
-                end
-
-                if unit.pixelY < targetPixelY then
-                    unit.pixelY = math.min(unit.pixelY + MOVE_SPEED * dt, targetPixelY)
-                elseif unit.pixelY > targetPixelY then
-                    unit.pixelY = math.max(unit.pixelY - MOVE_SPEED * dt, targetPixelY)
-                end
-
-                if unit.pixelX == targetPixelX and unit.pixelY == targetPixelY then
-                    Game.grid[unit.y][unit.x].unit = nil -- leave old tile
-                    
-                    unit.x = targetStep.x
-                    unit.y = targetStep.y
-                    
-                    Game.grid[unit.y][unit.x].unit = unit -- enter new tile
-                    
-                    table.remove(unit.path, 1)
-                    unit.movePoints = unit.movePoints - 1
-                end
-            else
-                unit.isMoving = false
-                unit.path = nil
+            if unit.pixelX < targetPixelX then
+                unit.pixelX = math.min(unit.pixelX + MOVE_SPEED * dt, targetPixelX)
+            elseif unit.pixelX > targetPixelX then
+                unit.pixelX = math.max(unit.pixelX - MOVE_SPEED * dt, targetPixelX)
             end
 
-        if #unit.path == 0 then
-            unit.isMoving = false
-            unit.path = nil
-        
+            if unit.pixelY < targetPixelY then
+                unit.pixelY = math.min(unit.pixelY + MOVE_SPEED * dt, targetPixelY)
+            elseif unit.pixelY > targetPixelY then
+                unit.pixelY = math.max(unit.pixelY - MOVE_SPEED * dt, targetPixelY)
+            end
+
+            if unit.pixelX == targetPixelX and unit.pixelY == targetPixelY then
+                if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
+                    Game.grid[unit.y][unit.x].unit = nil
+                end
+
+                unit.x = targetStep.x
+                unit.y = targetStep.y
+                if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
+                    Game.grid[unit.y][unit.x].unit = unit
+                end
+
+                table.remove(unit.path, 1)
+                unit.movePoints = unit.movePoints - 1
+
+                if #unit.path == 0 then
+                    unit.isMoving = false
+                    unit.path = nil
+                end
+            end
+        end
+
         if unit.team == "player" and Game.selectedUnit == unit then
             if unit.movePoints > 0 then
                 Game.movementTiles = Movement.getReachableTiles(unit)
             else
                 Game.movementTiles = nil
             end
-            Game.attackTiles = Combat.getAttackableTiles(unit)            
-            Input.checkUnitTurn(unit) 
-        end
-    end
+
+            Game.attackTiles = Combat.getAttackableTiles(unit)
+
+            if unit.class == "Mage" then
+                Game.healTiles = Combat.getHealableTiles(unit)
+            else
+                Game.healTiles = nil
+            end
+
+            Input.checkUnitTurn(unit)
         end
     end
 end
