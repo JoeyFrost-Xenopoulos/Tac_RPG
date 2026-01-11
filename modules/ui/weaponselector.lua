@@ -6,7 +6,7 @@ WeaponSelector = {}
 WeaponSelector.active = false
 WeaponSelector.unit = nil
 WeaponSelector.target = nil
-WeaponSelector.options = { "Spear", "Axe", "Sword" }
+WeaponSelector.options = { "Water", "Fire", "Chaos" }
 WeaponSelector.selectedIndex = 1
 
 local MENU_WIDTH = 110
@@ -54,6 +54,8 @@ function WeaponSelector.confirmSelection()
     local unit = WeaponSelector.unit
     local target = WeaponSelector.target
 
+    unit.weapon = weapon  -- store the weapon
+
     if weapon == "Spear" then
         unit.damage = 5
     elseif weapon == "Axe" then
@@ -66,6 +68,7 @@ function WeaponSelector.confirmSelection()
     Turn.endUnitTurn(unit)
     WeaponSelector.close()
 end
+
 
 function WeaponSelector.draw()
     if not WeaponSelector.active then return end

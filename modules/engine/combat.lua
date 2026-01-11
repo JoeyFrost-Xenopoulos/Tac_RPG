@@ -91,7 +91,7 @@ function Combat.attack(attacker, defender)
 
     attacker.isAttacking = true
     attacker.attackTarget = defender
-    attacker.actionType = "attack"  -- ✅ Add this
+    attacker.actionType = "attack"
 
     Effects.damage(defender.pixelX + TILE_SIZE / 2, defender.pixelY, damageAmount, "damage")
     Effects.spawnParticles(defender.pixelX + TILE_SIZE / 2, defender.pixelY + TILE_SIZE / 2, "melee")
@@ -112,8 +112,7 @@ function Combat.heal(healer, target)
     healer.isAttacking = true
     healer.attackTarget = target
     healer.attackDirX = (target.x < healer.x) and -1 or 1
-    healer.actionType = "heal"  -- ✅ Add this
-
+    healer.actionType = "heal"
     Effects.damage(target.pixelX + TILE_SIZE / 2, target.pixelY, Combat.HEAL_AMOUNT, "heal")
 
     Turn.endUnitTurn(healer)

@@ -1,5 +1,13 @@
+-- character.lua
+
 Character = {}
 Character.data = {}
+
+local weaponColors = {
+    Water  = {0.2, 0.6, 1},
+    Fire   = {1, 0.3, 0.2},
+    Chaos  = {0.6, 0, 0.6}
+}
 
 function Character.init()
     Character.data["hero"] = {
@@ -138,11 +146,13 @@ function Character.update(dt, unit)
 
         if unit.currentFrame > anim.frameCount then
             if unit.currentAnimation == "attack" then
+                -- Reset attack
                 unit.isAttacking = false
                 unit.currentAnimation = "idle"
                 unit.currentFrame = 1
+
+                unit.weapon = nil
             elseif unit.currentAnimation == "hurt" then
-                -- Hurt animation finished
                 unit.isHurt = false
                 unit.currentAnimation = "idle"
                 unit.currentFrame = 1
@@ -180,11 +190,24 @@ function Character.draw(unit, scaleX, scaleY)
     end
 
     local colorMod = 1
-    if unit.hasActed and unit.team == "player" and unit.currentAnimation ~= "attack" and unit.currentAnimation ~= "hurt" then
+    if unit.hasActed and unit.team == "player" and not unit.isMoving
+    and unit.currentAnimation ~= "attack" 
+    and unit.currentAnimation ~= "hurt" then
         colorMod = 0.3
     end
 
-    love.graphics.setColor(colorMod, colorMod, colorMod, 1)
+    local weaponColor = {1, 1, 1}  -- default
+    if unit.weapon and weaponColors[unit.weapon] then
+        weaponColor = weaponColors[unit.weapon]
+    end
+
+    love.graphics.setColor(
+        weaponColor[1] * colorMod,
+        weaponColor[2] * colorMod,
+        weaponColor[3] * colorMod,
+        1
+    )
+
     love.graphics.draw(anim.img, quad, px, py, 0, finalScaleX, scaleY, offsetX, offsetY)
     love.graphics.setColor(1, 1, 1, 1)
 end

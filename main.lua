@@ -82,7 +82,6 @@ function love.draw()
     Draw.attacks()
     Draw.units()
     Effects.draw()
-    HoverInfo.draw()
     WeaponSelector.draw()
     Draw.heals()
 
@@ -94,6 +93,7 @@ function love.draw()
         end
     end
 
+    HoverInfo.draw()
     Archer.drawProjectiles()
     Mage.drawSpells()
 end
