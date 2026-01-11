@@ -52,6 +52,14 @@ function love.update(dt)
     Turn.updateEnemyTurn()
     Units.update(dt)
     Effects.update(dt)
+
+    for _, unit in ipairs(Units.list) do
+        if unit.class == "Archer" then
+            Archer.update(dt, unit)
+        end
+    end
+
+    Archer.updateProjectiles(dt)
     Game.flashTimer = Game.flashTimer + dt
 
     for _, unit in ipairs(Units.list) do
@@ -77,6 +85,9 @@ function love.draw()
             Character.draw(unit, 0.5, 0.5)
         end
     end
+
+    Archer.drawProjectiles()
+
 end
 
 function love.mousepressed(x, y, button)

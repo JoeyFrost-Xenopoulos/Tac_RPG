@@ -5,7 +5,7 @@ function Character.init()
     Character.data["hero"] = {
         animations = {
             idle = {
-                img = love.graphics.newImage("units/Warrior/Warrior_idle.png"),
+                img = love.graphics.newImage("units/Player/Warrior/Warrior_idle.png"),
                 frames = {
                     {x=0,   y=0, width=80, height=124},
                     {x=192, y=0, width=80, height=124},
@@ -19,7 +19,7 @@ function Character.init()
                 speed = 0.10
             },
             walk = {
-                img = love.graphics.newImage("units/Warrior/Warrior_Run.png"),
+                img = love.graphics.newImage("units/Player/Warrior/Warrior_Run.png"),
                 frames = {
                     {x=0,   y=0, width=80, height=124},
                     {x=192, y=0, width=80, height=124},
@@ -31,7 +31,7 @@ function Character.init()
                 speed = 0.08
             },
             attack = {
-                img = love.graphics.newImage("units/Warrior/Warrior_Attack1.png"),
+                img = love.graphics.newImage("units/Player/Warrior/Warrior_Attack1.png"),
                 frames = {
                     {x=0,   y=0, width=68, height=126},
                     {x=188, y=0, width=70, height=126},
@@ -56,7 +56,7 @@ function Character.init()
     end
 
     Character.data["hero"].animations.hurt = {
-        img = love.graphics.newImage("units/Warrior/Warrior_Guard.png"),
+        img = love.graphics.newImage("units/Player/Warrior/Warrior_Guard.png"),
         frames = {
             {x=0,   y=0, width=80, height=110},
             {x=192, y=0, width=80, height=110},
