@@ -127,11 +127,21 @@ end
 function Input.checkUnitTurn(unit)
     if not unit then return end
 
-    local attacks = Combat.getAttackableTiles(unit)
-
-    if unit.movePoints <= 0 and #attacks == 0 then
-        Turn.endUnitTurn(unit)
-        Game.movementTiles = nil
-        Game.attackTiles = nil
+    if unit.class ~= "Mage" then
+        local attacks = Combat.getAttackableTiles(unit)
+        if unit.movePoints <= 0 and #attacks == 0 then
+            Turn.endUnitTurn(unit)
+            Game.movementTiles = nil
+            Game.attackTiles = nil
+        end
+    else
+        local attacks = Combat.getAttackableTiles(unit)
+        local heals = Combat.getHealableTiles(unit)
+        if unit.movePoints <= 0 and #attacks == 0 and #heals == 0 then
+            Turn.endUnitTurn(unit)
+            Game.movementTiles = nil
+            Game.attackTiles = nil
+            Game.healTiles = nil
+        end
     end
 end

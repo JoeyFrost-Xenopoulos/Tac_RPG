@@ -29,6 +29,12 @@ function love.load()
     Archer.init()
     Mage.init()
 
+    local enemy1 = Units.create({ name="Enemy1", class="Soldier", team="enemy", x=7, y=4 })
+    Enemy.assignToUnit(enemy1, "soldier")
+
+    local enemy2 = Units.create({ name="Enemy2", class="Soldier", team="enemy", x=8, y=4 })
+    Enemy.assignToUnit(enemy2, "soldier")
+
     local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 })
     Character.assignToUnit(hero, "hero")
 
@@ -37,12 +43,6 @@ function love.load()
 
     local mage1 = Units.create({ name="Mage1", class="Mage", team="player", x=2, y=5 })
     Mage.assignToUnit(mage1, "mage")
-
-    local enemy1 = Units.create({ name="Enemy1", class="Soldier", team="enemy", x=7, y=4 })
-    Enemy.assignToUnit(enemy1, "soldier")
-
-    local enemy2 = Units.create({ name="Enemy2", class="Soldier", team="enemy", x=8, y=4 })
-    Enemy.assignToUnit(enemy2, "soldier")
 
     Turn.start()
 end

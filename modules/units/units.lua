@@ -90,13 +90,13 @@ function Units.update(dt)
             end
 
             if unit.pixelX == targetPixelX and unit.pixelY == targetPixelY then
-                if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
+                if Game.grid[unit.y] and Game.grid[unit.x] then
                     Game.grid[unit.y][unit.x].unit = nil
                 end
 
                 unit.x = targetStep.x
                 unit.y = targetStep.y
-                if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
+                if Game.grid[unit.y] and Game.grid[unit.x] then
                     Game.grid[unit.y][unit.x].unit = unit
                 end
 
@@ -111,24 +111,26 @@ function Units.update(dt)
         end
 
         if unit.team == "player" and Game.selectedUnit == unit then
-            if unit.movePoints > 0 then
-                Game.movementTiles = Movement.getReachableTiles(unit)
-            else
-                Game.movementTiles = nil
+            if not unit.isMoving then
+                if unit.movePoints > 0 then
+                    Game.movementTiles = Movement.getReachableTiles(unit)
+                else
+                    Game.movementTiles = nil
+                end
+
+                Game.attackTiles = Combat.getAttackableTiles(unit)
+
+                if unit.class == "Mage" then
+                    Game.healTiles = Combat.getHealableTiles(unit)
+                else
+                    Game.healTiles = nil
+                end
+                Input.checkUnitTurn(unit)
             end
-
-            Game.attackTiles = Combat.getAttackableTiles(unit)
-
-            if unit.class == "Mage" then
-                Game.healTiles = Combat.getHealableTiles(unit)
-            else
-                Game.healTiles = nil
-            end
-
-            Input.checkUnitTurn(unit)
         end
     end
 end
+
 
 function Units.getAt(x, y)
     if not Game.grid[y] or not Game.grid[y][x] then return nil end
