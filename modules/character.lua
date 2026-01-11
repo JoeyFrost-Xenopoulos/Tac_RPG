@@ -93,6 +93,12 @@ end
 function Character.update(dt, unit)
     if not unit.animations then return end
 
+    if unit.isMoving and unit.moveDirX then
+        unit.facingX = unit.moveDirX
+    elseif unit.isAttacking and unit.attackDirX then
+        unit.facingX = unit.attackDirX
+    end
+
     if unit.isHurt then
         if unit.currentAnimation ~= "hurt" then
             unit.currentAnimation = "hurt"
@@ -153,6 +159,7 @@ function Character.draw(unit, scaleX, scaleY)
     scaleX = scaleX or 1
     scaleY = scaleY or 1
 
+    -- Safety checks
     if not unit.animations or not unit.currentAnimation then return end
 
     local anim = unit.animations[unit.currentAnimation]
@@ -169,12 +176,11 @@ function Character.draw(unit, scaleX, scaleY)
     local px = unit.pixelX + TILE_SIZE / 2
     local py = unit.pixelY + TILE_SIZE / 2
     local finalScaleX = scaleX
-    if unit.isMoving and unit.moveDirX and unit.moveDirX < 0 then
+    if unit.facingX and unit.facingX < 0 then
         finalScaleX = -scaleX
     end
 
-    -- Grey out if unit has acted
-    local colorMod = (unit.hasActed and 0.3) or 1
+    local colorMod = (unit.hasActed and unit.team == "player") and 0.3 or 1
     love.graphics.setColor(colorMod, colorMod, colorMod, 1)
     love.graphics.draw(anim.img, quad, px, py, 0, finalScaleX, scaleY, offsetX, offsetY)
 

@@ -13,6 +13,7 @@ require("modules.effects")
 require("modules.weaponselector")
 require("modules.hoverinfo")
 require("modules.character")
+require("modules.enemy")
 
 function love.load()
     love.window.setTitle("Tactical RPG Prototype")
@@ -20,16 +21,23 @@ function love.load()
 
     Grid.init()
     Character.init()
-    
+    Enemy.init()
+
     local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 })
     Character.assignToUnit(hero, "hero")
+
+    local enemy1 = Units.create({ name="Enemy1", class="Soldier", team="enemy", x=7, y=4 })
+    Enemy.assignToUnit(enemy1, "soldier")
+
+    local enemy2 = Units.create({ name="Enemy2", class="Soldier", team="enemy", x=8, y=4 })
+    Enemy.assignToUnit(enemy2, "soldier")
 
     --Units.create({ name = "Hero", class = "Soldier", team = "player", x = 3, y = 4 })
     Units.create({ name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
     Units.create({ name = "Mage1", class = "Mage", team = "player", x = 2, y = 5 })
 
-    Units.create({ name = "Enemy1", class = "Soldier", team = "enemy", x = 7, y = 4 })
-    Units.create({ name = "Enemy2", class = "Archer", team = "enemy", x = 8, y = 4 })
+    --Units.create({ name = "Enemy1", class = "Soldier", team = "enemy", x = 7, y = 4 })
+    --Units.create({ name = "Enemy2", class = "Archer", team = "enemy", x = 8, y = 4 })
 
     Turn.start()
 end

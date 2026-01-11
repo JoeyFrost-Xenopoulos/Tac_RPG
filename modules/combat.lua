@@ -40,13 +40,13 @@ function Combat.attack(attacker, defender)
     defender.hp = defender.hp - damageAmount
 
     defender.isHurt = true
-    attacker.isAttacking = true
-
     if defender.x < attacker.x then
-        attacker.moveDirX = -1
+        attacker.attackDirX = -1
     else
-        attacker.moveDirX = 1
+        attacker.attackDirX = 1
     end
+
+    attacker.isAttacking = true
 
     -- Effects
     Effects.damage(defender.pixelX + TILE_SIZE / 2, defender.pixelY, damageAmount, "damage")
