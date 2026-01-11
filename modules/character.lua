@@ -99,7 +99,7 @@ function Character.update(dt, unit)
         unit.facingX = unit.attackDirX
     end
 
-    if unit.isHurt then
+    if unit.isHurt and unit.animations.hurt then
         if unit.currentAnimation ~= "hurt" then
             unit.currentAnimation = "hurt"
             unit.currentFrame = 1

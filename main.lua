@@ -14,6 +14,7 @@ require("modules.weaponselector")
 require("modules.hoverinfo")
 require("modules.character")
 require("modules.enemy")
+require("modules.archer")
 
 function love.load()
     love.window.setTitle("Tactical RPG Prototype")
@@ -22,9 +23,13 @@ function love.load()
     Grid.init()
     Character.init()
     Enemy.init()
+    Archer.init()
 
     local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 })
     Character.assignToUnit(hero, "hero")
+
+    local archer = Units.create({name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
+    Archer.assignToUnit(archer, "archer")
 
     local enemy1 = Units.create({ name="Enemy1", class="Soldier", team="enemy", x=7, y=4 })
     Enemy.assignToUnit(enemy1, "soldier")
@@ -33,7 +38,7 @@ function love.load()
     Enemy.assignToUnit(enemy2, "soldier")
 
     --Units.create({ name = "Hero", class = "Soldier", team = "player", x = 3, y = 4 })
-    Units.create({ name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
+    --Units.create({ name = "Archer1", class = "Archer", team = "player", x = 4, y = 6 })
     Units.create({ name = "Mage1", class = "Mage", team = "player", x = 2, y = 5 })
 
     --Units.create({ name = "Enemy1", class = "Soldier", team = "enemy", x = 7, y = 4 })
