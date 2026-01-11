@@ -105,13 +105,15 @@ end
 function Movement.moveUnit(unit, targetX, targetY)
     if unit.isMoving then return false end
 
-    -- Check if reachable
     local dist = math.abs(targetX - unit.x) + math.abs(targetY - unit.y)
     if dist > unit.movePoints then return false end
+
     local path = Movement.findPath(unit.x, unit.y, targetX, targetY)
     if not path then return false end
 
     unit.path = path
     unit.isMoving = true
+    unit.moveDirX = targetX - unit.x
+
     return true
 end
