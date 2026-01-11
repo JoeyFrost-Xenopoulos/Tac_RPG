@@ -39,21 +39,18 @@ function Combat.attack(attacker, defender)
     local damageAmount = attacker.damage or Combat.BASE_DAMAGE
     defender.hp = defender.hp - damageAmount
 
-    -- Play hurt animation
     defender.isHurt = true
+    attacker.isAttacking = true
 
-    Effects.damage(
-        defender.pixelX + TILE_SIZE / 2,
-        defender.pixelY,
-        damageAmount,
-        "damage"
-    )
+    if defender.x < attacker.x then
+        attacker.moveDirX = -1
+    else
+        attacker.moveDirX = 1
+    end
 
-    Effects.spawnParticles(
-        defender.pixelX + TILE_SIZE / 2,
-        defender.pixelY + TILE_SIZE / 2,
-        "melee"  -- or attackType
-    )
+    -- Effects
+    Effects.damage(defender.pixelX + TILE_SIZE / 2, defender.pixelY, damageAmount, "damage")
+    Effects.spawnParticles(defender.pixelX + TILE_SIZE / 2, defender.pixelY + TILE_SIZE / 2, "melee")
 
     if defender.hp <= 0 then
         Units.remove(defender)
