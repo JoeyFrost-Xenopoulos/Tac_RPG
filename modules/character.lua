@@ -29,6 +29,16 @@ function Character.init()
                     {x=960, y=0, width=90, height=124},
                 },
                 speed = 0.08
+            },
+            attack = {
+                img = love.graphics.newImage("units/Warrior/Warrior_Attack1.png"),
+                frames = {
+                    {x=0,   y=0, width=68, height=126},
+                    {x=188, y=0, width=70, height=126},
+                    {x=370, y=0, width=126, height=126},
+                    {x=560, y=0, width=126, height=126},
+                },
+                speed = 0.15
             }
         }
     }
@@ -36,7 +46,7 @@ function Character.init()
     for _, char in pairs(Character.data) do
         for animName, anim in pairs(char.animations) do
             local quads = {}
-            local imgWidth, imgHeight = anim.img:getDimensions() -- use animation's own image
+            local imgWidth, imgHeight = anim.img:getDimensions()
             for _, f in ipairs(anim.frames) do
                 table.insert(quads, love.graphics.newQuad(f.x, f.y, f.width, f.height, imgWidth, imgHeight))
             end
@@ -44,6 +54,28 @@ function Character.init()
             anim.frameCount = #quads
         end
     end
+
+    Character.data["hero"].animations.hurt = {
+        img = love.graphics.newImage("units/Warrior/Warrior_Guard.png"),
+        frames = {
+            {x=0,   y=0, width=80, height=110},
+            {x=192, y=0, width=80, height=110},
+            {x=384, y=0, width=80, height=110},
+            {x=576, y=0, width=80, height=110},
+            {x=768, y=0, width=80, height=110},
+            {x=960, y=0, width=80, height=110},
+        },
+        speed = 0.1
+    }
+
+    for _, f in ipairs(Character.data["hero"].animations.hurt.frames) do
+        local anim = Character.data["hero"].animations.hurt
+        local imgWidth, imgHeight = anim.img:getDimensions()
+        anim.quads = anim.quads or {}
+        table.insert(anim.quads, love.graphics.newQuad(f.x, f.y, f.width, f.height, imgWidth, imgHeight))
+    end
+    Character.data["hero"].animations.hurt.frameCount = #Character.data["hero"].animations.hurt.quads
+
 end
 
 function Character.assignToUnit(unit, name)
@@ -61,28 +93,36 @@ end
 function Character.update(dt, unit)
     if not unit.animations then return end
 
-    local isCurrentlyWalking = unit.isMoving
-
-    -- Handle animation switching
-    if isCurrentlyWalking then
-        -- Moving: use walk animation
+    if unit.isHurt then
+        if unit.currentAnimation ~= "hurt" then
+            unit.currentAnimation = "hurt"
+            unit.currentFrame = 1
+            unit.frameTimer = 0
+        end
+    elseif unit.isAttacking then
+        if unit.currentAnimation ~= "attack" then
+            unit.currentAnimation = "attack"
+            unit.currentFrame = 1
+            unit.frameTimer = 0
+        end
+    elseif unit.isMoving then
+        unit.idleDelayTimer = 0
         if unit.currentAnimation ~= "walk" then
             unit.currentAnimation = "walk"
             unit.currentFrame = 1
             unit.frameTimer = 0
         end
-        unit.waitForIdle = false -- reset any pending idle switch
     else
-        -- Not moving: check if walk animation is still mid-cycle
-        if unit.currentAnimation == "walk" then
-            -- If we haven't marked to wait, set flag to finish animation first
-            if not unit.waitForIdle then
-                unit.waitForIdle = true
+        unit.idleDelayTimer = (unit.idleDelayTimer or 0) + dt
+        if unit.idleDelayTimer >= 0.5 then
+            if unit.currentAnimation ~= "idle" then
+                unit.currentAnimation = "idle"
+                unit.currentFrame = 1
+                unit.frameTimer = 0
             end
         end
     end
 
-    -- Advance animation frame
     local anim = unit.animations[unit.currentAnimation]
     if not anim or anim.frameCount <= 1 then return end
 
@@ -90,13 +130,16 @@ function Character.update(dt, unit)
     if unit.frameTimer >= anim.speed then
         unit.currentFrame = unit.currentFrame + 1
 
-        -- If we reached the last frame of walk and waitForIdle is true, switch to idle
         if unit.currentFrame > anim.frameCount then
-            if unit.currentAnimation == "walk" and unit.waitForIdle then
+            if unit.currentAnimation == "attack" then
+                unit.isAttacking = false
                 unit.currentAnimation = "idle"
                 unit.currentFrame = 1
-                unit.frameTimer = 0
-                unit.waitForIdle = false
+            elseif unit.currentAnimation == "hurt" then
+                -- Hurt animation finished
+                unit.isHurt = false
+                unit.currentAnimation = "idle"
+                unit.currentFrame = 1
             else
                 unit.currentFrame = 1
             end
@@ -106,12 +149,10 @@ function Character.update(dt, unit)
     end
 end
 
-
 function Character.draw(unit, scaleX, scaleY)
     scaleX = scaleX or 1
     scaleY = scaleY or 1
 
-    -- Safety checks
     if not unit.animations or not unit.currentAnimation then return end
 
     local anim = unit.animations[unit.currentAnimation]
@@ -122,15 +163,11 @@ function Character.draw(unit, scaleX, scaleY)
     local quad = anim.quads[unit.currentFrame]
     local _, _, qw, qh = quad:getViewport()
 
-    -- Pivot for drawing (centered)
     local offsetX = qw / 2
     local offsetY = qh / 2
 
-    -- Position (centered on tile)
     local px = unit.pixelX + TILE_SIZE / 2
     local py = unit.pixelY + TILE_SIZE / 2
-
-    -- Determine horizontal flip based on movement direction
     local finalScaleX = scaleX
     if unit.isMoving and unit.moveDirX and unit.moveDirX < 0 then
         finalScaleX = -scaleX
@@ -139,10 +176,7 @@ function Character.draw(unit, scaleX, scaleY)
     -- Grey out if unit has acted
     local colorMod = (unit.hasActed and 0.3) or 1
     love.graphics.setColor(colorMod, colorMod, colorMod, 1)
-
-    -- Draw the character with mirroring applied
     love.graphics.draw(anim.img, quad, px, py, 0, finalScaleX, scaleY, offsetX, offsetY)
 
-    -- Reset color
     love.graphics.setColor(1, 1, 1, 1)
 end
