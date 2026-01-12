@@ -18,7 +18,6 @@ function Grid.init()
                 water = 20
             }
 
-            -- Bias toward neighbor terrain for clustering
             local neighbors = {}
             if y > 1 then table.insert(neighbors, Game.grid[y-1][x].terrain) end
             if x > 1 then table.insert(neighbors, Game.grid[y][x-1].terrain) end
@@ -81,8 +80,31 @@ function Grid.screenToGrid(x, y)
     return { x = gridX, y = gridY }
 end
 
-function Grid.isWalkable(x, y)
+function Grid.isWalkable(x, y, fromX, fromY)
     local tile = Grid.getTile(x, y)
-    if not tile then return false end
-    return tile.walkable and tile.unit == nil
+    if not tile or not tile.walkable or tile.unit then return false end
+
+    if fromX and fromY then
+        if Walls.overlayMap[fromY] and Walls.overlayMap[fromY][fromX] then
+            local exitEdges = Walls.overlayMap[fromY][fromX].blockedEdges
+            if exitEdges then
+                if exitEdges.left   and x < fromX then return false end
+                if exitEdges.right  and x > fromX then return false end
+                if exitEdges.top    and y < fromY then return false end
+                if exitEdges.bottom and y > fromY then return false end
+            end
+        end
+
+        if Walls.overlayMap[y] and Walls.overlayMap[y][x] then
+            local entryEdges = Walls.overlayMap[y][x].blockedEdges
+            if entryEdges then
+                if entryEdges.left   and fromX < x then return false end
+                if entryEdges.right  and fromX > x then return false end
+                if entryEdges.top    and fromY < y then return false end
+                if entryEdges.bottom and fromY > y then return false end
+            end
+        end
+    end
+
+    return true
 end

@@ -57,6 +57,8 @@ function Walls.init()
         end
     end
 
+    local blockingTiles = {{y=2, x=7}, {y=4, x=8},{y=4, x=9}}
+
     local overlayPatch = {
         -- Bottom row
         {y=4, x=7, row=4, col=0},
@@ -66,46 +68,66 @@ function Walls.init()
         -- Middle row
         {y=3, x=7, row=2, col=0},
         {y=3, x=8, row=2, col=1},
-        {y=3, x=9, row=2, col=2},
+        {y=3, x=9, row=2, col=2, blockedEdges = {right = true}},
 
         -- Upper middle
         {y=2, x=7, row=4, col=0},
         {y=2, x=8, row=1, col=0},
-        {y=2, x=9, row=1, col=2},
+        {y=2, x=9, row=1, col=2, blockedEdges = {right = true}},
 
         -- Top row
-        {y=1, x=7, row=3, col=0},
+        {y=1, x=7, row=3, col=0, blockedEdges = {left = true}}, 
         {y=1, x=8, row=0, col=1},
-        {y=1, x=9, row=0, col=2}
+        {y=1, x=9, row=0, col=2, blockedEdges = {right = true}}
     }
 
-    local zoneTop, zoneBottom = 1, 5
-    local zoneLeft, zoneRight = 7, 9
+    local wallCols = 4
 
     for _, t in ipairs(overlayPatch) do
-        if t.y >= zoneTop and t.y <= zoneBottom and
-           t.x >= zoneLeft and t.x <= zoneRight then
+        local index = t.row * wallCols + t.col + 1
 
-            local index = t.row * 4 + t.col + 1
-            Walls.overlayMap[t.y][t.x] = Walls.wallQuads[index]
+        local blocks = false
+        for _, b in ipairs(blockingTiles) do
+            if b.x == t.x and b.y == t.y then
+                blocks = true
+                break
+            end
         end
+
+        Walls.overlayMap[t.y][t.x] = {
+            quad = Walls.wallQuads[index],
+            blocksMovement = blocks,
+            isRamp = false,
+            -- Store the blocked edges here dynamically
+            blockedEdges = t.blockedEdges or {} 
+        }
+
+        Game.grid[t.y][t.x].walkable = not blocks
     end
 
-    Walls.overlayMap[4][7] = Walls.extraQuads[2] -- bottom ramp
-    Walls.overlayMap[3][7] = Walls.extraQuads[1] -- top ramp
-
+    -- (Ramp overrides remain the same...)
+    Walls.overlayMap[4][7].quad = Walls.extraQuads[2]
+    Walls.overlayMap[4][7].isRamp = true
+    Walls.overlayMap[3][7].quad = Walls.extraQuads[1]
+    Walls.overlayMap[3][7].isRamp = true
 end
 
 function Walls.draw()
     local scale = TILE_SIZE / 64
+
     for y = 1, GRID_HEIGHT do
         for x = 1, GRID_WIDTH do
-            local quad = Walls.overlayMap[y][x]
-            if quad then
+            local cell = Walls.overlayMap[y][x]
+            if cell then
                 local px = (x - 1) * TILE_SIZE
                 local py = (y - 1) * TILE_SIZE
                 love.graphics.setColor(1, 1, 1)
-                love.graphics.draw(Tiles.grassSheet, quad, px, py, 0, scale, scale)
+                love.graphics.draw(
+                    Tiles.grassSheet,
+                    cell.quad,
+                    px, py, 0,
+                    scale, scale
+                )
             end
         end
     end

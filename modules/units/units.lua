@@ -41,8 +41,8 @@ function Units.create(data)
         damage = data.damage or classData.damage or Combat.BASE_DAMAGE,
         hp = data.hp or classData.hp or 10,
         maxHp = data.hp or classData.hp or 10,
-        move = data.move or 4,
-        movePoints = data.move or 4,
+        move = data.move or 100,
+        movePoints = data.move or 100,
         hasActed = false,
         pendingAction = nil
     }
