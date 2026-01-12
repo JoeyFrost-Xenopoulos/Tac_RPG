@@ -1,7 +1,7 @@
 Walls = {}
 Walls.overlayMap = {}
-
 Walls.wallQuads = {}
+Walls.extraQuads = {}
 
 function Walls.load()
     local sheet = Tiles.grassSheet
@@ -10,6 +10,7 @@ function Walls.load()
     local startCol = 5 
     local wallCols = 4 
     local wallRows = 6
+    
 
     for y = 0, wallRows - 1 do
         for x = 0, wallCols - 1 do
@@ -24,6 +25,28 @@ function Walls.load()
             )
         end
     end
+
+    local sheet = Tiles.grassSheet
+    local tileW, tileH = 64, 64
+
+    local extraTiles = {
+        {col = 0, row = 4},
+        {col = 0, row = 5},
+        {col = 3, row = 5},
+        {col = 3, row = 6},
+    }
+
+    for _, t in ipairs(extraTiles) do
+        local pixelX = t.col * tileW
+        local pixelY = t.row * tileH
+
+        table.insert(Walls.extraQuads,
+            love.graphics.newQuad(
+                pixelX, pixelY, tileW, tileH,
+                sheet:getDimensions()
+            )
+        )
+    end
 end
 
 function Walls.init()
@@ -34,32 +57,43 @@ function Walls.init()
         end
     end
 
-local overlayPatch = {
-        -- BOTTOM (Base) - Row 5 (The actual bottom row of a 6-row sheet)
-        {y=4, x=7, row=5, col=0},
-        {y=4, x=8, row=5, col=1},
-        {y=4, x=9, row=5, col=2},
+    local overlayPatch = {
+        -- Bottom row
+        {y=4, x=7, row=4, col=0},
+        {y=4, x=8, row=4, col=1},
+        {y=4, x=9, row=4, col=2},
 
-        -- MIDDLE - Row 2
+        -- Middle row
         {y=3, x=7, row=2, col=0},
         {y=3, x=8, row=2, col=1},
         {y=3, x=9, row=2, col=2},
 
-        -- MIDDLE/TOP - Row 1
-        {y=2, x=7, row=1, col=0},
-        {y=2, x=8, row=1, col=1},
+        -- Upper middle
+        {y=2, x=7, row=4, col=0},
+        {y=2, x=8, row=1, col=0},
         {y=2, x=9, row=1, col=2},
 
-        -- TOP EDGE - Row 0
-        {y=1, x=7, row=0, col=0},
+        -- Top row
+        {y=1, x=7, row=3, col=0},
         {y=1, x=8, row=0, col=1},
-        {y=1, x=9, row=0, col=2},
+        {y=1, x=9, row=0, col=2}
     }
 
+    local zoneTop, zoneBottom = 1, 5
+    local zoneLeft, zoneRight = 7, 9
+
     for _, t in ipairs(overlayPatch) do
-        local index = t.row * 4 + t.col + 1  -- 4 = cols in Tiles.grassQuads
-        Walls.overlayMap[t.y][t.x] = Walls.wallQuads[index]
+        if t.y >= zoneTop and t.y <= zoneBottom and
+           t.x >= zoneLeft and t.x <= zoneRight then
+
+            local index = t.row * 4 + t.col + 1
+            Walls.overlayMap[t.y][t.x] = Walls.wallQuads[index]
+        end
     end
+
+    Walls.overlayMap[4][7] = Walls.extraQuads[2] -- bottom ramp
+    Walls.overlayMap[3][7] = Walls.extraQuads[1] -- top ramp
+
 end
 
 function Walls.draw()
