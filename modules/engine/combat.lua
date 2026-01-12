@@ -9,7 +9,6 @@ Combat.HEAL_AMOUNT = 5
 function Combat.getAttackableTiles(unit)
     local tiles = {}
     local range = unit.attackRange or 1
-
     local minRange = (unit.class == "Archer") and 2 or 1
 
     for dy = -range, range do
@@ -19,15 +18,9 @@ function Combat.getAttackableTiles(unit)
             if dist >= minRange and dist <= range then
                 local tx = unit.x + dx
                 local ty = unit.y + dy
-
                 local target = Units.getAt(tx, ty)
-                -- Only add to list if there is an enemy there
                 if target and target.team ~= unit.team then
-                    table.insert(tiles, {
-                        x = tx,
-                        y = ty,
-                        target = target
-                    })
+                    table.insert(tiles, { x = tx, y = ty, target = target })
                 end
             end
         end

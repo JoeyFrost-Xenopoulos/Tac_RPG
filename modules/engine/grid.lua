@@ -9,18 +9,15 @@ Grid.terrainTypes = {
     mountain = { walkable = false, color = {0.25, 0.25, 0.25} }
 }
 
+-- Grid.lua
 function Grid.init()
     Game.grid = {}
 
     for y = 1, GRID_HEIGHT do
         Game.grid[y] = {}
         for x = 1, GRID_WIDTH do
-            -- Default terrain weights
             local terrainWeights = {
-                grass = 70,    -- high chance
-                forest = 20,
-                river = 15,
-                mountain = 15
+                grass = 70, forest = 20, river = 15, mountain = 15
             }
 
             local neighbors = {}
@@ -28,7 +25,7 @@ function Grid.init()
             if x > 1 then table.insert(neighbors, Game.grid[y][x-1].terrain) end
 
             for _, t in ipairs(neighbors) do
-                terrainWeights[t] = terrainWeights[t] + 100  -- cluster bonus
+                terrainWeights[t] = terrainWeights[t] + 100
             end
 
             local terrain = pickWeightedRandom(terrainWeights)
@@ -36,11 +33,22 @@ function Grid.init()
             Game.grid[y][x] = {
                 terrain = terrain,
                 walkable = Grid.terrainTypes[terrain].walkable,
-                unit = nil
+                unit = nil,
+                quad = nil 
             }
         end
     end
+
+    for y = 1, GRID_HEIGHT do
+        for x = 1, GRID_WIDTH do
+            local tile = Game.grid[y][x]
+            if tile.terrain == "grass" then
+                tile.quad = Tiles.getGrassQuadForPosition(x, y)
+            end
+        end
+    end
 end
+
 
 function pickWeightedRandom(weights)
     local total = 0

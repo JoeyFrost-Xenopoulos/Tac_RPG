@@ -27,12 +27,25 @@ function Draw.grid()
             local px = (x - 1) * TILE_SIZE
             local py = (y - 1) * TILE_SIZE
 
-            local color = Grid.terrainTypes[tile.terrain].color
-            love.graphics.setColor(color)
-            love.graphics.rectangle("fill", px, py, TILE_SIZE, TILE_SIZE)
+            if tile.terrain == "grass" and tile.quad then
+                -- Draw stored quad
+                love.graphics.setColor(1, 1, 1)
+                love.graphics.draw(
+                    Tiles.grassSheet,
+                    tile.quad,
+                    px, py,
+                    0,
+                    TILE_SIZE / 64,
+                    TILE_SIZE / 64
+                )
+            else
+                -- Fallback colored rectangle
+                local color = Grid.terrainTypes[tile.terrain].color
+                love.graphics.setColor(color)
+                love.graphics.rectangle("fill", px, py, TILE_SIZE, TILE_SIZE)
+            end
         end
     end
-
 end
 
 function Draw.units()
@@ -130,50 +143,61 @@ function Draw.selection()
     love.graphics.rectangle("fill", x, y, TILE_SIZE, TILE_SIZE)
 end
 
-function Draw.movement()
+function Draw.movementAndAttacks()
     local unit = Game.selectedUnit
-    if not unit or not Game.movementTiles or unit.isMoving then 
-        return 
-    end
-    if not Game.movementTiles then return end
-    -- shimmer speed
+    if not unit or not Game.movementTiles then return end
+
+    local movementTiles = Game.movementTiles
+    local attackRange = unit.attackRange or 1
+    local minRange = (unit.class == "Archer") and 2 or 1
+
     local speed = 2
-    local shimmerWidth = 0.4 
 
-    for _, tile in ipairs(Game.movementTiles) do
-        local x = (tile.x - 1) * TILE_SIZE
-        local y = (tile.y - 1) * TILE_SIZE
+    if not unit.isMoving then
+        local predictiveTiles = {}
 
-        local baseColor
-        local isAttackable = isAdjacentToEnemy(tile, Game.selectedUnit.team)
-        if isAttackable then
-            baseColor = {1, 0.2, 0.2}  -- red
-        else
-            baseColor = {0.2, 0.8, 1}  -- blue
+        for _, mTile in ipairs(movementTiles) do
+            for dy = -attackRange, attackRange do
+                for dx = -attackRange, attackRange do
+                    local dist = math.abs(dx) + math.abs(dy)
+                    if dist >= minRange and dist <= attackRange then
+                        local tx = mTile.x + dx
+                        local ty = mTile.y + dy
+
+                        local tile = Grid.getTile(tx, ty)
+                        if tile then
+                            local key = tx .. "," .. ty
+                            predictiveTiles[key] = true
+                        end
+                    end
+                end
+            end
         end
 
-        local diagonalPos = (tile.x + tile.y) / (GRID_WIDTH + GRID_HEIGHT)  -- 0..1
-        local wave = math.sin((Game.flashTimer * speed) + diagonalPos * math.pi * 2)
-        local brightness = 0.8 + 0.2 * wave  -- oscillate 0.6..1.0
-
-        local r = math.min(baseColor[1] * brightness, 1)
-        local g = math.min(baseColor[2] * brightness, 1)
-        local b = math.min(baseColor[3] * brightness, 1)
-
-        love.graphics.setColor(r, g, b, 0.8)
-        love.graphics.rectangle("fill", x, y, TILE_SIZE, TILE_SIZE)
+        for key, _ in pairs(predictiveTiles) do
+            local coords = {}
+            for n in string.gmatch(key, "[^,]+") do
+                table.insert(coords, tonumber(n))
+            end
+            local x = (coords[1] - 1) * TILE_SIZE
+            local y = (coords[2] - 1) * TILE_SIZE
+            local targetUnit = Units.getAt(coords[1], coords[2])
+            if not targetUnit or targetUnit.team ~= unit.team then
+                love.graphics.setColor(1, 0.2, 0.2, 0.5)
+                love.graphics.rectangle("fill", x, y, TILE_SIZE, TILE_SIZE)
+            end
+        end
     end
-
-end
-
-function Draw.attacks()
-    if not Game.attackTiles then return end
-
-    for _, tile in ipairs(Game.attackTiles) do
+    for _, tile in ipairs(movementTiles) do
         local x = (tile.x - 1) * TILE_SIZE
         local y = (tile.y - 1) * TILE_SIZE
 
-        love.graphics.setColor(1, 0.2, 0.2, 0.5)
+        local diagonalPos = (tile.x + tile.y) / (GRID_WIDTH + GRID_HEIGHT)
+        local wave = math.sin((Game.flashTimer * speed) + diagonalPos * math.pi * 2)
+        local brightness = 0.8 + 0.2 * wave
+
+        local r, g, b = 0.2 * brightness, 0.8 * brightness, 1 * brightness
+        love.graphics.setColor(r, g, b, 0.8)
         love.graphics.rectangle("fill", x, y, TILE_SIZE, TILE_SIZE)
     end
 end

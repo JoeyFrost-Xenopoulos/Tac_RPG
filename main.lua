@@ -19,9 +19,15 @@ require("modules.ui.effects")
 require("modules.ui.weaponselector")
 require("modules.ui.hoverinfo")
 
+require("modules.engine.tiles")
+
+local Music = require("modules.audio.music")
+
 function love.load()
     love.window.setTitle("Tactical RPG Prototype")
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
+
+    Tiles.load()
 
     Grid.init()
     Character.init()
@@ -45,6 +51,10 @@ function love.load()
     Mage.assignToUnit(mage1, "mage")
 
     Turn.start()
+
+    -- Load and play music
+    Music.load()
+    Music.play()
 end
 
 function love.update(dt)
@@ -78,8 +88,7 @@ function love.draw()
     Draw.grid()
     Draw.hover()
     Draw.selection()
-    Draw.movement()
-    Draw.attacks()
+    Draw.movementAndAttacks()
     Draw.units()
     Effects.draw()
     WeaponSelector.draw()
