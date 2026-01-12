@@ -28,7 +28,6 @@ function Draw.grid()
             local py = (y - 1) * TILE_SIZE
 
             if tile.terrain == "grass" and tile.quad then
-                -- Draw stored quad
                 love.graphics.setColor(1, 1, 1)
                 love.graphics.draw(
                     Tiles.grassSheet,
@@ -38,11 +37,6 @@ function Draw.grid()
                     TILE_SIZE / 64,
                     TILE_SIZE / 64
                 )
-            else
-                -- Fallback colored rectangle
-                local color = Grid.terrainTypes[tile.terrain].color
-                love.graphics.setColor(color)
-                love.graphics.rectangle("fill", px, py, TILE_SIZE, TILE_SIZE)
             end
         end
     end

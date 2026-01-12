@@ -3,13 +3,10 @@
 Grid = {}
 
 Grid.terrainTypes = {
-    grass = { walkable = true, color = {0.3, 0.8, 0.3} },
-    river = { walkable = false, color = {0.3, 0.4, 0.9} },
-    forest = { walkable = true, color = {0.1, 0.6, 0.1} },
-    mountain = { walkable = false, color = {0.25, 0.25, 0.25} }
+    grass = { walkable = true,  color = {0.3, 0.8, 0.3} },
+    water = { walkable = false, color = {0.2, 0.4, 0.8} },
 }
 
--- Grid.lua
 function Grid.init()
     Game.grid = {}
 
@@ -17,9 +14,11 @@ function Grid.init()
         Game.grid[y] = {}
         for x = 1, GRID_WIDTH do
             local terrainWeights = {
-                grass = 70, forest = 20, river = 15, mountain = 15
+                grass = 80,
+                water = 20
             }
 
+            -- Bias toward neighbor terrain for clustering
             local neighbors = {}
             if y > 1 then table.insert(neighbors, Game.grid[y-1][x].terrain) end
             if x > 1 then table.insert(neighbors, Game.grid[y][x-1].terrain) end
@@ -34,11 +33,12 @@ function Grid.init()
                 terrain = terrain,
                 walkable = Grid.terrainTypes[terrain].walkable,
                 unit = nil,
-                quad = nil 
+                quad = nil
             }
         end
     end
 
+    -- Assign grass quads only to grass tiles
     for y = 1, GRID_HEIGHT do
         for x = 1, GRID_WIDTH do
             local tile = Game.grid[y][x]
@@ -48,7 +48,6 @@ function Grid.init()
         end
     end
 end
-
 
 function pickWeightedRandom(weights)
     local total = 0

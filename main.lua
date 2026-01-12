@@ -8,6 +8,8 @@ require("modules.engine.turn")
 require("modules.engine.combat")
 require("modules.engine.input")
 require("modules.engine.draw")
+require("modules.engine.tiles")
+require("modules.engine.foam")
 
 require("modules.units.units")
 require("modules.units.character")
@@ -19,7 +21,7 @@ require("modules.ui.effects")
 require("modules.ui.weaponselector")
 require("modules.ui.hoverinfo")
 
-require("modules.engine.tiles")
+require("modules.engine.walls")
 
 local Music = require("modules.audio.music")
 
@@ -27,9 +29,16 @@ function love.load()
     love.window.setTitle("Tactical RPG Prototype")
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 
-    Tiles.load()
+    WaterBackground = love.graphics.newImage("map/Water Background color.png")
 
+
+    Tiles.load()
     Grid.init()
+
+    Walls.load()
+    Walls.init()
+
+    Foam.load()
     Character.init()
     Enemy.init()
     Archer.init()
@@ -52,7 +61,6 @@ function love.load()
 
     Turn.start()
 
-    -- Load and play music
     Music.load()
     Music.play()
 end
@@ -62,12 +70,14 @@ function love.update(dt)
     Turn.updateEnemyTurn()
     Units.update(dt)
     Effects.update(dt)
+    Foam.update(dt)
 
     for _, unit in ipairs(Units.list) do
         if unit.class == "Mage" then
             Mage.update(dt, unit)
         end
     end
+
     Mage.updateSpells(dt)
 
     for _, unit in ipairs(Units.list) do
@@ -85,7 +95,15 @@ function love.update(dt)
 end
 
 function love.draw()
+    local sx = WINDOW_WIDTH / WaterBackground:getWidth()
+    local sy = WINDOW_HEIGHT / WaterBackground:getHeight()
+    love.graphics.draw(WaterBackground, 0, 0, 0, sx, sy)
+
+    Foam.draw()   
     Draw.grid()
+
+    Walls.draw()
+
     Draw.hover()
     Draw.selection()
     Draw.movementAndAttacks()
