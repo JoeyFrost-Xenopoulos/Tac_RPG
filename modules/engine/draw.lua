@@ -24,23 +24,33 @@ function Draw.grid()
     for y = 1, GRID_HEIGHT do
         for x = 1, GRID_WIDTH do
             local tile = Grid.getTile(x, y)
-            local px = (x - 1) * TILE_SIZE
-            local py = (y - 1) * TILE_SIZE
+            if tile and tile.quad then
+                local px = (x - 1) * TILE_SIZE
+                local py = (y - 1) * TILE_SIZE
 
-            if tile.terrain == "grass" and tile.quad then
+                local sheet
+                if tile.terrain == "grass" then
+                    sheet = Tiles.grassSheet
+                elseif tile.terrain == "high" then
+                    sheet = Tiles.highSheet
+                else
+                    sheet = Tiles.grassSheet
+                end
+
                 love.graphics.setColor(1, 1, 1)
                 love.graphics.draw(
-                    Tiles.grassSheet,
+                    sheet,
                     tile.quad,
                     px, py,
                     0,
-                    TILE_SIZE / 64,
-                    TILE_SIZE / 64
+                    TILE_SIZE / Tiles.tileW,
+                    TILE_SIZE / Tiles.tileH
                 )
             end
         end
     end
 end
+
 
 function Draw.units()
     for _, unit in ipairs(Units.list) do
@@ -76,7 +86,7 @@ function Draw.units()
             love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)
         end
 
-        if Game.selectedUnit == unit then
+        if Game.selectedUnit == unit and not unit.isMoving then
             love.graphics.setLineWidth(4)
             love.graphics.setColor(1, 1, 0)
             love.graphics.rectangle("line", x + shrink, y + shrink, rectSize, rectSize)

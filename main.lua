@@ -1,6 +1,7 @@
 -- main.lua
 
 require("config")
+
 require("modules.engine.game")
 require("modules.engine.grid")
 require("modules.engine.movement")
@@ -10,6 +11,8 @@ require("modules.engine.input")
 require("modules.engine.draw")
 require("modules.engine.tiles")
 require("modules.engine.foam")
+require("modules.engine.map")
+require("modules.engine.unitspawner")
 
 require("modules.units.units")
 require("modules.units.character")
@@ -21,8 +24,6 @@ require("modules.ui.effects")
 require("modules.ui.weaponselector")
 require("modules.ui.hoverinfo")
 
-require("modules.engine.walls")
-
 local Music = require("modules.audio.music")
 
 function love.load()
@@ -31,32 +32,27 @@ function love.load()
 
     WaterBackground = love.graphics.newImage("map/Water Background color.png")
 
-
     Tiles.load()
-    Grid.init()
-
-    Walls.load()
-    Walls.init()
-
     Foam.load()
+    Map.generate()
     Character.init()
     Enemy.init()
     Archer.init()
     Mage.init()
 
-   -- local enemy1 = Units.create({ name="Enemy1", class="Soldier", team="enemy", x=7, y=4 })
-    -- Enemy.assignToUnit(enemy1, "soldier")
+    local enemy1 = UnitSpawner.spawnNear({name = "Enemy1",class = "Soldier", team = "enemy",x = 7,y = 1})
+    Enemy.assignToUnit(enemy1, "soldier")
 
-    --local enemy2 = Units.create({ name="Enemy2", class="Soldier", team="enemy", x=8, y=4 })
-    --Enemy.assignToUnit(enemy2, "soldier")
+    local enemy2 = UnitSpawner.spawnNear({ name="Enemy2", class="Soldier", team="enemy", x=8, y=2 })
+    Enemy.assignToUnit(enemy2, "soldier")
 
-    local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 })
+    local hero = Units.create({ name="Hero", class="Soldier", team="player", x=3, y=4 }) 
     Character.assignToUnit(hero, "hero")
 
-    local archer = Units.create({name = "Archer1", class = "Archer", team = "player", x = 4, y = 4 })
+    local archer = UnitSpawner.spawnNear({name = "Archer1", class = "Archer", team = "player", x = 4, y = 4 })
     Archer.assignToUnit(archer, "archer")
 
-    local mage1 = Units.create({ name="Mage1", class="Mage", team="player", x=2, y=5 })
+    local mage1 = UnitSpawner.spawnNear({ name="Mage1", class="Mage", team="player", x=2, y=5 })
     Mage.assignToUnit(mage1, "mage")
 
     Turn.start()
@@ -101,8 +97,6 @@ function love.draw()
 
     Foam.draw()   
     Draw.grid()
-
-    Walls.draw()
 
     Draw.hover()
     Draw.selection()

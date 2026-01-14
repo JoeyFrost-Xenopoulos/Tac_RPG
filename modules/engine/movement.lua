@@ -1,5 +1,4 @@
 -- modules/movement.lua
-
 Movement = {}
 
 -- Flood-fill / BFS-lite movement range
@@ -23,7 +22,6 @@ function Movement.getReachableTiles(unit)
 
         for _, n in ipairs(neighbors) do
             local key = n.y .. "," .. n.x
-            -- UPDATED: Passing current.x, current.y
             if not visited[key] and Grid.isWalkable(n.x, n.y, current.x, current.y) then
                 visited[key] = true
                 table.insert(queue, { x = n.x, y = n.y, dist = current.dist + 1 })
@@ -56,11 +54,13 @@ function Movement.findPath(startX, startY, endX, endY)
 
         for _, n in ipairs(neighbors) do
             local key = n.y .. "," .. n.x
-            -- UPDATED: Passing current.x, current.y
             if not cameFrom[key] and Grid.isWalkable(n.x, n.y, current.x, current.y) then
-                if not Units.getAt(n.x, n.y) or (n.x == endX and n.y == endY) then
-                    cameFrom[key] = current
-                    table.insert(queue, n)
+                local targetN = n
+
+                local targetKey = targetN.y .. "," .. targetN.x
+                if not cameFrom[targetKey] then
+                    cameFrom[targetKey] = current
+                    table.insert(queue, targetN)
                 end
             end
         end
@@ -81,7 +81,6 @@ end
 function Movement.moveUnit(unit, targetX, targetY)
     if unit.isMoving then return false end
 
-    -- Check if reachable
     local dist = math.abs(targetX - unit.x) + math.abs(targetY - unit.y)
     if dist > unit.movePoints then return false end
 

@@ -1,74 +1,93 @@
+-- tiles.lua
 Tiles = {}
 
 Tiles.grassSheet = nil
-Tiles.grassQuads = {}  -- store 3x3 quads
+Tiles.grassQuads = {}
+
+Tiles.quadLogic = {}
+Tiles.tileW, Tiles.tileH = 64, 64
 
 function Tiles.load()
-    Tiles.grassSheet = love.graphics.newImage("map/Tilemap_color1.png")
+    local colorIndex = love.math.random(1,2,3,4,5)
+    Tiles.grassSheet = love.graphics.newImage(
+        "map/Tilemap_color" .. colorIndex .. ".png"
+    )
 
-    local tileW, tileH = 64, 64
-    local cols, rows = 4, 4
-
-    for y = 0, rows - 1 do
-        for x = 0, cols - 1 do
+    Tiles.grassQuads = {}
+    for y = 0, 3 do
+        for x = 0, 3 do
             table.insert(Tiles.grassQuads,
                 love.graphics.newQuad(
-                    x * tileW, y * tileH, tileW, tileH,
+                    x * Tiles.tileW, y * Tiles.tileH,
+                    Tiles.tileW, Tiles.tileH,
                     Tiles.grassSheet:getDimensions()
                 )
             )
         end
     end
+
+    Tiles.quadLogic["grass"] = function(x, y)
+        return Tiles.getGrassQuadForPosition(x, y)
+    end
+end
+
+local function getAutoTileQuad(x, y, terrainType, quadSet)
+    local function isSame(nx, ny)
+        local t = Grid.getTile(nx, ny)
+        return t and t.terrain == terrainType
+    end
+
+    local hasTop    = isSame(x, y - 1)
+    local hasBottom = isSame(x, y + 1)
+    local hasLeft   = isSame(x - 1, y)
+    local hasRight  = isSame(x + 1, y)
+
+    local col = 2
+    local row = 2
+
+    if not hasTop and not hasBottom and not hasLeft and not hasRight then
+        return quadSet[(4 - 1) * 4 + 4]
+    end
+    if not hasTop and not hasLeft and not hasRight then
+        return quadSet[(1 - 1) * 4 + 4]
+    end
+    if not hasBottom and not hasLeft and not hasRight then
+        return quadSet[(3 - 1) * 4 + 4]
+    end
+    if not hasLeft and not hasTop and not hasBottom then
+        return quadSet[(4 - 1) * 4 + 1]
+    end
+    if not hasRight and not hasTop and not hasBottom then
+        return quadSet[(4 - 1) * 4 + 3]
+    end
+    if not hasTop and not hasBottom then
+        return quadSet[(4 - 1) * 4 + 2]
+    end
+    if not hasLeft and not hasRight then
+        return quadSet[(2 - 1) * 4 + 4]
+    end
+
+    if not hasLeft then col = 1
+    elseif not hasRight then col = 3 end
+
+    if not hasTop then row = 1
+    elseif not hasBottom then row = 3 end
+
+    return quadSet[(row - 1) * 4 + col]
 end
 
 function Tiles.getGrassQuadForPosition(x, y)
-    local topTile    = Grid.getTile(x, y - 1)
-    local bottomTile = Grid.getTile(x, y + 1)
-    local leftTile   = Grid.getTile(x - 1, y)
-    local rightTile  = Grid.getTile(x + 1, y)
+    return getAutoTileQuad(x, y, "grass", Tiles.grassQuads)
+end
 
-    local hasTop    = topTile and topTile.terrain == "grass"
-    local hasBottom = bottomTile and bottomTile.terrain == "grass"
-    local hasLeft   = leftTile and leftTile.terrain == "grass"
-    local hasRight  = rightTile and rightTile.terrain == "grass"
+function Tiles.getQuadForPosition(x, y)
+    local tile = Grid.getTile(x, y)
+    if not tile then return nil end
 
-    -- Determine Column (Horizontal Edges)
-    local col = 2
-
-    if not hasTop and not hasBottom and not hasLeft and not hasRight then
-        return Tiles.grassQuads[(4 - 1) * 4 + 4] -- row = 4, col = 4
+    local logicFunc = Tiles.quadLogic[tile.terrain]
+    if logicFunc then
+        return logicFunc(x, y)
+    else
+        return nil
     end
-
-    if not hasTop and not hasLeft and not hasRight then
-        return Tiles.grassQuads[(1 - 1) * 4 + 4] -- row = 1, col = 4
-    end
-
-    if not hasBottom and not hasLeft and not hasRight then
-        return Tiles.grassQuads[(3 - 1) * 4 + 4] -- row=3, col=4
-    end
-
-    if not hasLeft and not hasTop and not hasBottom then
-        return Tiles.grassQuads[(4 - 1) * 4 + 1] -- row=4, col=1
-    end
-
-    if not hasRight and not hasTop and not hasBottom then
-        return Tiles.grassQuads[(4 - 1) * 4 + 3] -- row=4, col=3
-    end
-
-    if not hasTop and not hasBottom then
-        return Tiles.grassQuads[(4 - 1) * 4 + 2] -- row=4, col=2
-    end
-
-    if not hasLeft and not hasRight then
-        return Tiles.grassQuads[(2 - 1) * 4 + 4] -- row=2, col=4
-    end
-
-    if not hasLeft then col = 1 -- Left Edge
-    elseif not hasRight then col = 3 end -- Right Edge
-
-    local row = 2
-    if not hasTop then row = 1  -- Top Edge
-    elseif not hasBottom then row = 3 end -- Bottom Edge
-    local index = (row - 1) * 4 + col
-    return Tiles.grassQuads[index]
 end

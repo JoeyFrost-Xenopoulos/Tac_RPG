@@ -41,8 +41,8 @@ function Units.create(data)
         damage = data.damage or classData.damage or Combat.BASE_DAMAGE,
         hp = data.hp or classData.hp or 10,
         maxHp = data.hp or classData.hp or 10,
-        move = data.move or 100,
-        movePoints = data.move or 100,
+        move = data.move or 400,
+        movePoints = data.move or 400,
         hasActed = false,
         pendingAction = nil
     }
@@ -77,26 +77,30 @@ function Units.update(dt)
             local targetPixelX = (targetStep.x - 1) * TILE_SIZE
             local targetPixelY = (targetStep.y - 1) * TILE_SIZE
 
-            if unit.pixelX < targetPixelX then
-                unit.pixelX = math.min(unit.pixelX + MOVE_SPEED * dt, targetPixelX)
-            elseif unit.pixelX > targetPixelX then
-                unit.pixelX = math.max(unit.pixelX - MOVE_SPEED * dt, targetPixelX)
-            end
+            local dx = targetPixelX - unit.pixelX
+            local dy = targetPixelY - unit.pixelY
+            local distance = math.sqrt(dx * dx + dy * dy)
 
-            if unit.pixelY < targetPixelY then
-                unit.pixelY = math.min(unit.pixelY + MOVE_SPEED * dt, targetPixelY)
-            elseif unit.pixelY > targetPixelY then
-                unit.pixelY = math.max(unit.pixelY - MOVE_SPEED * dt, targetPixelY)
+            if distance > 0 then
+                local moveStep = MOVE_SPEED * dt
+                if distance <= moveStep then
+                    unit.pixelX = targetPixelX
+                    unit.pixelY = targetPixelY
+                else
+                    unit.pixelX = unit.pixelX + (dx / distance) * moveStep
+                    unit.pixelY = unit.pixelY + (dy / distance) * moveStep
+                end
             end
 
             if unit.pixelX == targetPixelX and unit.pixelY == targetPixelY then
-                if Game.grid[unit.y] and Game.grid[unit.x] then
+                if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
                     Game.grid[unit.y][unit.x].unit = nil
                 end
 
                 unit.x = targetStep.x
                 unit.y = targetStep.y
-                if Game.grid[unit.y] and Game.grid[unit.x] then
+                
+                if Game.grid[unit.y] and Game.grid[unit.y][unit.x] then
                     Game.grid[unit.y][unit.x].unit = unit
                 end
 
@@ -106,6 +110,7 @@ function Units.update(dt)
                 if #unit.path == 0 then
                     unit.isMoving = false
                     unit.path = nil
+                    unit.renderY = unit.pixelY
                 end
             end
         end
@@ -130,7 +135,6 @@ function Units.update(dt)
         end
     end
 end
-
 
 function Units.getAt(x, y)
     if not Game.grid[y] or not Game.grid[y][x] then return nil end
