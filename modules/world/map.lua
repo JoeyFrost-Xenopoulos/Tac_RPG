@@ -54,7 +54,7 @@ function Map.update(dt)
     end
 
     local frameCount = 16
-    local frameDuration = 0.1
+    local frameDuration = 0.10
 
     for _, tile in ipairs(foamTiles) do
         tile.timer = tile.timer + dt
@@ -83,6 +83,7 @@ function Map.draw()
         end
 
         map.layers["Grass"]:draw()
+        map.layers["Shadow"]:draw()
         map.layers["Hill"]:draw()
 
         love.graphics.pop()

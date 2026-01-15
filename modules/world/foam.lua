@@ -7,7 +7,6 @@ local frameWidth, frameHeight = 192, 192
 local frameCount = 16
 local currentFrame = 1
 local timer = 0
-local frameDuration = 0.1
 
 function WaterFoam.load()
     image = love.graphics.newImage("map/Water Foam.png")

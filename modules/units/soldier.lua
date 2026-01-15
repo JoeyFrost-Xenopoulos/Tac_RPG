@@ -1,4 +1,6 @@
 local Soldier = {}
+local Pathfinding = require("modules.engine.pathfinding")
+local Movement = require("modules.engine.movement")
 
 Soldier.unit = {}
 Soldier.animations = {}
@@ -10,15 +12,7 @@ Soldier.scaleY = 0.85
 Soldier.unit.facingX = 1
 
 Soldier.unit.selected = false
-
-Soldier.unit.isMoving = false
-Soldier.unit.moveTime = 0
-Soldier.unit.moveDuration = 1 -- seconds per tile
-
-Soldier.unit.startX = 0
-Soldier.unit.startY = 0
-Soldier.unit.targetX = 0
-Soldier.unit.targetY = 0
+Soldier.unit.moveDuration = 0.5 -- seconds per tile
 
 function Soldier.load()
     -- IDLE animation
@@ -84,22 +78,21 @@ function Soldier.setPosition(tileX, tileY)
     Soldier.unit.tileY = tileY 
 end
 
-function Soldier.tryMove(tileX, tileY)
+function Soldier.tryMove(tileX, tileY, isWalkable)
     local unit = Soldier.unit
     if unit.isMoving then return end
 
-    unit.startX = unit.tileX
-    unit.startY = unit.tileY
-    unit.targetX = tileX
-    unit.targetY = tileY
+    local path = Pathfinding.findPath(
+        unit.tileX,
+        unit.tileY,
+        tileX,
+        tileY,
+        isWalkable
+    )
 
-    unit.moveTime = 0
-    unit.isMoving = true
-    unit.currentAnimation = "walk"
-
-    if tileX > unit.tileX then unit.facingX = 1 end
-    if tileX < unit.tileX then unit.facingX = -1 end
+    Movement.start(unit, path)
 end
+
 
 function Soldier.isClicked(mx, my)
     local unit = Soldier.unit
@@ -118,15 +111,7 @@ end
 function Soldier.update(dt)
     local unit = Soldier.unit
 
-    if unit.isMoving then
-        unit.moveTime = unit.moveTime + dt
-        if unit.moveTime >= unit.moveDuration then
-            unit.tileX = unit.targetX
-            unit.tileY = unit.targetY
-            unit.isMoving = false
-            unit.currentAnimation = "idle"
-        end
-    end
+    Movement.update(unit, dt)
 
     local anim = unit.animations[unit.currentAnimation]
     if not anim or anim.frameCount <= 1 then return end
@@ -140,6 +125,7 @@ function Soldier.update(dt)
         unit.frameTimer = 0
     end
 end
+
 
 function Soldier.draw()
     local unit = Soldier.unit
