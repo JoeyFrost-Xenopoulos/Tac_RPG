@@ -9,6 +9,8 @@ Soldier.scaleX = 0.85
 Soldier.scaleY = 0.85
 Soldier.unit.facingX = 1
 
+Soldier.unit.selected = false
+
 function Soldier.load()
     -- IDLE animation
     Soldier.animations.idle = {
@@ -73,6 +75,20 @@ function Soldier.setPosition(tileX, tileY)
     Soldier.unit.tileY = tileY
 end
 
+function Soldier.isClicked(mx, my)
+    local unit = Soldier.unit
+
+    local px = (unit.tileX - 1) * Soldier.tileSize
+    local py = (unit.tileY - 1) * Soldier.tileSize
+
+    return mx >= px and mx < px + Soldier.tileSize
+       and my >= py and my < py + Soldier.tileSize
+end
+
+function Soldier.setSelected(value)
+    Soldier.unit.selected = value
+end
+
 function Soldier.update(dt)
     local unit = Soldier.unit
     local anim = unit.animations[unit.currentAnimation]
@@ -97,19 +113,30 @@ function Soldier.draw()
     if not quad then return end
 
     local _, _, qw, qh = quad:getViewport()
-    local offsetX = qw/2
-    local offsetY = qh/2 - 15
 
-    local px = (unit.tileX-1) * Soldier.tileSize + Soldier.tileSize/2
-    local py = (unit.tileY-1) * Soldier.tileSize + Soldier.tileSize/2
+    local offsetX = qw / 2
+    local offsetY = qh - 50
+    local px = (unit.tileX - 1) * Soldier.tileSize + Soldier.tileSize / 2
+    local py = (unit.tileY - 1) * Soldier.tileSize + Soldier.tileSize
 
-    local finalScaleX = Soldier.scaleX
-    if unit.facingX < 0 then finalScaleX = -Soldier.scaleX end
+    local scaleX = Soldier.scaleX
+    if unit.facingX < 0 then scaleX = -scaleX end
 
-    love.graphics.push()
-    love.graphics.scale(finalScaleX, Soldier.scaleY)
-    love.graphics.draw(anim.img, quad, px/finalScaleX, py, 0, 1, 1, offsetX, offsetY)
-    love.graphics.pop()
+    love.graphics.draw(anim.img, quad, px, py, 0, scaleX, Soldier.scaleY, offsetX, offsetY)
+
+    -- Selection highlight
+    if unit.selected then
+        love.graphics.setColor(0, 1, 0, 0.3)
+        love.graphics.rectangle(
+            "fill",
+            (unit.tileX - 1) * Soldier.tileSize,
+            (unit.tileY - 1) * Soldier.tileSize,
+            Soldier.tileSize,
+            Soldier.tileSize
+        )
+        love.graphics.setColor(1,1,1,1)
+    end
 end
+
 
 return Soldier

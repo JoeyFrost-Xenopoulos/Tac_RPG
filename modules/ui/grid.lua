@@ -56,4 +56,10 @@ function Grid.draw()
     love.graphics.pop()
 end
 
+function mouseToTile(mx, my)
+    return
+    math.floor(mx / Grid.tileSize) + 1,
+    math.floor(my / Grid.tileSize) + 1
+end
+
 return Grid

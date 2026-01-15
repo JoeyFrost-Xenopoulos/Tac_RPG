@@ -25,3 +25,20 @@ function love.draw()
     Soldier.draw()
     Cursor.draw()
 end
+
+-- Create a custom module mousepressed at somepoint
+function love.mousepressed(x, y, button)
+    if button ~= 1 then return end
+
+    local tx, ty = mouseToTile(x, y)
+
+    if Soldier.isClicked(x, y) then
+        Soldier.setSelected(true)
+        return
+    end
+
+    if Soldier.unit.selected then
+        Soldier.setPosition(tx, ty)
+        Soldier.setSelected(false)
+    end
+end
