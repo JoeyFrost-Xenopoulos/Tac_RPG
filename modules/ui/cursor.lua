@@ -9,6 +9,12 @@ Cursor.scaleX = 1
 Cursor.scaleY = 1
 Cursor.gridWidth = 15
 Cursor.gridHeight = 12
+Cursor.pulse = 0
+
+function Cursor.load()
+    Cursor.image = love.graphics.newImage("assets/ui/cursors/Cursor_04.png")
+    Cursor.imageWidth = Cursor.image:getWidth()
+end
 
 function Cursor.setGrid(tileSize, gridWidth, gridHeight, scaleX, scaleY)
     Cursor.tileSize = tileSize or Cursor.tileSize
@@ -29,21 +35,40 @@ function Cursor.update()
 
     Cursor.tileX = math.max(1, math.min(Cursor.tileX, Cursor.gridWidth))
     Cursor.tileY = math.max(1, math.min(Cursor.tileY, Cursor.gridHeight))
+
+    Cursor.pulse = Cursor.pulse + love.timer.getDelta()
 end
 
 function Cursor.draw()
+    if not Cursor.image then return end
+
     love.graphics.push()
     love.graphics.scale(Cursor.scaleX, Cursor.scaleY)
 
-    love.graphics.setColor(Cursor.color)
-    love.graphics.rectangle("fill", 
-        (Cursor.tileX-1)*Cursor.tileSize, 
-        (Cursor.tileY-1)*Cursor.tileSize, 
-        Cursor.tileSize, 
-        Cursor.tileSize
+    local tilePx = (Cursor.tileX - 1) * Cursor.tileSize
+    local tilePy = (Cursor.tileY - 1) * Cursor.tileSize
+
+    local imgW, imgH = Cursor.image:getDimensions()
+    local scale = Cursor.tileSize / Cursor.imageWidth
+
+    local pulse = 1 + math.sin(Cursor.pulse * 5) * 0.05
+    scale = scale * pulse
+
+    local drawX = tilePx + Cursor.tileSize / 2
+    local drawY = tilePy + Cursor.tileSize / 2
+
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(
+        Cursor.image,
+        drawX,
+        drawY,
+        0,
+        scale,
+        scale,
+        imgW / 2,
+        imgH / 2
     )
-    
-    love.graphics.setColor(1,1,1,1)
+
     love.graphics.pop()
 end
 

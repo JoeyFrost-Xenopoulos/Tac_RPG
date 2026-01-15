@@ -7,6 +7,7 @@ Cursor = require("modules.ui.cursor")
 function love.load()
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
     Map.load("map/map_1.lua")
+    Cursor.load()
     Cursor.setGrid(Grid.tileSize, Grid.width, Grid.height)
 
     Soldier.load()
