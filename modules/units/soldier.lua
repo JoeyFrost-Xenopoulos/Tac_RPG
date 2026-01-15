@@ -11,6 +11,15 @@ Soldier.unit.facingX = 1
 
 Soldier.unit.selected = false
 
+Soldier.unit.isMoving = false
+Soldier.unit.moveTime = 0
+Soldier.unit.moveDuration = 1 -- seconds per tile
+
+Soldier.unit.startX = 0
+Soldier.unit.startY = 0
+Soldier.unit.targetX = 0
+Soldier.unit.targetY = 0
+
 function Soldier.load()
     -- IDLE animation
     Soldier.animations.idle = {
@@ -70,9 +79,26 @@ function Soldier.load()
     Soldier.unit.tileY = 1
 end
 
-function Soldier.setPosition(tileX, tileY)
-    Soldier.unit.tileX = tileX
-    Soldier.unit.tileY = tileY
+function Soldier.setPosition(tileX, tileY) 
+    Soldier.unit.tileX = tileX 
+    Soldier.unit.tileY = tileY 
+end
+
+function Soldier.tryMove(tileX, tileY)
+    local unit = Soldier.unit
+    if unit.isMoving then return end
+
+    unit.startX = unit.tileX
+    unit.startY = unit.tileY
+    unit.targetX = tileX
+    unit.targetY = tileY
+
+    unit.moveTime = 0
+    unit.isMoving = true
+    unit.currentAnimation = "walk"
+
+    if tileX > unit.tileX then unit.facingX = 1 end
+    if tileX < unit.tileX then unit.facingX = -1 end
 end
 
 function Soldier.isClicked(mx, my)
@@ -91,6 +117,17 @@ end
 
 function Soldier.update(dt)
     local unit = Soldier.unit
+
+    if unit.isMoving then
+        unit.moveTime = unit.moveTime + dt
+        if unit.moveTime >= unit.moveDuration then
+            unit.tileX = unit.targetX
+            unit.tileY = unit.targetY
+            unit.isMoving = false
+            unit.currentAnimation = "idle"
+        end
+    end
+
     local anim = unit.animations[unit.currentAnimation]
     if not anim or anim.frameCount <= 1 then return end
 
@@ -116,8 +153,19 @@ function Soldier.draw()
 
     local offsetX = qw / 2
     local offsetY = qh - 50
-    local px = (unit.tileX - 1) * Soldier.tileSize + Soldier.tileSize / 2
-    local py = (unit.tileY - 1) * Soldier.tileSize + Soldier.tileSize
+
+    local drawX = unit.tileX
+    local drawY = unit.tileY
+
+    if unit.isMoving then
+        local t = unit.moveTime / unit.moveDuration
+        drawX = unit.startX + (unit.targetX - unit.startX) * t
+        drawY = unit.startY + (unit.targetY - unit.startY) * t
+    end
+
+    local px = (drawX - 1) * Soldier.tileSize + Soldier.tileSize / 2
+    local py = (drawY - 1) * Soldier.tileSize + Soldier.tileSize
+
 
     local scaleX = Soldier.scaleX
     if unit.facingX < 0 then scaleX = -scaleX end

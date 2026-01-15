@@ -38,7 +38,9 @@ function love.mousepressed(x, y, button)
     end
 
     if Soldier.unit.selected then
-        Soldier.setPosition(tx, ty)
-        Soldier.setSelected(false)
+        if Map.isWalkable(tx, ty) then
+            Soldier.tryMove(tx, ty)
+            Soldier.setSelected(false)
+        end
     end
 end

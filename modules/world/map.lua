@@ -29,5 +29,20 @@ function Map.draw()
     end
 end
 
+function Map.isWalkable(tx, ty)
+    if not map then return false end
+
+    if tx < 1 or ty < 1 or tx > map.width or ty > map.height then
+        return false
+    end
+
+    local layer = map.layers["Grass"]
+
+    if layer and layer.data[ty] and layer.data[ty][tx] then
+        return true
+    end
+
+    return false
+end
 
 return Map
