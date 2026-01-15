@@ -1,0 +1,141 @@
+return {
+  version = "1.10",
+  luaversion = "5.1",
+  tiledversion = "1.11.2",
+  class = "",
+  orientation = "orthogonal",
+  renderorder = "right-down",
+  width = 15,
+  height = 12,
+  tilewidth = 64,
+  tileheight = 64,
+  nextlayerid = 3,
+  nextobjectid = 1,
+  properties = {},
+  tilesets = {
+    {
+      name = "Water Background color",
+      firstgid = 1,
+      class = "",
+      tilewidth = 64,
+      tileheight = 64,
+      spacing = 0,
+      margin = 0,
+      columns = 1,
+      image = "Water Background color.png",
+      imagewidth = 64,
+      imageheight = 64,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 64,
+        height = 64
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 1,
+      tiles = {}
+    },
+    {
+      name = "Tilemap_color1",
+      firstgid = 2,
+      class = "",
+      tilewidth = 64,
+      tileheight = 64,
+      spacing = 0,
+      margin = 0,
+      columns = 9,
+      image = "Tilemap_color1.png",
+      imagewidth = 576,
+      imageheight = 384,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 64,
+        height = 64
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 54,
+      tiles = {}
+    }
+  },
+  layers = {
+    {
+      type = "tilelayer",
+      x = 0,
+      y = 0,
+      width = 15,
+      height = 12,
+      id = 1,
+      name = "Water",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      encoding = "lua",
+      data = {
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+      }
+    },
+    {
+      type = "tilelayer",
+      x = 0,
+      y = 0,
+      width = 15,
+      height = 12,
+      id = 2,
+      name = "Grass",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      encoding = "lua",
+      data = {
+        2, 3, 4, 0, 0, 0, 0, 2, 3, 4, 0, 0, 0, 0, 0,
+        11, 12, 12, 30, 30, 30, 30, 12, 12, 12, 31, 0, 2, 3, 4,
+        11, 12, 13, 0, 0, 0, 0, 20, 21, 13, 0, 2, 12, 12, 13,
+        11, 12, 13, 0, 0, 0, 0, 0, 0, 20, 30, 12, 12, 12, 13,
+        11, 12, 12, 3, 4, 0, 0, 0, 0, 0, 0, 20, 12, 12, 13,
+        11, 12, 12, 12, 13, 0, 0, 0, 0, 0, 0, 0, 20, 21, 22,
+        11, 12, 12, 12, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        11, 12, 12, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        11, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        11, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        11, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        20, 21, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    }
+  }
+}
