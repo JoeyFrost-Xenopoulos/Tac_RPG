@@ -1,5 +1,8 @@
 -- modules/world/cursor.lua
 local Cursor = {}
+local Soldier = require("modules.units.soldier")
+local Map = require("modules.world.map")
+
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
 Cursor.tileY = 1
@@ -61,7 +64,21 @@ function Cursor.update()
     Cursor.tileY = math.max(1, math.min(Cursor.tileY, Cursor.gridHeight))
 
     Cursor.pulse = Cursor.pulse + love.timer.getDelta()
+
+    local unit = Soldier.unit
+    local tx, ty = Cursor.tileX, Cursor.tileY
+
+    if unit.selected then
+        if Map.canMove(unit.tileX, unit.tileY, tx, ty) then
+            Cursor.setMouse("hover")
+        else
+            Cursor.setMouse("blocked")
+        end
+    else
+        Cursor.setMouse("default")
+    end
 end
+
 
 function Cursor.draw()
     if not Cursor.image then return end

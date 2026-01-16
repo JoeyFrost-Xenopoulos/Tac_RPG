@@ -35,10 +35,7 @@ function love.mousepressed(x, y, button)
 
     if Soldier.isClicked(x, y) then
         Soldier.setSelected(true)
-        Cursor.setMouse("hover")
         return
-    else
-        Cursor.setMouse("default")
     end
 
     if Soldier.unit.selected then

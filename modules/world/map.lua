@@ -1,5 +1,4 @@
 -- modules/world/map.lua
-
     -- If getElevation returns ANY number (0, 0.5, 1), it is a valid place to stand.
     -- If it returns nil (Water, Wall, Void), it is not.
 
