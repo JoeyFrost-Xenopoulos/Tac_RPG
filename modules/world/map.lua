@@ -1,4 +1,8 @@
 -- modules/world/map.lua
+
+    -- If getElevation returns ANY number (0, 0.5, 1), it is a valid place to stand.
+    -- If it returns nil (Water, Wall, Void), it is not.
+
 local Map = {}
 local sti = require("libs.sti")
 local map = nil
@@ -35,17 +39,44 @@ function Map.getFoamTiles()
     return foamTiles
 end
 
+function Map.getElevation(tx, ty)
+    if not map then return nil end    
+    if tx < 1 or ty < 1 or tx > map.width or ty > map.height then
+        return nil
+    end
+    if map.layers["Wall"] and map.layers["Wall"].data[ty] and map.layers["Wall"].data[ty][tx] then
+        return nil 
+    end
+    if map.layers["Hill"] and map.layers["Hill"].data[ty] and map.layers["Hill"].data[ty][tx] then
+        return 1 
+    end
+    -- Ramp = Connector (0.5)
+    if map.layers["Ramp"] and map.layers["Ramp"].data[ty] and map.layers["Ramp"].data[ty][tx] then
+        return 0.5 
+    end
+    -- Grass = Height 0
+    if map.layers["Grass"] and map.layers["Grass"].data[ty] and map.layers["Grass"].data[ty][tx] then
+        return 0
+    end
+    return nil
+end
+
+function Map.canMove(fromX, fromY, toX, toY)
+    local fromHeight = Map.getElevation(fromX, fromY)
+    local toHeight   = Map.getElevation(toX, toY)
+
+    if not toHeight or not fromHeight then return false end
+    
+    local diff = math.abs(fromHeight - toHeight)
+
+    if diff == 0 then return true end
+    if fromHeight == 0.5 or toHeight == 0.5 then return true end
+
+    return false
+end
 
 function Map.isWalkable(tx, ty)
-    if not map then return false end
-    if tx < 1 or ty < 1 or tx > map.width or ty > map.height then
-        return false
-    end
-    local layer = map.layers["Grass"]
-    if layer and layer.data[ty] and layer.data[ty][tx] then
-        return true
-    end
-    return false
+    return Map.getElevation(tx, ty) ~= nil
 end
 
 function Map.update(dt)
@@ -84,6 +115,7 @@ function Map.draw()
 
         map.layers["Grass"]:draw()
         map.layers["Shadow"]:draw()
+        map.layers["Wall"]:draw()
         map.layers["Hill"]:draw()
         map.layers["Ramp"]:draw()
 

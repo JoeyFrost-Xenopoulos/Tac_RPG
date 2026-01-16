@@ -7,7 +7,7 @@ local directions = {
     { 0, -1}, -- up
 }
 
-function Pathfinding.findPath(startX, startY, goalX, goalY, isWalkable)
+function Pathfinding.findPath(startX, startY, goalX, goalY, checkFunc)
     local queue = {}
     local visited = {}
     local cameFrom = {}
@@ -39,22 +39,22 @@ function Pathfinding.findPath(startX, startY, goalX, goalY, isWalkable)
 
             table.insert(path, {x = goalX, y = goalY})
             return path
-        end
+    end
 
-        for _, d in ipairs(directions) do
+for _, d in ipairs(directions) do
             local nx = current.x + d[1]
             local ny = current.y + d[2]
             local nk = key(nx, ny)
 
-            if not visited[nk] and isWalkable(nx, ny) then
+            if not visited[nk] and checkFunc(current.x, current.y, nx, ny) then
+                
                 visited[nk] = true
                 cameFrom[nk] = {x = current.x, y = current.y}
                 table.insert(queue, {x = nx, y = ny})
             end
         end
     end
-
-    return nil -- no path
+    return nil
 end
 
 return Pathfinding

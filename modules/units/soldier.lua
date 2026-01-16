@@ -1,6 +1,7 @@
 local Soldier = {}
 local Pathfinding = require("modules.engine.pathfinding")
 local Movement = require("modules.engine.movement")
+local Map = require("modules.world.map")
 
 Soldier.unit = {}
 Soldier.animations = {}
@@ -12,7 +13,7 @@ Soldier.scaleY = 0.85
 Soldier.unit.facingX = 1
 
 Soldier.unit.selected = false
-Soldier.unit.moveDuration = 0.5 -- seconds per tile
+Soldier.unit.moveDuration = 0.05 -- seconds per tile
 
 function Soldier.load()
     -- IDLE animation
@@ -77,22 +78,21 @@ function Soldier.setPosition(tileX, tileY)
     Soldier.unit.tileX = tileX 
     Soldier.unit.tileY = tileY 
 end
-
-function Soldier.tryMove(tileX, tileY, isWalkable)
+function Soldier.tryMove(tileX, tileY) -- Removed 'isWalkable' arg, use global Map or pass Map.canMove
     local unit = Soldier.unit
     if unit.isMoving then return end
 
+    -- Use the new Map.canMove function
     local path = Pathfinding.findPath(
         unit.tileX,
         unit.tileY,
         tileX,
         tileY,
-        isWalkable
+        Map.canMove -- Pass the detailed transition checker
     )
 
     Movement.start(unit, path)
 end
-
 
 function Soldier.isClicked(mx, my)
     local unit = Soldier.unit
