@@ -85,6 +85,7 @@ function Map.draw()
         map.layers["Grass"]:draw()
         map.layers["Shadow"]:draw()
         map.layers["Hill"]:draw()
+        map.layers["Ramp"]:draw()
 
         love.graphics.pop()
     end

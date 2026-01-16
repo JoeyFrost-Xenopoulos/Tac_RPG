@@ -11,9 +11,29 @@ Cursor.gridWidth = 15
 Cursor.gridHeight = 12
 Cursor.pulse = 0
 
+Cursor.cursors = {}
+Cursor.current = nil
+
 function Cursor.load()
+    -- Grid cursor
     Cursor.image = love.graphics.newImage("assets/ui/cursors/Cursor_04.png")
     Cursor.imageWidth = Cursor.image:getWidth()
+
+    -- Default cursor
+    local img1 = love.image.newImageData("assets/ui/cursors/Cursor_01.png")
+    Cursor.cursors.default = love.mouse.newCursor(img1, 0, 0)
+
+    -- Hover cursor
+    local img2 = love.image.newImageData("assets/ui/cursors/Cursor_02.png")
+    Cursor.cursors.hover = love.mouse.newCursor(img2, 0, 0)
+
+    Cursor.setMouse("default")
+end
+
+function Cursor.setMouse(name)
+    if Cursor.current == name then return end
+    Cursor.current = name
+    love.mouse.setCursor(Cursor.cursors[name])
 end
 
 function Cursor.setGrid(tileSize, gridWidth, gridHeight, scaleX, scaleY)
