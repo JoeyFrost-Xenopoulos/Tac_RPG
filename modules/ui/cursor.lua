@@ -27,6 +27,10 @@ function Cursor.load()
     local img2 = love.image.newImageData("assets/ui/cursors/Cursor_02.png")
     Cursor.cursors.hover = love.mouse.newCursor(img2, 0, 0)
 
+    -- Blocked cursor
+    local img3 = love.image.newImageData("assets/ui/cursors/Cursor_03.png")
+    Cursor.cursors.blocked = love.mouse.newCursor(img3, 0, 0)
+
     Cursor.setMouse("default")
 end
 
