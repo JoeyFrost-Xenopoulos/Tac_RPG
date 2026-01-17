@@ -13,7 +13,7 @@ Soldier.scaleY = 0.85
 Soldier.unit.facingX = 1
 
 Soldier.unit.selected = false
-Soldier.unit.moveDuration = 0.25 -- seconds per tile
+Soldier.unit.moveDuration = 0.75 -- seconds per tile
 
 function Soldier.load()
     -- IDLE animation
@@ -141,7 +141,6 @@ function Soldier.update(dt)
     end
 end
 
-
 function Soldier.draw()
     local unit = Soldier.unit
     local anim = unit.animations[unit.currentAnimation]
@@ -166,7 +165,6 @@ function Soldier.draw()
 
     local px = (drawX - 1) * Soldier.tileSize + Soldier.tileSize / 2
     local py = (drawY - 1) * Soldier.tileSize + Soldier.tileSize
-
 
     local scaleX = Soldier.scaleX
     if unit.facingX < 0 then scaleX = -scaleX end

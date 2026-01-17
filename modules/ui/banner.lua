@@ -14,18 +14,30 @@ Banner.animating = false
 Banner.duration = 0.4
 Banner.timer = 0
 Banner.done = false
+Banner.anchor = "left" 
 
 function Banner.load()
     Banner.image = love.graphics.newImage("assets/ui/ribbons/BigRibbons.png")
-
     local imgW, imgH = Banner.image:getDimensions()
 
-    Banner.quads = {
-        love.graphics.newQuad(0,   0, 128, 128, imgW, imgH), -- part 1
-        love.graphics.newQuad(192, 0, 64,  128, imgW, imgH), -- part 2
-        love.graphics.newQuad(320, 0, 130, 128, imgW, imgH)  -- part 3
+    Banner.variants = {
+        -- banner 1 (already used)
+        {
+            left  = love.graphics.newQuad(0,   0, 128, 128, imgW, imgH),
+            mid   = love.graphics.newQuad(192, 0, 64,  128, imgW, imgH),
+            right = love.graphics.newQuad(320, 0, 130, 128, imgW, imgH),
+        },
+        -- banner 2 (enemy)
+        {
+            left  = love.graphics.newQuad(0,   128, 128, 128, imgW, imgH),
+            mid   = love.graphics.newQuad(192, 128, 64,  128, imgW, imgH),
+            right = love.graphics.newQuad(320, 128, 130, 128, imgW, imgH),
+        }
     }
+
+    Banner.activeVariant = 1
 end
+
 
 local function easeOutQuad(t)
     return 1 - (1 - t) * (1 - t)
@@ -55,31 +67,29 @@ function Banner.update(dt)
     Banner.currentWidth = Banner.targetWidth * eased
 end
 
-
 function Banner.draw()
     if not Banner.image then return end
+    if Banner.currentWidth <= 0 then return end 
 
-    local left  = Banner.quads[1]
-    local mid   = Banner.quads[2]
-    local right = Banner.quads[3]
+    local v = Banner.variants[Banner.activeVariant]
+    local left, mid, right = v.left, v.mid, v.right
 
-    local lx, ly, lw, lh = left:getViewport()
-    local mx, my, mw, mh = mid:getViewport()
-    local rx, ry, rw, rh = right:getViewport()
+    local _, _, lw = left:getViewport()
+    local _, _, mw = mid:getViewport()
+    local _, _, rw = right:getViewport()
 
-    love.graphics.draw(Banner.image, left, Banner.x, Banner.y)
-
-    local midX = Banner.x + lw
     local scaleX = (mw + Banner.currentWidth) / mw
-    love.graphics.draw(
-        Banner.image,
-        mid,
-        midX,
-        Banner.y,
-        0,
-        scaleX,
-        1
-    )
+    local totalWidth = lw + mw * scaleX + rw
+
+    local x = Banner.x
+    if Banner.anchor == "right" then
+        x = Banner.x - totalWidth
+    end
+
+    love.graphics.draw(Banner.image, left, x, Banner.y)
+
+    local midX = x + lw
+    love.graphics.draw(Banner.image, mid, midX, Banner.y, 0, scaleX, 1)
 
     local rightX = midX + mw * scaleX
     love.graphics.draw(Banner.image, right, rightX, Banner.y)

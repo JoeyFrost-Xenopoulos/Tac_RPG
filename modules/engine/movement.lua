@@ -1,4 +1,5 @@
 local Movement = {}
+local Map = require("modules.world.map")
 
 function Movement.start(unit, path)
     if not path or #path <= 1 then return end

@@ -9,7 +9,7 @@ return {
   height = 12,
   tilewidth = 64,
   tileheight = 64,
-  nextlayerid = 10,
+  nextlayerid = 11,
   nextobjectid = 1,
   properties = {},
   tilesets = {
@@ -327,7 +327,7 @@ return {
       width = 15,
       height = 12,
       id = 7,
-      name = "Ramp",
+      name = "Slope",
       class = "",
       visible = true,
       opacity = 1,

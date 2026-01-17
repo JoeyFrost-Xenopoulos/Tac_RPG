@@ -47,8 +47,8 @@ function Map.getElevation(tx, ty)
     if map.layers["Hill"] and map.layers["Hill"].data[ty] and map.layers["Hill"].data[ty][tx] then
         return 1 
     end
-    -- Ramp = Connector (0.5)
-    if map.layers["Ramp"] and map.layers["Ramp"].data[ty] and map.layers["Ramp"].data[ty][tx] then
+    -- Slope = Connector (0.5)
+    if map.layers["Slope"] and map.layers["Slope"].data[ty] and map.layers["Slope"].data[ty][tx] then
         return 0.5 
     end
     -- Grass = Height 0
@@ -114,7 +114,7 @@ function Map.draw()
         map.layers["Shadow"]:draw()
         map.layers["Wall"]:draw()
         map.layers["Hill"]:draw()
-        map.layers["Ramp"]:draw()
+        map.layers["Slope"]:draw()
 
         love.graphics.pop()
     end

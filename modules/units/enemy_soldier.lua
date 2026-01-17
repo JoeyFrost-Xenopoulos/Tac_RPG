@@ -164,6 +164,10 @@ function Enemy_Soldier.isClicked(mx, my)
        and my >= py and my < py + Enemy_Soldier.tileSize
 end
 
+function Enemy_Soldier.isHovered(mx, my)
+    return Enemy_Soldier.isClicked(mx, my)
+end
+
 function Enemy_Soldier.setSelected(value)
     Enemy_Soldier.unit.selected = value
 end
