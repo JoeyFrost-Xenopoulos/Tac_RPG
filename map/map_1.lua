@@ -9,7 +9,7 @@ return {
   height = 12,
   tilewidth = 64,
   tileheight = 64,
-  nextlayerid = 12,
+  nextlayerid = 17,
   nextobjectid = 1,
   properties = {},
   tilesets = {
@@ -157,6 +157,519 @@ return {
       wangsets = {},
       tilecount = 54,
       tiles = {}
+    },
+    {
+      name = "Water Rocks_01",
+      firstgid = 263,
+      class = "",
+      tilewidth = 64,
+      tileheight = 64,
+      spacing = 0,
+      margin = 0,
+      columns = 16,
+      image = "decoration/rocks/Water Rocks_01.png",
+      imagewidth = 1024,
+      imageheight = 64,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 64,
+        height = 64
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 16,
+      tiles = {
+        {
+          id = 0,
+          animation = {
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            },
+            {
+              tileid = 3,
+              duration = 100
+            },
+            {
+              tileid = 4,
+              duration = 100
+            },
+            {
+              tileid = 5,
+              duration = 100
+            },
+            {
+              tileid = 6,
+              duration = 100
+            },
+            {
+              tileid = 7,
+              duration = 100
+            },
+            {
+              tileid = 8,
+              duration = 100
+            },
+            {
+              tileid = 9,
+              duration = 100
+            },
+            {
+              tileid = 10,
+              duration = 100
+            },
+            {
+              tileid = 11,
+              duration = 100
+            },
+            {
+              tileid = 12,
+              duration = 100
+            },
+            {
+              tileid = 13,
+              duration = 100
+            },
+            {
+              tileid = 14,
+              duration = 100
+            },
+            {
+              tileid = 15,
+              duration = 100
+            }
+          }
+        },
+        {
+          id = 6,
+          animation = {
+            {
+              tileid = 6,
+              duration = 100
+            },
+            {
+              tileid = 7,
+              duration = 100
+            },
+            {
+              tileid = 8,
+              duration = 100
+            },
+            {
+              tileid = 9,
+              duration = 100
+            },
+            {
+              tileid = 10,
+              duration = 100
+            },
+            {
+              tileid = 11,
+              duration = 100
+            },
+            {
+              tileid = 12,
+              duration = 100
+            },
+            {
+              tileid = 13,
+              duration = 100
+            },
+            {
+              tileid = 14,
+              duration = 100
+            },
+            {
+              tileid = 15,
+              duration = 100
+            },
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            },
+            {
+              tileid = 3,
+              duration = 100
+            },
+            {
+              tileid = 4,
+              duration = 100
+            },
+            {
+              tileid = 5,
+              duration = 100
+            }
+          }
+        }
+      }
+    },
+    {
+      name = "Water Rocks_04",
+      firstgid = 279,
+      class = "",
+      tilewidth = 64,
+      tileheight = 64,
+      spacing = 0,
+      margin = 0,
+      columns = 16,
+      image = "decoration/rocks/Water Rocks_04.png",
+      imagewidth = 1024,
+      imageheight = 64,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 64,
+        height = 64
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 16,
+      tiles = {
+        {
+          id = 0,
+          animation = {
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            },
+            {
+              tileid = 3,
+              duration = 100
+            },
+            {
+              tileid = 4,
+              duration = 100
+            },
+            {
+              tileid = 5,
+              duration = 100
+            },
+            {
+              tileid = 6,
+              duration = 100
+            },
+            {
+              tileid = 7,
+              duration = 100
+            },
+            {
+              tileid = 8,
+              duration = 100
+            },
+            {
+              tileid = 10,
+              duration = 100
+            },
+            {
+              tileid = 11,
+              duration = 100
+            },
+            {
+              tileid = 12,
+              duration = 100
+            },
+            {
+              tileid = 13,
+              duration = 100
+            },
+            {
+              tileid = 14,
+              duration = 100
+            },
+            {
+              tileid = 15,
+              duration = 100
+            }
+          }
+        },
+        {
+          id = 3,
+          animation = {
+            {
+              tileid = 3,
+              duration = 100
+            },
+            {
+              tileid = 4,
+              duration = 100
+            },
+            {
+              tileid = 5,
+              duration = 100
+            },
+            {
+              tileid = 6,
+              duration = 100
+            },
+            {
+              tileid = 7,
+              duration = 100
+            },
+            {
+              tileid = 8,
+              duration = 100
+            },
+            {
+              tileid = 9,
+              duration = 100
+            },
+            {
+              tileid = 10,
+              duration = 100
+            },
+            {
+              tileid = 11,
+              duration = 100
+            },
+            {
+              tileid = 12,
+              duration = 100
+            },
+            {
+              tileid = 13,
+              duration = 100
+            },
+            {
+              tileid = 14,
+              duration = 100
+            },
+            {
+              tileid = 15,
+              duration = 100
+            },
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            }
+          }
+        }
+      }
+    },
+    {
+      name = "Tree1",
+      firstgid = 295,
+      class = "",
+      tilewidth = 192,
+      tileheight = 256,
+      spacing = 0,
+      margin = 0,
+      columns = 8,
+      image = "trees/Tree1.png",
+      imagewidth = 1536,
+      imageheight = 256,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 192,
+        height = 256
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 8,
+      tiles = {
+        {
+          id = 0,
+          animation = {
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            },
+            {
+              tileid = 3,
+              duration = 100
+            },
+            {
+              tileid = 4,
+              duration = 100
+            },
+            {
+              tileid = 5,
+              duration = 100
+            },
+            {
+              tileid = 6,
+              duration = 100
+            },
+            {
+              tileid = 7,
+              duration = 100
+            }
+          }
+        }
+      }
+    },
+    {
+      name = "Tree4",
+      firstgid = 303,
+      class = "",
+      tilewidth = 192,
+      tileheight = 192,
+      spacing = 0,
+      margin = 0,
+      columns = 8,
+      image = "trees/Tree4.png",
+      imagewidth = 1536,
+      imageheight = 192,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 192,
+        height = 192
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 8,
+      tiles = {
+        {
+          id = 0,
+          animation = {
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            },
+            {
+              tileid = 3,
+              duration = 100
+            },
+            {
+              tileid = 4,
+              duration = 100
+            },
+            {
+              tileid = 5,
+              duration = 100
+            },
+            {
+              tileid = 6,
+              duration = 100
+            },
+            {
+              tileid = 7,
+              duration = 100
+            }
+          }
+        }
+      }
+    },
+    {
+      name = "Rubber duck",
+      firstgid = 311,
+      class = "",
+      tilewidth = 32,
+      tileheight = 32,
+      spacing = 0,
+      margin = 0,
+      columns = 3,
+      image = "decoration/rubber_duck/Rubber duck.png",
+      imagewidth = 96,
+      imageheight = 32,
+      objectalignment = "unspecified",
+      tilerendersize = "tile",
+      fillmode = "stretch",
+      tileoffset = {
+        x = 0,
+        y = 0
+      },
+      grid = {
+        orientation = "orthogonal",
+        width = 32,
+        height = 32
+      },
+      properties = {},
+      wangsets = {},
+      tilecount = 3,
+      tiles = {
+        {
+          id = 0,
+          animation = {
+            {
+              tileid = 0,
+              duration = 100
+            },
+            {
+              tileid = 1,
+              duration = 100
+            },
+            {
+              tileid = 2,
+              duration = 100
+            }
+          }
+        }
+      }
     }
   },
   layers = {
@@ -379,6 +892,102 @@ return {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 245, 0, 0, 0, 0,
         0, 0, 245, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "tilelayer",
+      x = 0,
+      y = 0,
+      width = 15,
+      height = 12,
+      id = 12,
+      name = "Water_Rocks",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 282, 0, 0, 0, 0,
+        0, 0, 0, 282, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 263, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 269, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 279, 0, 0, 0, 0, 263, 0,
+        0, 0, 0, 263, 0, 269, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 279, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "tilelayer",
+      x = 0,
+      y = 0,
+      width = 15,
+      height = 12,
+      id = 13,
+      name = "Trees",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 303, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 303, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 303, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "tilelayer",
+      x = 0,
+      y = 0,
+      width = 15,
+      height = 12,
+      id = 14,
+      name = "Rubber_Duck",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 311, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0

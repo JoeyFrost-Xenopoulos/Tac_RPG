@@ -138,6 +138,9 @@ function Map.draw()
         map.layers["Hill"]:draw()
         map.layers["Bot_Slope"]:draw()
         map.layers["Top_Slope"]:draw()
+        map.layers["Water_Rocks"]:draw()
+        map.layers["Trees"]:draw()
+        map.layers["Rubber_Duck"]:draw()
 
         love.graphics.pop()
     end
