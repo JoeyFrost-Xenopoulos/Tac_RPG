@@ -2,9 +2,11 @@ local Banner = require("modules.ui.banner")
 local Soldier = require("modules.units.soldier")
 local Enemy_Soldier = require("modules.units.enemy_soldier")
 
+local Avatar_01 = love.graphics.newImage("assets/ui/avatars/Avatars_01.png")
+local Avatar_06 = love.graphics.newImage("assets/ui/avatars/Avatars_06.png")
+
 local BannerController = {}
 
--- Configure hover targets here
 BannerController.targets = {
     {
         isHovered = function(mx, my)
@@ -14,7 +16,8 @@ BannerController.targets = {
         anchor = "left",
         getX = function()
             return 0
-        end
+        end,
+        avatar = Avatar_01,
     },
     {
         isHovered = function(mx, my)
@@ -24,21 +27,23 @@ BannerController.targets = {
         anchor = "right",
         getX = function()
             return WINDOW_WIDTH
-        end
+        end,
+        avatar = Avatar_06,
     }
 }
 
 BannerController.activeVariant = nil
+BannerController.activeAvatar = nil
 
 function BannerController.update(mx, my)
     for _, target in ipairs(BannerController.targets) do
         if target.isHovered(mx, my) then
 
-            -- Reset animation only if banner type changes
-        if BannerController.activeVariant ~= target.variant then
-            Banner.reset()            -- reset all animation state
-            BannerController.activeVariant = target.variant
-        end
+            if BannerController.activeVariant ~= target.variant then
+                Banner.reset()
+                BannerController.activeVariant = target.variant
+                BannerController.activeAvatar = target.avatar
+            end
 
             Banner.activeVariant = target.variant
             Banner.anchor = target.anchor
@@ -53,14 +58,35 @@ function BannerController.update(mx, my)
         end
     end
 
-    -- Nothing hovered
     BannerController.activeVariant = nil
+    BannerController.activeAvatar = nil
     Banner.reset()
 end
 
 function BannerController.draw()
     if Banner.activeVariant then
         Banner.draw()
+
+        if BannerController.activeAvatar then
+            local avatar = BannerController.activeAvatar
+            local scale = 0.75 -- half size
+            local avatarWidth = avatar:getWidth() * scale
+            local avatarHeight = avatar:getHeight() * scale
+
+            local bannerHeight = 128
+
+            local avatarX
+            if Banner.anchor == "left" then
+                avatarX = Banner.x - 20
+            elseif Banner.anchor == "right" then
+                avatarX = 800
+            else
+                avatarX = Banner.x + 10
+            end
+
+            local avatarY = Banner.y + (bannerHeight / 2) - (avatarHeight / 2)
+            love.graphics.draw(avatar, avatarX, avatarY, 0, scale, scale)
+        end
     end
 end
 
