@@ -41,20 +41,32 @@ function Map.getElevation(tx, ty)
     if tx < 1 or ty < 1 or tx > map.width or ty > map.height then
         return nil
     end
-    if map.layers["Wall"] and map.layers["Wall"].data[ty] and map.layers["Wall"].data[ty][tx] then
-        return nil 
+
+    local wallLayer = map.layers["Wall"] and map.layers["Wall"].data[ty] and map.layers["Wall"].data[ty][tx]
+    if wallLayer and wallLayer ~= 0 then
+        return nil
     end
-    if map.layers["Hill"] and map.layers["Hill"].data[ty] and map.layers["Hill"].data[ty][tx] then
-        return 1 
+
+    local hillLayer = map.layers["Hill"] and map.layers["Hill"].data[ty] and map.layers["Hill"].data[ty][tx]
+    if hillLayer and hillLayer ~= 0 then
+        return 1
     end
-    -- Slope = Connector (0.5)
-    if map.layers["Slope"] and map.layers["Slope"].data[ty] and map.layers["Slope"].data[ty][tx] then
-        return 0.5 
+
+    local topSlopeLayer = map.layers["Top_Slope"] and map.layers["Top_Slope"].data[ty] and map.layers["Top_Slope"].data[ty][tx]
+    if topSlopeLayer and topSlopeLayer ~= 0 then
+        return 1
     end
-    -- Grass = Height 0
-    if map.layers["Grass"] and map.layers["Grass"].data[ty] and map.layers["Grass"].data[ty][tx] then
+
+    local botSlopeLayer = map.layers["Bot_Slope"] and map.layers["Bot_Slope"].data[ty] and map.layers["Bot_Slope"].data[ty][tx]
+    if botSlopeLayer and botSlopeLayer ~= 0 then
+        return 0.5
+    end
+
+    local grassLayer = map.layers["Grass"] and map.layers["Grass"].data[ty] and map.layers["Grass"].data[ty][tx]
+    if grassLayer and grassLayer ~= 0 then
         return 0
     end
+
     return nil
 end
 
@@ -62,15 +74,25 @@ function Map.canMove(fromX, fromY, toX, toY)
     local fromHeight = Map.getElevation(fromX, fromY)
     local toHeight   = Map.getElevation(toX, toY)
 
-    if not toHeight or not fromHeight then return false end
+    if not fromHeight or not toHeight then return false end
     
-    local diff = math.abs(fromHeight - toHeight)
+    local diff = toHeight - fromHeight
+    local fromBot = map.layers["Bot_Slope"].data[fromY] and map.layers["Bot_Slope"].data[fromY][fromX] or 0
+    local toBot   = map.layers["Bot_Slope"].data[toY]   and map.layers["Bot_Slope"].data[toY][toX] or 0
 
-    if diff == 0 then return true end
-    if fromHeight == 0.5 or toHeight == 0.5 then return true end
+    if diff == 0 then
+        return true
+    end
+    if fromHeight == 0.5 or toHeight == 0.5 then
+        return true
+    end
 
+    if (fromHeight == 0 and toHeight == 1) or (fromHeight == 1 and toHeight == 0) then
+        return false
+    end
     return false
 end
+
 
 function Map.isWalkable(tx, ty)
     return Map.getElevation(tx, ty) ~= nil
@@ -114,7 +136,8 @@ function Map.draw()
         map.layers["Shadow"]:draw()
         map.layers["Wall"]:draw()
         map.layers["Hill"]:draw()
-        map.layers["Slope"]:draw()
+        map.layers["Bot_Slope"]:draw()
+        map.layers["Top_Slope"]:draw()
 
         love.graphics.pop()
     end
