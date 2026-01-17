@@ -141,7 +141,7 @@ function Enemy_Soldier.draw()
 
     love.graphics.draw(anim.img, quad, px, py, 0, scaleX, Enemy_Soldier.scaleY, offsetX, offsetY)
 
-    -- Optional: selection highlight
+    -- Selection highlight
     if unit.selected then
         love.graphics.setColor(1, 0, 0, 0.3)
         love.graphics.rectangle(
@@ -163,6 +163,7 @@ function Enemy_Soldier.isClicked(mx, my)
     return mx >= px and mx < px + Enemy_Soldier.tileSize
        and my >= py and my < py + Enemy_Soldier.tileSize
 end
+
 function Enemy_Soldier.setSelected(value)
     Enemy_Soldier.unit.selected = value
 end

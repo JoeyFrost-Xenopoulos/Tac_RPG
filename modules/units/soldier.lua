@@ -79,21 +79,35 @@ function Soldier.setPosition(tileX, tileY)
     Soldier.unit.tileY = tileY 
 end
 
-function Soldier.tryMove(tileX, tileY) -- Removed 'isWalkable' arg, use global Map or pass Map.canMove
+function Soldier.tryMove(tileX, tileY)
     local unit = Soldier.unit
     if unit.isMoving then return end
 
-    -- Use the new Map.canMove function
     local path = Pathfinding.findPath(
         unit.tileX,
         unit.tileY,
         tileX,
         tileY,
-        Map.canMove -- Pass the detailed transition checker
+        Map.canMove
     )
 
     Movement.start(unit, path)
 end
+
+function Soldier.isHovered(mx, my)
+    local unit = Soldier.unit
+
+    -- Safety guards
+    if not mx or not my then return false end
+    if not unit.tileX or not unit.tileY then return false end
+
+    local px = (unit.tileX - 1) * Soldier.tileSize
+    local py = (unit.tileY - 1) * Soldier.tileSize
+
+    return mx >= px and mx < px + Soldier.tileSize
+       and my >= py and my < py + Soldier.tileSize
+end
+
 
 function Soldier.isClicked(mx, my)
     local unit = Soldier.unit
