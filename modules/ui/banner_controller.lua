@@ -74,7 +74,7 @@ function BannerController.draw()
             if Banner.anchor == "left" then
                 avatarX = Banner.x - 20
             elseif Banner.anchor == "right" then
-                avatarX = Banner.x - Banner.currentWidth - 20
+                avatarX = Banner.x - 170
             else
                 avatarX = Banner.x + 10
             end

@@ -6,12 +6,31 @@ local map = nil
 local WaterFoam = require("modules.world.foam")
 
 local foamTiles = {}
+local blockedTiles = {}
 
 function Map.load(mapPath)
     map = sti(mapPath)
     WaterFoam.load()
     foamTiles = Map.getFoamTiles()
+
+    blockedTiles = {}
+    local treeLayer = map.layers["Trees"]
+    if treeLayer then
+        for y = 1, map.height do
+            for x = 1, map.width do
+                local treeTile = treeLayer.data[y] and treeLayer.data[y][x] or 0
+                if treeTile ~= 0 then
+                    -- tile to the right of the tree
+                    local rightX = x + 1
+                    if rightX <= map.width then
+                        blockedTiles[rightX .. "," .. y] = true
+                    end
+                end
+            end
+        end
+    end
 end
+
 
 function Map.getFoamTiles()
     if not map then return {} end
@@ -37,8 +56,12 @@ function Map.getFoamTiles()
 end
 
 function Map.getElevation(tx, ty)
-    if not map then return nil end    
+    if not map then return nil end
     if tx < 1 or ty < 1 or tx > map.width or ty > map.height then
+        return nil
+    end
+
+    if blockedTiles[tx .. "," .. ty] then
         return nil
     end
 
