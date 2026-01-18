@@ -33,10 +33,12 @@ function love.update(dt)
 end
 
 function love.draw()
-    Map.draw()
+    Map.drawLayersBelowSoldier()
     Grid.draw()
     Enemy_Soldier.draw()
     Soldier.draw()
+    Map.drawTrees()
+    Map.drawLayersAboveSoldier()
     Cursor.draw()
     BannerController.draw()
 end

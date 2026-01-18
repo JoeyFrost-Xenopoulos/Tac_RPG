@@ -141,32 +141,35 @@ function Map.update(dt)
     end
 end
 
-function Map.draw()
-    if map then
-        love.graphics.push()
-        love.graphics.scale(1, 1)
+function Map.drawLayersBelowSoldier()
+    love.graphics.push()
+    love.graphics.scale(1, 1)
+    map.layers["Water"]:draw()
 
-        map.layers["Water"]:draw()
-
-        local tileW, tileH = map.tilewidth, map.tileheight
-        for _, tile in ipairs(foamTiles) do
-            local worldX = (tile.x - 1) * tileW
-            local worldY = (tile.y - 1) * tileH
-            WaterFoam.draw(worldX, worldY, tileW, tileH, tile.currentFrame)
-        end
-
-        map.layers["Grass"]:draw()
-        map.layers["Shadow"]:draw()
-        map.layers["Wall"]:draw()
-        map.layers["Hill"]:draw()
-        map.layers["Bot_Slope"]:draw()
-        map.layers["Top_Slope"]:draw()
-        map.layers["Water_Rocks"]:draw()
-        map.layers["Trees"]:draw()
-        map.layers["Rubber_Duck"]:draw()
-
-        love.graphics.pop()
+    local tileW, tileH = map.tilewidth, map.tileheight
+    for _, tile in ipairs(foamTiles) do
+        local worldX = (tile.x - 1) * tileW
+        local worldY = (tile.y - 1) * tileH
+        WaterFoam.draw(worldX, worldY, tileW, tileH, tile.currentFrame)
     end
+
+    map.layers["Grass"]:draw()
+    map.layers["Shadow"]:draw()
+    map.layers["Wall"]:draw()
+    map.layers["Hill"]:draw()
+    map.layers["Bot_Slope"]:draw()
+    map.layers["Top_Slope"]:draw()
+    map.layers["Water_Rocks"]:draw()
+    love.graphics.pop()
 end
+
+function Map.drawTrees()
+    map.layers["Trees"]:draw()
+end
+
+function Map.drawLayersAboveSoldier()
+    map.layers["Rubber_Duck"]:draw()
+end
+
 
 return Map
