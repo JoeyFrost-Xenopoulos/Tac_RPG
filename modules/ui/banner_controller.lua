@@ -1,4 +1,5 @@
 local Banner = require("modules.ui.banner")
+local BigBar = require("modules.ui.bigbar")
 local Soldier = require("modules.units.soldier")
 local Enemy_Soldier = require("modules.units.enemy_soldier")
 
@@ -14,9 +15,7 @@ BannerController.targets = {
         end,
         variant = 1,
         anchor = "left",
-        getX = function()
-            return 0
-        end,
+        getX = function() return 0 end,
         avatar = Avatar_01,
     },
     {
@@ -25,9 +24,7 @@ BannerController.targets = {
         end,
         variant = 2,
         anchor = "right",
-        getX = function()
-            return WINDOW_WIDTH
-        end,
+        getX = function() return WINDOW_WIDTH end,
         avatar = Avatar_06,
     }
 }
@@ -38,7 +35,6 @@ BannerController.activeAvatar = nil
 function BannerController.update(mx, my)
     for _, target in ipairs(BannerController.targets) do
         if target.isHovered(mx, my) then
-
             if BannerController.activeVariant ~= target.variant then
                 Banner.reset()
                 BannerController.activeVariant = target.variant
@@ -64,22 +60,21 @@ function BannerController.update(mx, my)
 end
 
 function BannerController.draw()
-    if Banner.activeVariant then
+    if Banner.activeVariant and Banner.currentWidth > 0 then
         Banner.draw()
 
         if BannerController.activeAvatar then
             local avatar = BannerController.activeAvatar
-            local scale = 0.75 -- half size
+            local scale = 0.75
             local avatarWidth = avatar:getWidth() * scale
             local avatarHeight = avatar:getHeight() * scale
 
             local bannerHeight = 128
-
             local avatarX
             if Banner.anchor == "left" then
                 avatarX = Banner.x - 20
             elseif Banner.anchor == "right" then
-                avatarX = 800
+                avatarX = Banner.x - Banner.currentWidth - 20
             else
                 avatarX = Banner.x + 10
             end
@@ -87,6 +82,8 @@ function BannerController.draw()
             local avatarY = Banner.y + (bannerHeight / 2) - (avatarHeight / 2)
             love.graphics.draw(avatar, avatarX, avatarY, 0, scale, scale)
         end
+
+        BigBar.draw(Banner.x, Banner.y, Banner.currentWidth, Banner.anchor)
     end
 end
 
