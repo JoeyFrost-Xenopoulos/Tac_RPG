@@ -2,6 +2,7 @@
 local Cursor = {}
 local Soldier = require("modules.units.soldier")
 local Map = require("modules.world.map")
+local MovementRange = require("modules.engine.movement_range")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
@@ -69,7 +70,8 @@ function Cursor.update()
     local tx, ty = Cursor.tileX, Cursor.tileY
 
     if unit.selected then
-        if Map.canMove(unit.tileX, unit.tileY, tx, ty) then
+        if (tx == unit.tileX and ty == unit.tileY)
+        or MovementRange.canReach(tx, ty) then
             Cursor.setMouse("hover")
         else
             Cursor.setMouse("blocked")
@@ -77,6 +79,7 @@ function Cursor.update()
     else
         Cursor.setMouse("default")
     end
+
 end
 
 
@@ -99,16 +102,7 @@ function Cursor.draw()
     local drawY = tilePy + Cursor.tileSize / 2
 
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(
-        Cursor.image,
-        drawX,
-        drawY,
-        0,
-        scale,
-        scale,
-        imgW / 2,
-        imgH / 2
-    )
+    love.graphics.draw(Cursor.image, drawX, drawY, 0, scale, scale, imgW / 2, imgH / 2)
 
     love.graphics.pop()
 end

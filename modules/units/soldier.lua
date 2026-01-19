@@ -1,19 +1,22 @@
+-- modules.units.soldier.lua
+
 local Soldier = {}
 local Pathfinding = require("modules.engine.pathfinding")
 local Movement = require("modules.engine.movement")
 local Map = require("modules.world.map")
+local MovementRange = require("modules.engine.movement_range")
 
 Soldier.unit = {}
 Soldier.animations = {}
 
--- Tile/grid settings
 Soldier.tileSize = 64
 Soldier.scaleX = 0.85
 Soldier.scaleY = 0.85
 Soldier.unit.facingX = 1
 
 Soldier.unit.selected = false
-Soldier.unit.moveDuration = 0.75 -- seconds per tile
+Soldier.unit.moveDuration = 0.25 -- seconds per tile
+Soldier.unit.maxMoveRange = 4
 
 function Soldier.load()
     -- IDLE animation
@@ -83,21 +86,34 @@ function Soldier.tryMove(tileX, tileY)
     local unit = Soldier.unit
     if unit.isMoving then return end
 
-    local path = Pathfinding.findPath(
-        unit.tileX,
-        unit.tileY,
-        tileX,
-        tileY,
-        Map.canMove
-    )
+    if tileX == unit.tileX and tileY == unit.tileY then
+        return
+    end
+
+    if not MovementRange.canReach(tileX, tileY) then
+        Soldier.setSelected(false)
+        return
+    end
+
+    local path = Pathfinding.findPath(unit.tileX, unit.tileY, tileX, tileY, Map.canMove)
+
+    if not path then
+        Soldier.setSelected(false)
+        return
+    end
+
+    local maxTiles = unit.maxMoveRange + 1
+    if #path > maxTiles then
+        path = { unpack(path, 1, maxTiles) }
+    end
 
     Movement.start(unit, path)
+    Soldier.setSelected(false)
 end
+
 
 function Soldier.isHovered(mx, my)
     local unit = Soldier.unit
-
-    -- Safety guards
     if not mx or not my then return false end
     if not unit.tileX or not unit.tileY then return false end
 
@@ -121,7 +137,14 @@ end
 
 function Soldier.setSelected(value)
     Soldier.unit.selected = value
+
+    if value then
+        MovementRange.show(Soldier.unit)
+    else
+        MovementRange.clear()
+    end
 end
+
 
 function Soldier.update(dt)
     local unit = Soldier.unit

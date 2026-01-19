@@ -1,4 +1,5 @@
--- modules/world/grid.lua
+-- modules.ui.grid.lua
+
 local Grid = {}
 
 Grid.tileSize = 64
