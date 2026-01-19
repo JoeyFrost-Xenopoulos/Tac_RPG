@@ -1,38 +1,28 @@
+-- modules/engine/mouse.lua
 local Mouse = {}
-
-local Soldier = require("modules.units.soldier")
-local Enemy_Soldier = require("modules.units.enemy_soldier")
+local Cursor = require("modules.ui.cursor")
+local UnitManager = require("modules.units.manager")
 
 function Mouse.pressed(x, y, button)
-    if button ~= 1 then return end
+    local tx = Cursor.tileX
+    local ty = Cursor.tileY
+    
+    if button == 1 then
+        local clickedUnit = UnitManager.getUnitAt(tx, ty)
+        local currentSelected = UnitManager.selectedUnit
 
-    local tx, ty = mouseToTile(x, y)
-
-    -- Soldier click
-    if Soldier.isClicked(x, y) then
-        Soldier.setSelected(true)
-        Enemy_Soldier.setSelected(false)
-        return
+        if clickedUnit then
+            UnitManager.select(clickedUnit)
+        
+        elseif currentSelected then
+            currentSelected:tryMove(tx, ty)
+            
+        else
+            UnitManager.deselectAll()
+        end
     end
-
-    -- Enemy click
-    if Enemy_Soldier.isClicked(x, y) then
-        Enemy_Soldier.setSelected(true)
-        Soldier.setSelected(false)
-        return
-    end
-
-    -- Move selected unit
-    if Soldier.unit.selected then
-        Soldier.tryMove(tx, ty)
-        Soldier.setSelected(false)
-        return
-    end
-
-    if Enemy_Soldier.unit.selected then
-        Enemy_Soldier.tryMove(tx, ty)
-        Enemy_Soldier.setSelected(false)
-        return
+    if button == 2 then
+        UnitManager.deselectAll()
     end
 end
 
