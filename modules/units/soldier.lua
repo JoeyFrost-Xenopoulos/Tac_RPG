@@ -1,7 +1,4 @@
 -- modules/units/soldier.lua
--- Replace 'Soldier' with the instance, 
--- but we need a wrapper to handle the 'load' phase if main.lua calls Soldier.load()
-
 local BaseUnit = require("modules.units.base")
 local Soldier = {} 
 local instance = nil

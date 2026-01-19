@@ -24,8 +24,8 @@ function BannerController.update(mx, my)
 
         Banner.activeVariant = hoveredUnit.uiVariant
         Banner.anchor = hoveredUnit.uiAnchor        
-        Banner.x = (hoveredUnit.uiAnchor == "right") and WINDOW_WIDTH or 0
-        Banner.y = (my < 384) and 620 or 0
+        Banner.x = (hoveredUnit.uiAnchor == "right") and WINDOW_WIDTH or 10
+        Banner.y = (my < 384) and 620 or 20
 
         if not Banner.animating then
             Banner.start()

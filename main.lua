@@ -31,6 +31,7 @@ function love.update(dt)
     Cursor.update()
     UnitManager.update(dt)
     Banner.update(dt)
+    
     local mx, my = love.mouse.getPosition()
     BannerController.update(mx, my)
 end
