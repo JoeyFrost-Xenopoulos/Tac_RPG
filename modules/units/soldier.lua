@@ -11,6 +11,8 @@ function Soldier.load()
         uiAnchor = "left",
         isPlayer = true,
         maxMoveRange = 4,
+        maxHealth = 120,
+        health = 120,
         animations = {
             idle = {
                 img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Idle.png"),

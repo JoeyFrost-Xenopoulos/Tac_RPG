@@ -46,6 +46,10 @@ function BaseUnit.new(config)
     self.uiVariant = config.uiVariant
     self.uiAnchor = config.uiAnchor
 
+    -- Stats
+    self.maxHealth = config.maxHealth or 100
+    self.health = config.health or self.maxHealth
+
     if config.animations then
         self:loadAnimations(config.animations)
     end
