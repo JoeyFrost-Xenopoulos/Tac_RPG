@@ -64,9 +64,9 @@ function BigBar.draw(x, y, width, anchor)
     love.graphics.draw(BigBar_Base, barLeftQuad, barX, barY)
     local midX = barX + lw
     local scaleX = width / mw
-    love.graphics.draw(BigBar_Base, barMidQuad, midX, barY, 0, scaleX, 1)
+    love.graphics.draw(BigBar_Base, barMidQuad, midX - 1, barY, 0, scaleX, 1)
     local rightX = midX + mw * scaleX
-    love.graphics.draw(BigBar_Base, barRightQuad, rightX, barY)
+    love.graphics.draw(BigBar_Base, barRightQuad, rightX - 2, barY)
 
     local totalWidth = width + 15
     local fillX = barX + 56
