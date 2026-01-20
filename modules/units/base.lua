@@ -21,6 +21,7 @@ function BaseUnit.new(config)
     local self = setmetatable({}, BaseUnit)
 
     -- Apply Config or Defaults
+    self.name = config.name or config.type or "Unknown"
     self.type = config.type or "Unknown"
     self.moveDuration = config.moveDuration or DEFAULTS.moveDuration
     self.scaleX = config.scaleX or DEFAULTS.scaleX

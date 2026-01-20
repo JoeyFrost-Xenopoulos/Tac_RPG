@@ -6,6 +6,7 @@ local instance = nil
 
 function Enemy.load()
     local config = {
+        name = "Barnes",
         type = "Enemy",
         avatar = love.graphics.newImage("assets/ui/avatars/Avatars_06.png"),
         uiVariant = 2,

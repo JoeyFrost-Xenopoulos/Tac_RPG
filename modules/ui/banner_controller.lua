@@ -61,6 +61,7 @@ if unit and Banner.activeVariant and Banner.currentWidth > 0 then
         local barWidth = Banner.targetWidth * bannerProgress * healthRatio
 
         BigBar.draw(Banner.x, Banner.y, barWidth, Banner.anchor)
+        BigBar.drawUnitName(Banner.x, Banner.y, Banner.targetWidth, unit)
         BigBar.drawHealthText(Banner.x, Banner.y, Banner.targetWidth, Banner.anchor, unit.health, unit.maxHealth)
     end
 end

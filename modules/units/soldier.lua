@@ -5,6 +5,7 @@ local instance = nil
 
 function Soldier.load()
     local config = {
+        name = "Ingram",
         type = "Soldier",
         avatar = love.graphics.newImage("assets/ui/avatars/Avatars_01.png"),
         uiVariant = 1,
