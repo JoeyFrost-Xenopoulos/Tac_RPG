@@ -15,6 +15,7 @@ local DEFAULTS = {
     tileSize = 64,
     maxMoveRange = 4,
     isPlayer = false,
+    attackRange = 1
 }
 
 function BaseUnit.new(config)
@@ -140,6 +141,7 @@ function BaseUnit:draw()
 end
 
 function BaseUnit:tryMove(targetX, targetY)
+    if not self.isPlayer then return end 
     if self.isMoving then return end
     if targetX == self.tileX and targetY == self.tileY then return end
 
@@ -161,6 +163,7 @@ function BaseUnit:tryMove(targetX, targetY)
     self:setSelected(false)
     self.currentAnimation = "walk"
 end
+
 function BaseUnit:setSelected(value)
     self.selected = value
     if value then
