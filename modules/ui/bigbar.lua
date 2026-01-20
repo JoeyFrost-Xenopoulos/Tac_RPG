@@ -16,14 +16,20 @@ function BigBar.drawHealthText(x, y, maxWidth, anchor, hp, maxHp)
     local barY = y + 30
     local text = "HP:" .. hp .. " / " .. maxHp
 
-    love.graphics.setColor(1, 1, 1, 1)
+    local progress = Banner.currentWidth / Banner.targetWidth
+    progress = math.min(1, math.max(0, progress))
+
+    local eased = 1 - (1 - progress) * (1 - progress)
+    local slide = (1 - eased) * 20
+
+    love.graphics.setColor(1, 1, 1, eased)
     love.graphics.setFont(PixelFont)
 
-    local textX
-    textX = x + maxWidth + 10
-
+    local textX = x + maxWidth + 10 - slide
     local textY = barY + 15
+
     love.graphics.print(text, textX, textY)
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function BigBar.draw(x, y, width, anchor)
