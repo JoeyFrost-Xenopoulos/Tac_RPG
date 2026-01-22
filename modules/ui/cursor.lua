@@ -52,6 +52,10 @@ function Cursor.setGrid(tileSize, gridWidth, gridHeight, scaleX, scaleY)
     Cursor.scaleY = scaleY or 1
 end
 
+function Cursor.getTile()
+    return Cursor.tileX, Cursor.tileY
+end
+
 function Cursor.update()
     local mx, my = love.mouse.getPosition()
     

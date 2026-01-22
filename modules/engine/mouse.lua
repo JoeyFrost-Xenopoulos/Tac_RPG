@@ -2,7 +2,7 @@
 local Mouse = {}
 local Cursor = require("modules.ui.cursor")
 local UnitManager = require("modules.units.manager")
-local MovementRange = require("modules.engine.movement_range") -- Added this
+local MovementRange = require("modules.engine.movement_range")
 
 function Mouse.pressed(x, y, button)
     local tx = Cursor.tileX

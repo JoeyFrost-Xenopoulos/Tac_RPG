@@ -6,6 +6,7 @@ Grid = require("modules.ui.grid")
 Cursor = require("modules.ui.cursor")
 Banner = require("modules.ui.banner")
 BannerController = require("modules.ui.banner_controller")
+Arrows = require("modules.ui.movement_arrows")
 
 UnitManager = require("modules.units.manager")
 Soldier = require("modules.units.soldier")
@@ -22,7 +23,7 @@ function love.load()
     Enemy_Soldier.load()
     UnitManager.add(Soldier.unit)
     UnitManager.add(Enemy_Soldier.unit)
-
+    Arrows.load()
     Soldier.setPosition(3,3)
     Enemy_Soldier.setPosition(3,4)
 end
@@ -40,6 +41,8 @@ end
 function love.draw()
     Map.drawLayersBelowSoldier()
     Grid.draw()
+    Arrows.draw()
+
     UnitManager.draw()
     Map.drawTrees()
     Map.drawLayersAboveSoldier()

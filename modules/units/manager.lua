@@ -1,5 +1,10 @@
 -- modules/units/manager.lua
 local UnitManager = {}
+local Cursor = require("modules.ui.cursor")
+local Pathfinding = require("modules.engine.pathfinding")
+local MovementRange = require("modules.engine.movement_range")
+local Map = require("modules.world.map")
+local Arrows = require("modules.ui.movement_arrows")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
@@ -11,6 +16,39 @@ end
 function UnitManager.update(dt)
     for _, unit in ipairs(UnitManager.units) do
         unit:update(dt)
+    end
+
+    local unit = UnitManager.selectedUnit
+    if not unit or unit.isMoving then
+        Arrows.clear()
+        return
+    end
+
+    local tx, ty = Cursor.getTile()
+
+    -- Hovering own tile or reachable tile
+    if MovementRange.canReach(tx, ty)
+       and not (tx == unit.tileX and ty == unit.tileY) then
+
+        local path = Pathfinding.findPath(
+            unit.tileX,
+            unit.tileY,
+            tx, ty,
+            Map.canMove
+        )
+
+        -- Clamp to move range (important!)
+        if path and unit.maxMoveRange and #path > unit.maxMoveRange + 1 then
+            local trimmed = {}
+            for i = 1, unit.maxMoveRange + 1 do
+                trimmed[i] = path[i]
+            end
+            path = trimmed
+        end
+
+        Arrows.setPath(path)
+    else
+        Arrows.clear()
     end
 end
 
@@ -41,6 +79,7 @@ function UnitManager.select(unit)
     UnitManager.deselectAll()
     unit:setSelected(true)
     UnitManager.selectedUnit = unit
+    Arrows.clear()
 end
 
 return UnitManager

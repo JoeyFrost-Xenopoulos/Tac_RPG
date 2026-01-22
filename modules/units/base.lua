@@ -6,6 +6,7 @@ local Pathfinding = require("modules.engine.pathfinding")
 local Movement = require("modules.engine.movement")
 local Map = require("modules.world.map")
 local MovementRange = require("modules.engine.movement_range")
+local Arrows = require("modules.ui.movement_arrows")
 
 -- Default settings
 local DEFAULTS = {
@@ -160,6 +161,7 @@ function BaseUnit:tryMove(targetX, targetY)
     end
 
     Movement.start(self, validPath)
+    Arrows.clear()
     self:setSelected(false)
     self.currentAnimation = "walk"
 end
