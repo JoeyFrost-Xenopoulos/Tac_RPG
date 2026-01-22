@@ -23,10 +23,8 @@ function UnitManager.update(dt)
         Arrows.clear()
         return
     end
-
     local tx, ty = Cursor.getTile()
 
-    -- Hovering own tile or reachable tile
     if MovementRange.canReach(tx, ty)
        and not (tx == unit.tileX and ty == unit.tileY) then
 
@@ -36,8 +34,6 @@ function UnitManager.update(dt)
             tx, ty,
             Map.canMove
         )
-
-        -- Clamp to move range (important!)
         if path and unit.maxMoveRange and #path > unit.maxMoveRange + 1 then
             local trimmed = {}
             for i = 1, unit.maxMoveRange + 1 do
