@@ -45,6 +45,17 @@ function Grid.draw()
         love.graphics.rectangle("fill", col*Grid.tileSize, row*Grid.tileSize, Grid.tileSize, Grid.tileSize)
     end
 
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.pop()
+end
+
+function Grid.drawLines()
+    love.graphics.push()
+    love.graphics.scale(Grid.scaleX, Grid.scaleY)
+
+    local w = Grid.width * Grid.tileSize
+    local h = Grid.height * Grid.tileSize
+
     love.graphics.setColor(1, 1, 1, 0.3)
     for i = 0, Grid.width do
         love.graphics.line(i*Grid.tileSize, 0, i*Grid.tileSize, h)
@@ -52,7 +63,6 @@ function Grid.draw()
     for j = 0, Grid.height do
         love.graphics.line(0, j*Grid.tileSize, w, j*Grid.tileSize)
     end
-
     love.graphics.setColor(1,1,1,1)
     love.graphics.pop()
 end

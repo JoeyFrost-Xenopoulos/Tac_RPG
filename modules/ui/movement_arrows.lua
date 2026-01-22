@@ -54,10 +54,10 @@ function Arrows.draw()
         if not prev and next then
             -- start arrow
             local dx, dy = direction(curr, next)
-            if dx == 1 then quad = Arrows.variants.ends.right
-            elseif dx == -1 then quad = Arrows.variants.ends.left
-            elseif dy == 1 then quad = Arrows.variants.ends.down
-            elseif dy == -1 then quad = Arrows.variants.ends.up end
+            if dx == 1 then quad = Arrows.variants.ends.horizontal
+            elseif dx == -1 then quad = Arrows.variants.ends.horizontal
+            elseif dy == 1 then quad = Arrows.variants.ends.vertical
+            elseif dy == -1 then quad = Arrows.variants.ends.horizontal end
 
         elseif prev and next then
             local dx1, dy1 = direction(prev, curr)

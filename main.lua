@@ -41,8 +41,9 @@ end
 function love.draw()
     Map.drawLayersBelowSoldier()
     Grid.draw()
-    Arrows.draw()
+    --Grid.drawLines()
 
+    Arrows.draw()
     UnitManager.draw()
     Map.drawTrees()
     Map.drawLayersAboveSoldier()

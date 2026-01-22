@@ -19,7 +19,7 @@ function UnitManager.update(dt)
     end
 
     local unit = UnitManager.selectedUnit
-    if not unit or unit.isMoving then
+    if not unit or unit.isMoving or not unit.isPlayer then
         Arrows.clear()
         return
     end
