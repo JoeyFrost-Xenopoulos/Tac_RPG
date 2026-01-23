@@ -5,9 +5,11 @@ local Pathfinding = require("modules.engine.pathfinding")
 local MovementRange = require("modules.engine.movement_range")
 local Map = require("modules.world.map")
 local Arrows = require("modules.ui.movement_arrows")
+local Menu = require("modules.ui.menu")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
+UnitManager.state = "idle"
 
 function UnitManager.add(unit)
     table.insert(UnitManager.units, unit)
@@ -69,12 +71,20 @@ function UnitManager.deselectAll()
         unit:setSelected(false)
     end
     UnitManager.selectedUnit = nil
+
+    Menu.hide()
 end
 
 function UnitManager.select(unit)
     UnitManager.deselectAll()
     unit:setSelected(true)
     UnitManager.selectedUnit = unit
+
+    
+    if UnitManager.state == menu_choice then
+        Menu.show(0,0)
+    end
+
     Arrows.clear()
 end
 
