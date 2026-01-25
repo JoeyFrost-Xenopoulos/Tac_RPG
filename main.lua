@@ -11,6 +11,9 @@ BannerController = require("modules.ui.banner_controller")
 Arrows = require("modules.ui.movement_arrows")
 Menu = require("modules.ui.menu")
 
+-- Music
+Effects = require("modules.audio.sound_effects")
+
 -- Units
 UnitManager = require("modules.units.manager")
 Soldier = require("modules.units.soldier")
@@ -25,6 +28,7 @@ function love.load()
     Banner.load()
     Arrows.load()
     Menu.load()
+    Effects.load()
 
     UnitManager.add(Soldier.unit)
     UnitManager.add(Enemy_Soldier.unit)

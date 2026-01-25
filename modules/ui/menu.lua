@@ -1,4 +1,6 @@
 -- modules/ui/menu.lua
+local Effects = require("modules.audio.sound_effects")
+
 local Menu = {}
 
 Menu.visible = false
@@ -14,6 +16,7 @@ Menu.animationTime = 0
 Menu.animationDuration = 0.3 
 Menu.currentHeight = 0
 Menu.cursorTime = 0
+Menu.hoveredIndex = nil
 
 function Menu.load()
     Menu.image = love.graphics.newImage("assets/ui/menu/menu.png")
@@ -47,8 +50,19 @@ function Menu.show(x, y, options)
     Menu.animationTime = 0
     Menu.animating = true
     Menu.visible = true
+    Menu.hoveredIndex = nil
+
+    Effects.playMenuIn()
 end
 
+function Menu.hide()
+    if Menu.visible then
+        Effects.playMenuOut()
+    end
+    Menu.visible = false
+    Menu.options = {}
+    Menu.hoveredIndex = nil
+end
 function Menu.update(dt)
     Menu.cursorTime = Menu.cursorTime + dt
 
@@ -65,11 +79,6 @@ function Menu.update(dt)
     end
 end
 
-function Menu.hide()
-    Menu.visible = false
-    Menu.options = {}
-end
-
 function Menu.clicked(mx, my)
     if not Menu.visible then return false end
     
@@ -79,6 +88,7 @@ function Menu.clicked(mx, my)
        for i, opt in ipairs(Menu.options) do
             local optY = startY + (i-1)*30
             if my >= optY and my < optY + 30 then
+                Effects.playMenuOut()
                 if opt.callback then opt.callback() end
                 return true
             end
@@ -113,7 +123,18 @@ function Menu.draw()
         if optY > Menu.y + Menu.currentHeight then break end
 
         local mx, my = love.mouse.getPosition()
-        local hovered = mx > Menu.x and mx < Menu.x + Menu.width and my > optY and my < optY + 30
+        local hovered = mx > Menu.x and mx < Menu.x + Menu.width
+                    and my > optY and my < optY + 30
+
+        if hovered and Menu.hoveredIndex ~= i then
+            Menu.hoveredIndex = i
+            Effects.playClick()
+        end
+
+        if not (mx > Menu.x and mx < Menu.x + Menu.width and
+                my > Menu.y and my < Menu.y + Menu.currentHeight) then
+            Menu.hoveredIndex = nil
+        end
 
         if hovered then
             love.graphics.setColor(1, 1, 1, 1)

@@ -3,6 +3,7 @@ local Pathfinding = require("modules.engine.pathfinding")
 local MovementEngine = require("modules.engine.movement")
 local Map = require("modules.world.map")
 local Arrows = require("modules.ui.movement_arrows")
+local Effects = require("modules.audio.sound_effects")
 
 function Movement.init(self)
     self.isMoving = false
@@ -41,6 +42,9 @@ function Movement.tryMove(self, targetX, targetY)
     MovementEngine.start(self, validPath)
     Arrows.clear()
     self.currentAnimation = "walk"
+
+    Effects.playRunGrass()
+
     return true
 end
 
@@ -50,6 +54,7 @@ function Movement.update(self, dt)
     if wasMoving and not self.isMoving then
         self.currentAnimation = "idle"
         self.currentFrame = 1
+        Effects.stopRunGrass()
     end
 end
 
