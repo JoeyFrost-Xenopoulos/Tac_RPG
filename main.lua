@@ -1,5 +1,7 @@
 -- main.lua
 require("config")
+
+-- Core systems
 Mouse = require("modules.engine.mouse")
 Map = require("modules.world.map")
 Grid = require("modules.ui.grid")
@@ -9,6 +11,7 @@ BannerController = require("modules.ui.banner_controller")
 Arrows = require("modules.ui.movement_arrows")
 Menu = require("modules.ui.menu")
 
+-- Units
 UnitManager = require("modules.units.manager")
 Soldier = require("modules.units.soldier")
 Enemy_Soldier = require("modules.units.enemy_soldier")
@@ -23,13 +26,11 @@ function love.load()
     Arrows.load()
     Menu.load()
 
-    Soldier.load()
-    Enemy_Soldier.load()
     UnitManager.add(Soldier.unit)
     UnitManager.add(Enemy_Soldier.unit)
-    
-    Soldier.setPosition(3,3)
-    Enemy_Soldier.setPosition(3,4)
+
+    Soldier.setPosition(3, 3)
+    Enemy_Soldier.setPosition(3, 4)
 end
 
 function love.update(dt)
@@ -37,7 +38,7 @@ function love.update(dt)
     Cursor.update()
     UnitManager.update(dt)
     Banner.update(dt)
-    
+
     local mx, my = love.mouse.getPosition()
     BannerController.update(mx, my)
 end
@@ -45,7 +46,7 @@ end
 function love.draw()
     Map.drawLayersBelowSoldier()
     Grid.draw()
-    --Grid.drawLines()
+    -- Grid.drawLines()
 
     Arrows.draw()
     UnitManager.draw()

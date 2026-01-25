@@ -83,8 +83,8 @@ end
 function BaseUnit:setPosition(tileX, tileY)
     self.tileX = tileX
     self.tileY = tileY
-    self.prevX = tileX -- [NEW] Init prev
-    self.prevY = tileY -- [NEW] Init prev
+    self.prevX = tileX
+    self.prevY = tileY
 end
 
 function BaseUnit:update(dt)
@@ -164,16 +164,10 @@ function BaseUnit:tryMove(targetX, targetY)
         end
     end
 
-    -- [NEW] Save Previous Position before moving
     self.prevX = self.tileX
     self.prevY = self.tileY
-
     Movement.start(self, validPath)
-    Arrows.clear()
-    
-    -- [CHANGED] Do NOT deselect yet. We wait for menu confirmation.
-    -- self:setSelected(false) 
-    
+    Arrows.clear()    
     self.currentAnimation = "walk"
     return true
 end
