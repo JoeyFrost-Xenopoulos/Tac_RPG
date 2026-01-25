@@ -43,8 +43,6 @@ local unit = BannerController.activeUnit
 
 if unit and Banner.activeVariant and Banner.currentWidth > 0 then
     Banner.draw()
-
-        -- Avatar (unchanged)
         if unit.avatar then
             local scale = 0.75
             local avatarHeight = unit.avatar:getHeight() * scale
