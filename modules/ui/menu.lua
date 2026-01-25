@@ -13,6 +13,7 @@ Menu.animating = false
 Menu.animationTime = 0 
 Menu.animationDuration = 0.3 
 Menu.currentHeight = 0
+Menu.cursorTime = 0
 
 function Menu.load()
     Menu.image = love.graphics.newImage("assets/ui/menu/menu.png")
@@ -33,6 +34,8 @@ function Menu.load()
     }
 
     Menu.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
+    Menu.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
+    Menu.cursorW, Menu.cursorH = Menu.cursorImage:getDimensions()
 end
 
 function Menu.show(x, y, options)
@@ -47,6 +50,8 @@ function Menu.show(x, y, options)
 end
 
 function Menu.update(dt)
+    Menu.cursorTime = Menu.cursorTime + dt
+
     if Menu.animating then
         Menu.animationTime = Menu.animationTime + dt
         local t = Menu.animationTime / Menu.animationDuration
@@ -59,7 +64,6 @@ function Menu.update(dt)
         Menu.currentHeight = Menu.height
     end
 end
-
 
 function Menu.hide()
     Menu.visible = false
@@ -109,13 +113,18 @@ function Menu.draw()
         if optY > Menu.y + Menu.currentHeight then break end
 
         local mx, my = love.mouse.getPosition()
-        if mx > Menu.x and mx < Menu.x + Menu.width and my > optY and my < optY + 30 then
-             love.graphics.setColor(0, 0, 1, 1)
+        local hovered = mx > Menu.x and mx < Menu.x + Menu.width and my > optY and my < optY + 30
+
+        if hovered then
+            love.graphics.setColor(1, 1, 1, 1)
+            local bob = math.sin(Menu.cursorTime * 8) * 4
+            love.graphics.draw(Menu.cursorImage, Menu.x + 60 + bob, optY + 15, 90)
         else
-             love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setColor(1, 1, 1, 1)
         end
-        
+
         love.graphics.print(opt.text, Menu.x + 40, optY + 15)
+
     end
 
     love.graphics.setColor(1,1,1,1)
