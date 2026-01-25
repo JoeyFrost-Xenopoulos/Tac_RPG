@@ -86,7 +86,6 @@ function Cursor.update()
 
 end
 
-
 function Cursor.draw()
     if not Cursor.image then return end
 

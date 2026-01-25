@@ -39,12 +39,11 @@ function Movement.tryMove(self, targetX, targetY)
 
     self.prevX = self.tileX
     self.prevY = self.tileY
+    Effects.playConfirm() 
     MovementEngine.start(self, validPath)
     Arrows.clear()
     self.currentAnimation = "walk"
-
     Effects.playRunGrass()
-
     return true
 end
 

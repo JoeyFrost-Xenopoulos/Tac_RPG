@@ -5,9 +5,22 @@ function Effects.load()
     Effects.menuIn   = love.audio.newSource("assets/audio/Menu_In.wav", "static")
     Effects.menuOut  = love.audio.newSource("assets/audio/Menu_Out.wav", "static")
     Effects.click    = love.audio.newSource("assets/audio/Click.wav", "static")
-
     Effects.runGrass = love.audio.newSource("assets/audio/Running_In_Grass.wav", "static")
     Effects.runGrass:setLooping(true)
+
+    Effects.back = love.audio.newSource("assets/audio/Back.wav", "static")
+    Effects.confirm = love.audio.newSource("assets/audio/Confirmation.wav", "static")
+end
+
+function Effects.backPlay()
+    Effects.back:stop()
+    Effects.back:play()
+end
+
+function Effects.playConfirm()
+    Effects.confirm:setPitch(0.9)
+    Effects.confirm:stop()
+    Effects.confirm:play()
 end
 
 function Effects.playRunGrass()

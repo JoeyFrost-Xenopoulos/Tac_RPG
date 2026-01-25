@@ -7,6 +7,7 @@ local Map = require("modules.world.map")
 local Arrows = require("modules.ui.movement_arrows")
 local Menu = require("modules.ui.menu")
 local Grid = require("modules.ui.grid")
+local Effects = require("modules.audio.sound_effects")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
@@ -121,10 +122,10 @@ function UnitManager.deselectAll()
 end
 
 function UnitManager.select(unit)
-    UnitManager.deselectAll()
     unit:setSelected(true)
     UnitManager.selectedUnit = unit
     UnitManager.state = "idle"
+    Effects.playConfirm()
 end
 
 return UnitManager
