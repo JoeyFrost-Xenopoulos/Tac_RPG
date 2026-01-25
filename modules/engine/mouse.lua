@@ -3,8 +3,25 @@ local Mouse = {}
 local Cursor = require("modules.ui.cursor")
 local UnitManager = require("modules.units.manager")
 local MovementRange = require("modules.engine.movement_range")
+local Menu = require("modules.ui.menu")
 
 function Mouse.pressed(x, y, button)
+    -- 1. Priority: Handle Menu Interaction
+    if UnitManager.state == "menu" then
+        if button == 1 then
+            local hit = Menu.clicked(x, y)
+            -- If clicked outside menu, maybe treat as cancel?
+            -- For now, force them to click an option or Right Click to cancel
+        end
+        
+        -- Right click acts as Cancel button
+        if button == 2 then
+            UnitManager.cancelMove()
+        end
+        return
+    end
+
+    -- 2. Priority: Handle Unit Selection/Movement (IDLE state)
     local tx = Cursor.tileX
     local ty = Cursor.tileY
     
@@ -13,11 +30,17 @@ function Mouse.pressed(x, y, button)
         local currentSelected = UnitManager.selectedUnit
 
         if clickedUnit then
-            UnitManager.select(clickedUnit)
+            -- Can't select enemies or switch units while moving (though state check covers this)
+            if UnitManager.state == "idle" then
+                UnitManager.select(clickedUnit)
+            end
         
-        elseif currentSelected then
+        elseif currentSelected and UnitManager.state == "idle" then
             if MovementRange.canReach(tx, ty) then
-                currentSelected:tryMove(tx, ty)
+                local success = currentSelected:tryMove(tx, ty)
+                if success then
+                    UnitManager.state = "moving"
+                end
             else
                 UnitManager.deselectAll()
             end

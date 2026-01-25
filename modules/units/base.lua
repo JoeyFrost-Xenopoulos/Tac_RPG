@@ -35,6 +35,8 @@ function BaseUnit.new(config)
     -- State
     self.tileX = 1
     self.tileY = 1
+    self.prevX = 1 -- [NEW] Store previous X
+    self.prevY = 1 -- [NEW] Store previous Y
     self.facingX = 1
     self.selected = false
     
@@ -81,6 +83,8 @@ end
 function BaseUnit:setPosition(tileX, tileY)
     self.tileX = tileX
     self.tileY = tileY
+    self.prevX = tileX -- [NEW] Init prev
+    self.prevY = tileY -- [NEW] Init prev
 end
 
 function BaseUnit:update(dt)
@@ -129,7 +133,7 @@ function BaseUnit:draw()
 
     love.graphics.draw(anim.img, quad, px, py, 0, sX, self.scaleY, offsetX, offsetY)
 
-    if self.selected then
+    if self.selected and not self.isMoving then
         local color = self.isPlayer and {0, 1, 0, 0.3} or {1, 0, 0, 0.3}
         love.graphics.setColor(unpack(color))
         love.graphics.rectangle("fill", 
@@ -142,14 +146,14 @@ function BaseUnit:draw()
 end
 
 function BaseUnit:tryMove(targetX, targetY)
-    if not self.isPlayer then return end 
-    if self.isMoving then return end
-    if targetX == self.tileX and targetY == self.tileY then return end
+    if not self.isPlayer then return false end 
+    if self.isMoving then return false end
+    if targetX == self.tileX and targetY == self.tileY then return false end
 
     local path = Pathfinding.findPath(self.tileX, self.tileY, targetX, targetY, Map.canMove)
     if not path then
         self:setSelected(false)
-        return
+        return false
     end
 
     local validPath = path
@@ -160,10 +164,18 @@ function BaseUnit:tryMove(targetX, targetY)
         end
     end
 
+    -- [NEW] Save Previous Position before moving
+    self.prevX = self.tileX
+    self.prevY = self.tileY
+
     Movement.start(self, validPath)
     Arrows.clear()
-    self:setSelected(false)
+    
+    -- [CHANGED] Do NOT deselect yet. We wait for menu confirmation.
+    -- self:setSelected(false) 
+    
     self.currentAnimation = "walk"
+    return true
 end
 
 function BaseUnit:setSelected(value)
@@ -179,7 +191,7 @@ function BaseUnit:isHovered(mx, my)
     local px = (self.tileX - 1) * self.tileSize
     local py = (self.tileY - 1) * self.tileSize
     return mx >= px and mx < px + self.tileSize
-       and my >= py and my < py + self.tileSize
+        and my >= py and my < py + self.tileSize
 end
 
 BaseUnit.isClicked = BaseUnit.isHovered
