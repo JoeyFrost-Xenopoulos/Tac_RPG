@@ -43,8 +43,8 @@ function Mouse.pressed(x, y, button)
             UnitManager.deselectAll()
         end
     end
-
-    if button == 2 then
+    if button == 2 and UnitManager.selectedUnit then
+        Effects.backPlay()
         UnitManager.deselectAll()
     end
 end

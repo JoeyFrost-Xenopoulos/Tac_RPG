@@ -122,6 +122,7 @@ function UnitManager.deselectAll()
 end
 
 function UnitManager.select(unit)
+    UnitManager.deselectAll()
     unit:setSelected(true)
     UnitManager.selectedUnit = unit
     UnitManager.state = "idle"

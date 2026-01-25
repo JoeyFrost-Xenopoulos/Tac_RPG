@@ -10,6 +10,19 @@ function Effects.load()
 
     Effects.back = love.audio.newSource("assets/audio/Back.wav", "static")
     Effects.confirm = love.audio.newSource("assets/audio/Confirmation.wav", "static")
+
+    Effects.mainTheme = love.audio.newSource("assets/audio/Main_Theme.mp3", "stream")
+    Effects.mainTheme:setLooping(true)
+    Effects.mainTheme:setVolume(0.3)
+end
+
+function Effects.playMainTheme()
+    if Effects.mainTheme:isPlaying() then return end
+    Effects.mainTheme:play()
+end
+
+function Effects.stopMainTheme()
+    Effects.mainTheme:stop()
 end
 
 function Effects.backPlay()

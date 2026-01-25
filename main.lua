@@ -29,6 +29,7 @@ function love.load()
     Arrows.load()
     Menu.load()
     Effects.load()
+    Effects.playMainTheme()
 
     UnitManager.add(Soldier.unit)
     UnitManager.add(Enemy_Soldier.unit)
