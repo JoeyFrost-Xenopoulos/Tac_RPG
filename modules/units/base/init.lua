@@ -10,25 +10,15 @@ local Interaction = require("modules.units.base.interaction")
 function BaseUnit.new(config)
     local self = setmetatable({}, BaseUnit)
 
-    -- Stats
     Stats.init(self, config)
-
-    -- Animation
     Animation.init(self, config.animations or {})
-
-    -- Movement
     Movement.init(self)
-
-    -- Drawing (needs self.animations & self.stats)
     Draw.init(self)
-
-    -- Interaction
     Interaction.init(self)
 
     return self
 end
 
--- Proxy functions for each module
 function BaseUnit:update(dt)
     Movement.update(self, dt)
     Animation.update(self, dt)

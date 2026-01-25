@@ -10,7 +10,7 @@ local Grid = require("modules.ui.grid")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
-UnitManager.state = "idle" -- states: "idle", "moving", "menu"
+UnitManager.state = "idle"
 
 function UnitManager.add(unit)
     table.insert(UnitManager.units, unit)
@@ -21,16 +21,11 @@ function UnitManager.update(dt)
         unit:update(dt)
     end
 
-    local unit = UnitManager.selectedUnit
-    
-    -- State Machine Logic
+    local unit = UnitManager.selectedUnit    
     if UnitManager.state == "moving" then
         MovementRange.clear()
         if unit and not unit.isMoving then
-            -- Movement finished, show Menu
-            UnitManager.state = "menu"
-            
-            -- Calculate Menu Position (To the right of the unit)
+            UnitManager.state = "menu"           
             local mx = (unit.tileX * Grid.tileSize) + 10
             local my = (unit.tileY - 1) * Grid.tileSize
             
@@ -39,13 +34,11 @@ function UnitManager.update(dt)
                 { text = "Cancel", callback = UnitManager.cancelMove }
             })
         end
-        return -- Don't draw arrows while moving
+        return 
     elseif UnitManager.state == "menu" then
-        -- Waiting for user input via Menu
         return 
     end
 
-    -- IDLE STATE LOGIC (Arrow drawing)
     if not unit or not unit.isPlayer then
         Arrows.clear()
         return
@@ -72,9 +65,8 @@ function UnitManager.update(dt)
     end
 end
 
--- Callbacks for the Menu
 function UnitManager.confirmMove()
-    UnitManager.deselectAll() -- Finalize
+    UnitManager.deselectAll()
 end
 
 function UnitManager.cancelMove()
