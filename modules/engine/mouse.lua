@@ -49,7 +49,12 @@ function Mouse.pressed(x, y, button)
                 UnitManager.deselectAll()
             end
         else
-            UnitManager.deselectAll()
+            -- Clicked on empty tile with no unit selected: show End menu near click
+            if not currentSelected and UnitManager.state == "idle" then
+                UnitManager.showEndTurnMenu(tx, ty)
+            else
+                UnitManager.deselectAll()
+            end
         end
     end
     if button == 2 and UnitManager.selectedUnit then

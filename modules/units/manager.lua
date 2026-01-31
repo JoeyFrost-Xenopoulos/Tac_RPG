@@ -132,6 +132,41 @@ function UnitManager.showWaitMenu()
     })
 end
 
+function UnitManager.showEndTurnMenu(tx, ty)
+    -- position End menu using the same left/right logic as Wait menu
+    UnitManager.state = "menu"
+    local screenW = love.graphics.getWidth()
+
+    local clickPixelX = tx * Grid.tileSize
+
+    local mx
+    local my = 60
+
+    if clickPixelX < screenW / 2 then
+        mx = screenW - Menu.width - 100
+    else
+        mx = 60
+    end
+
+    Menu.show(mx, my, {
+        { text = "End All", callback = UnitManager.endPlayerTurn },
+        { text = "Options", callback = function() UnitManager.state = "idle"; Menu.hide() end },
+        { text = "Suspend", callback = function() Menu.hide(); love.event.quit() end },
+        { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end }
+    })
+end
+
+function UnitManager.endPlayerTurn()
+    -- Mark all remaining player units as acted
+    for _, unit in ipairs(UnitManager.units) do
+        if unit.isPlayer and not unit.hasActed then
+            unit.hasActed = true
+        end
+    end
+    UnitManager.deselectAll()
+    TurnManager.endTurn()
+end
+
 function UnitManager.draw()
     table.sort(UnitManager.units, function(a, b) return a.tileY < b.tileY end)    
     for _, unit in ipairs(UnitManager.units) do
