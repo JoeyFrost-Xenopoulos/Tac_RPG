@@ -30,7 +30,8 @@ function UnitManager.update(dt)
     if UnitManager.state == "moving" then
         MovementRange.clear()
         if unit and not unit.isMoving then
-            UnitManager.state = "menu"           
+            UnitManager.state = "menu"
+            MovementRange.showAttackRange(unit)
             local screenW = love.graphics.getWidth()
 
             local unitPixelX = unit.tileX * Grid.tileSize

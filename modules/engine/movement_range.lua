@@ -84,6 +84,23 @@ function MovementRange.clear()
     MovementRange.reachable = {}
 end
 
+function MovementRange.showAttackRange(unit)
+    Grid.clearHighlights()
+    local attackRange = unit.attackRange or 1
+    local x, y = unit.tileX, unit.tileY
+
+    for dx = -attackRange, attackRange do
+        for dy = -attackRange, attackRange do
+            if math.abs(dx) + math.abs(dy) <= attackRange then
+                local ax, ay = x + dx, y + dy
+                if ax ~= x or ay ~= y then  -- don't highlight the unit's own tile
+                    Grid.highlightTile(ax, ay, {1.0, 0.2, 0.2, 0.4})
+                end
+            end
+        end
+    end
+end
+
 function MovementRange.canReach(x, y)
     return MovementRange.reachable[key(x, y)] == true
 end
