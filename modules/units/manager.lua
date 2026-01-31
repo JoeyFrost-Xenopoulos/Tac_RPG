@@ -9,6 +9,7 @@ local Menu = require("modules.ui.menu")
 local Grid = require("modules.ui.grid")
 local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
+local Options = require("modules.ui.options")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
@@ -151,7 +152,7 @@ function UnitManager.showEndTurnMenu(tx, ty)
 
     Menu.show(mx, my, {
         { text = "End All", callback = UnitManager.endPlayerTurn },
-        { text = "Options", callback = function() UnitManager.state = "idle"; Menu.hide() end },
+        { text = "Options", callback = function() UnitManager.state = "idle"; Menu.hide(); Options.show() end },
         { text = "Suspend", callback = function() Menu.hide(); love.event.quit() end },
         { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end }
     })

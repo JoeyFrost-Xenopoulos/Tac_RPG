@@ -6,9 +6,14 @@ local MovementRange = require("modules.engine.movement_range")
 local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
+local Options = require("modules.ui.options")
 
 function Mouse.pressed(x, y, button)
     if TurnManager.getCurrentTurn() ~= "player" then
+        return
+    end
+    -- block input while options overlay is visible
+    if Options.visible then
         return
     end
     
