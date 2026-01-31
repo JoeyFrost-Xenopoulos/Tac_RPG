@@ -18,11 +18,9 @@ function Options.load()
             topLeft   = love.graphics.newQuad(0,   0,   quadW.left,  quadH.top, imgW, imgH),
             topMid    = love.graphics.newQuad(462, 0,   quadW.mid,   quadH.top, imgW, imgH),
             topRight  = love.graphics.newQuad(768, 0,   quadW.right, quadH.top, imgW, imgH),
-            
             midLeft   = love.graphics.newQuad(0,   462, quadW.left,  quadH.mid, imgW, imgH),
             midMid    = love.graphics.newQuad(462, 462, quadW.mid,   quadH.mid, imgW, imgH),
             midRight  = love.graphics.newQuad(768, 462, quadW.right, quadH.mid, imgW, imgH),
-
             botLeft   = love.graphics.newQuad(0,   768, quadW.left,  quadH.bot, imgW, imgH),
             botMid    = love.graphics.newQuad(462, 768, quadW.mid,   quadH.bot, imgW, imgH),
             botRight  = love.graphics.newQuad(768, 768, quadW.right, quadH.bot, imgW, imgH)

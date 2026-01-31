@@ -4,6 +4,7 @@ local Map = require("modules.world.map")
 local MovementRange = require("modules.engine.movement_range")
 local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
+local Options = require("modules.ui.options")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
@@ -79,7 +80,7 @@ function Cursor.update()
 
     Cursor.selectTimer = math.max(0, Cursor.selectTimer - dt)
     if prevX ~= Cursor.tileX or prevY ~= Cursor.tileY then
-        if Cursor.selectTimer <= 0 then
+        if Cursor.selectTimer <= 0 and not Menu.visible and not Options.visible then
             Effects.playSelect()
             Cursor.selectTimer = Cursor.selectCooldown
         end
