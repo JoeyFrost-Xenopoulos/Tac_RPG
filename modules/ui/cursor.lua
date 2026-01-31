@@ -3,6 +3,7 @@ local Cursor = {}
 local Map = require("modules.world.map")
 local MovementRange = require("modules.engine.movement_range")
 local Menu = require("modules.ui.menu")
+local Effects = require("modules.audio.sound_effects")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
@@ -17,6 +18,8 @@ Cursor.pulse = 0
 
 Cursor.cursors = {}
 Cursor.current = nil
+Cursor.selectCooldown = 0.06
+Cursor.selectTimer = 0
 
 function Cursor.load()
     -- Grid cursor
@@ -60,9 +63,10 @@ function Cursor.update()
         Cursor.setMouse("default")
         return
     end
-
     local scaledX = mx / Cursor.scaleX
     local scaledY = my / Cursor.scaleY
+
+    local prevX, prevY = Cursor.tileX, Cursor.tileY
 
     Cursor.tileX = math.floor(scaledX / Cursor.tileSize) + 1
     Cursor.tileY = math.floor(scaledY / Cursor.tileSize) + 1
@@ -70,7 +74,16 @@ function Cursor.update()
     Cursor.tileX = math.max(1, math.min(Cursor.tileX, Cursor.gridWidth))
     Cursor.tileY = math.max(1, math.min(Cursor.tileY, Cursor.gridHeight))
 
-    Cursor.pulse = Cursor.pulse + love.timer.getDelta()
+    local dt = love.timer.getDelta()
+    Cursor.pulse = Cursor.pulse + dt
+
+    Cursor.selectTimer = math.max(0, Cursor.selectTimer - dt)
+    if prevX ~= Cursor.tileX or prevY ~= Cursor.tileY then
+        if Cursor.selectTimer <= 0 then
+            Effects.playSelect()
+            Cursor.selectTimer = Cursor.selectCooldown
+        end
+    end
 
     local UnitManager = require("modules.units.manager")
     local tx, ty = Cursor.tileX, Cursor.tileY

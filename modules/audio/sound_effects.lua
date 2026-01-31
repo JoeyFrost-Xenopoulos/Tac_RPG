@@ -5,6 +5,8 @@ function Effects.load()
     Effects.menuIn   = love.audio.newSource("assets/audio/Menu_In.wav", "static")
     Effects.menuOut  = love.audio.newSource("assets/audio/Menu_Out.wav", "static")
     Effects.click    = love.audio.newSource("assets/audio/Click.wav", "static")
+    Effects.select   = love.audio.newSource("assets/audio/Select.wav", "static")
+    Effects.select:setVolume(0.2)
     Effects.runGrass = love.audio.newSource("assets/audio/Running_In_Grass.wav", "static")
     Effects.runGrass:setLooping(true)
 
@@ -49,6 +51,13 @@ end
 function Effects.playClick()
     Effects.click:stop()
     Effects.click:play()
+end
+
+function Effects.playSelect()
+    if Effects.select then
+        Effects.select:stop()
+        Effects.select:play()
+    end
 end
 
 function Effects.playMenuIn()
