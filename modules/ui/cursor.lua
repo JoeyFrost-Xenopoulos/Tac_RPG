@@ -1,6 +1,5 @@
 -- modules/world/cursor.lua
 local Cursor = {}
-local Soldier = require("modules.units.soldier")
 local Map = require("modules.world.map")
 local MovementRange = require("modules.engine.movement_range")
 local Menu = require("modules.ui.menu")
@@ -73,11 +72,12 @@ function Cursor.update()
 
     Cursor.pulse = Cursor.pulse + love.timer.getDelta()
 
-    local unit = Soldier.unit
+    local UnitManager = require("modules.units.manager")
     local tx, ty = Cursor.tileX, Cursor.tileY
+    local selectedUnit = UnitManager.selectedUnit
 
-    if unit.selected then
-        if (tx == unit.tileX and ty == unit.tileY)
+    if selectedUnit then
+        if (tx == selectedUnit.tileX and ty == selectedUnit.tileY)
         or MovementRange.canReach(tx, ty) then
             Cursor.setMouse("hover")
         else

@@ -31,7 +31,11 @@ function Mouse.pressed(x, y, button)
 
         if clickedUnit then
             if UnitManager.state == "idle" then
-                UnitManager.select(clickedUnit)
+                if clickedUnit == currentSelected then
+                    UnitManager.showWaitMenu()
+                else
+                    UnitManager.select(clickedUnit)
+                end
             end
         
         elseif currentSelected and UnitManager.state == "idle" then

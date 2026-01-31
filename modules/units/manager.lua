@@ -109,6 +109,29 @@ function UnitManager.cancelMove()
     Menu.hide()
 end
 
+function UnitManager.showWaitMenu()
+    local unit = UnitManager.selectedUnit
+    if not unit then return end
+    
+    UnitManager.state = "menu"
+    local screenW = love.graphics.getWidth()
+    local unitPixelX = unit.tileX * Grid.tileSize
+    
+    local mx
+    local my = 60
+    
+    if unitPixelX < screenW / 2 then
+        mx = screenW - Menu.width - 100
+    else
+        mx = 60
+    end
+    
+    Menu.show(mx, my, {
+        { text = "Wait", callback = UnitManager.confirmMove },
+        { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end }
+    })
+end
+
 function UnitManager.draw()
     table.sort(UnitManager.units, function(a, b) return a.tileY < b.tileY end)    
     for _, unit in ipairs(UnitManager.units) do
