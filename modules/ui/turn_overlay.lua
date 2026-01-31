@@ -3,7 +3,7 @@ local TurnOverlay = {}
 TurnOverlay.isVisible = false
 TurnOverlay.text = ""
 TurnOverlay.timer = 0
-TurnOverlay.totalDuration = 2.0
+TurnOverlay.totalDuration = 1.0
 TurnOverlay.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 128)
 
 function TurnOverlay.show(text)

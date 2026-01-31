@@ -40,9 +40,22 @@ function MovementRange.show(unit)
                 local k = key(nx, ny)
 
                 if not visited[k] and Map.canMove(x, y, nx, ny) then
-                    visited[k] = true
-                    table.insert(moveQueue, {x = nx, y = ny, dist = dist + 1})
-                    table.insert(moveTiles, {x = nx, y = ny})
+                    local UnitManager = require("modules.units.manager")
+                    local blocked = false
+                    for _, otherUnit in ipairs(UnitManager.units) do
+                        if otherUnit ~= unit and otherUnit.tileX == nx and otherUnit.tileY == ny then
+                            if not otherUnit.isPlayer then
+                                blocked = true
+                                break
+                            end
+                        end
+                    end
+                    
+                    if not blocked then
+                        visited[k] = true
+                        table.insert(moveQueue, {x = nx, y = ny, dist = dist + 1})
+                        table.insert(moveTiles, {x = nx, y = ny})
+                    end
                 end
             end
         end
@@ -57,7 +70,7 @@ function MovementRange.show(unit)
                     local ax, ay = tile.x + dx, tile.y + dy
                     local ak = key(ax, ay)
                     if not visited[ak] and not attackHighlighted[ak] then
-                        Grid.highlightTile(ax, ay, {1.0, 0.2, 0.2, 0.4}) -- Red Color
+                        Grid.highlightTile(ax, ay, {1.0, 0.2, 0.2, 0.4})
                         attackHighlighted[ak] = true
                     end
                 end

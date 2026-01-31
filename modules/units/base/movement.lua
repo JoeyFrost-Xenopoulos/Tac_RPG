@@ -23,7 +23,22 @@ function Movement.tryMove(self, targetX, targetY)
     if not self.isPlayer or self.isMoving then return false end
     if targetX == self.tileX and targetY == self.tileY then return false end
 
-    local path = Pathfinding.findPath(self.tileX, self.tileY, targetX, targetY, Map.canMove)
+    local function canMoveWithUnits(fromX, fromY, toX, toY)
+        if not Map.canMove(fromX, fromY, toX, toY) then
+            return false
+        end
+        local UnitManager = require("modules.units.manager")
+        for _, unit in ipairs(UnitManager.units) do
+            if unit ~= self and unit.tileX == toX and unit.tileY == toY then
+                if not unit.isPlayer then
+                    return false
+                end
+            end
+        end
+        return true
+    end
+
+    local path = Pathfinding.findPath(self.tileX, self.tileY, targetX, targetY, canMoveWithUnits)
     if not path then
         self:setSelected(false)
         return false
