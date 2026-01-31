@@ -6,6 +6,7 @@ TurnManager.currentUnitIndex = 0
 TurnManager.unitsThatHaveMoved = {}
 TurnManager.enemyTurnState = "idle"
 local TurnAI = require("modules.engine.turn_ai")
+local TurnOverlay = require("modules.ui.turn_overlay")
 
 local function getAvailableUnits()
     local UnitManager = require("modules.units.manager")
@@ -59,8 +60,10 @@ function TurnManager.startTurn()
     end
     
     if TurnManager.currentTurn == "player" then
+        TurnOverlay.show("Player Turn")
         TurnManager.enemyTurnState = "idle"
     else
+        TurnOverlay.show("Enemy Turn")
         TurnManager.enemyTurnState = "moving"
     end
 end
@@ -94,6 +97,10 @@ end
 function TurnManager.updateEnemyTurn(dt)
     if TurnManager.currentTurn ~= "enemy" or TurnManager.enemyTurnState ~= "moving" then 
         return 
+    end
+    
+    if TurnOverlay.isActive() then
+        return
     end
     
     local units = getAvailableUnits()
@@ -143,6 +150,10 @@ end
 function TurnManager.getCurrentUnit()
     local units = getAvailableUnits()
     return units[TurnManager.currentUnitIndex]
+end
+
+function TurnManager.isOverlayActive()
+    return TurnOverlay.isActive()
 end
 
 return TurnManager

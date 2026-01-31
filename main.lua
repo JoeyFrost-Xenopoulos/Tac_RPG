@@ -12,6 +12,7 @@ Arrows = require("modules.ui.movement_arrows")
 Menu = require("modules.ui.menu")
 Clouds = require("modules.world.clouds")
 TurnManager = require("modules.engine.turn")
+TurnOverlay = require("modules.ui.turn_overlay")
 
 -- Music
 Effects = require("modules.audio.sound_effects")
@@ -49,6 +50,7 @@ end
 function love.update(dt)
     Map.update(dt)
     Cursor.update()
+    TurnOverlay.update(dt)
     UnitManager.update(dt)
     Banner.update(dt)
     Menu.update(dt)
@@ -62,7 +64,6 @@ end
 function love.draw()
     Map.drawLayersBelowSoldier()
     Grid.draw()
-    -- Grid.drawLines()
 
     Arrows.draw()
     UnitManager.draw()
@@ -73,8 +74,12 @@ function love.draw()
     Cursor.draw()
     BannerController.draw()
     Menu.draw()
+    TurnOverlay.draw()
 end
 
 function love.mousepressed(x, y, button)
+    if TurnManager.isOverlayActive() then
+        return
+    end
     Mouse.pressed(x, y, button)
 end
