@@ -24,7 +24,16 @@ function Draw.draw(self)
     local sX = self.scaleX
     if self.facingX < 0 then sX = -sX end
 
+    local TurnManager = require("modules.engine.turn")
+    if self.hasActed and not self.selected then
+        local isEnemyTurn = TurnManager.getCurrentTurn() == "enemy"
+        if not (not self.isPlayer and isEnemyTurn) then
+            love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
+        end
+    end
+
     love.graphics.draw(anim.img, quad, px, py, 0, sX, self.scaleY, offsetX, offsetY)
+    love.graphics.setColor(1, 1, 1, 1)
 
     if self.selected and not self.isMoving then
         local color = self.isPlayer and {0,1,0,0.3} or {1,0,0,0.3}

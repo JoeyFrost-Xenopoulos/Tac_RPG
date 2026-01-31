@@ -11,6 +11,7 @@ BannerController = require("modules.ui.banner_controller")
 Arrows = require("modules.ui.movement_arrows")
 Menu = require("modules.ui.menu")
 Clouds = require("modules.world.clouds")
+TurnManager = require("modules.engine.turn")
 
 -- Music
 Effects = require("modules.audio.sound_effects")
@@ -18,6 +19,7 @@ Effects = require("modules.audio.sound_effects")
 -- Units
 UnitManager = require("modules.units.manager")
 Soldier = require("modules.units.soldier")
+Soldier2 = require("modules.units.soldier_2")
 Enemy_Soldier = require("modules.units.enemy_soldier")
 
 function love.load()
@@ -34,10 +36,14 @@ function love.load()
     Clouds.load()
 
     UnitManager.add(Soldier.unit)
+    UnitManager.add(Soldier2.unit)
     UnitManager.add(Enemy_Soldier.unit)
 
     Soldier.setPosition(3, 3)
+    Soldier2.setPosition(5, 2)
     Enemy_Soldier.setPosition(8, 2)
+    
+    TurnManager.startTurn()
 end
 
 function love.update(dt)
@@ -47,6 +53,7 @@ function love.update(dt)
     Banner.update(dt)
     Menu.update(dt)
     Clouds.update(dt)
+    TurnManager.updateEnemyTurn(dt)
 
     local mx, my = love.mouse.getPosition()
     BannerController.update(mx, my)

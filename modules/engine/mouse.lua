@@ -5,8 +5,13 @@ local UnitManager = require("modules.units.manager")
 local MovementRange = require("modules.engine.movement_range")
 local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
+local TurnManager = require("modules.engine.turn")
 
 function Mouse.pressed(x, y, button)
+    if TurnManager.getCurrentTurn() ~= "player" then
+        return
+    end
+    
     if UnitManager.state == "menu" then
         if button == 1 then
             local hit = Menu.clicked(x, y)

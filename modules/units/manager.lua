@@ -8,6 +8,7 @@ local Arrows = require("modules.ui.movement_arrows")
 local Menu = require("modules.ui.menu")
 local Grid = require("modules.ui.grid")
 local Effects = require("modules.audio.sound_effects")
+local TurnManager = require("modules.engine.turn")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
@@ -53,6 +54,12 @@ function UnitManager.update(dt)
         return 
     end
 
+    -- Don't allow player input during enemy turn
+    if TurnManager.getCurrentTurn() ~= "player" then
+        Arrows.clear()
+        return
+    end
+
     if not unit or not unit.isPlayer then
         Arrows.clear()
         return
@@ -80,7 +87,15 @@ function UnitManager.update(dt)
 end
 
 function UnitManager.confirmMove()
-    UnitManager.deselectAll()
+    local unit = UnitManager.selectedUnit
+    if unit then
+        TurnManager.markUnitAsMoved(unit)
+        UnitManager.deselectAll()
+        
+        if TurnManager.areAllUnitsMoved() then
+            TurnManager.endTurn()
+        end
+    end
 end
 
 function UnitManager.cancelMove()
@@ -119,13 +134,18 @@ function UnitManager.deselectAll()
     UnitManager.state = "idle"
     Menu.hide()
     Arrows.clear()
+    MovementRange.clear()
 end
 
 function UnitManager.select(unit)
+    if unit.hasActed then
+        return
+    end
     UnitManager.deselectAll()
     unit:setSelected(true)
     UnitManager.selectedUnit = unit
     UnitManager.state = "idle"
+    MovementRange.show(unit)
     Effects.playConfirm()
 end
 

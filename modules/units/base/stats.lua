@@ -16,6 +16,7 @@ function Stats.init(self, config)
     self.prevY = 1
     self.facingX = 1
     self.selected = false
+    self.hasActed = false
 
     self.maxHealth = config.maxHealth or 100
     self.health = config.health or self.maxHealth
