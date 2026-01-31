@@ -3,6 +3,7 @@ local Cursor = {}
 local Soldier = require("modules.units.soldier")
 local Map = require("modules.world.map")
 local MovementRange = require("modules.engine.movement_range")
+local Menu = require("modules.ui.menu")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
@@ -34,8 +35,6 @@ function Cursor.load()
     -- Blocked cursor
     local img3 = love.image.newImageData("assets/ui/cursors/Cursor_03.png")
     Cursor.cursors.blocked = love.mouse.newCursor(img3, 0, 0)
-
-    Cursor.setMouse("default")
 end
 
 function Cursor.setMouse(name)
@@ -58,7 +57,11 @@ end
 
 function Cursor.update()
     local mx, my = love.mouse.getPosition()
-    
+    if Menu.isHovered(mx, my) then
+        Cursor.setMouse("default")
+        return
+    end
+
     local scaledX = mx / Cursor.scaleX
     local scaledY = my / Cursor.scaleY
 
@@ -83,11 +86,12 @@ function Cursor.update()
     else
         Cursor.setMouse("default")
     end
-
 end
 
 function Cursor.draw()
     if not Cursor.image then return end
+    local mx, my = love.mouse.getPosition()
+    if Menu.isHovered(mx, my) then return end
 
     love.graphics.push()
     love.graphics.scale(Cursor.scaleX, Cursor.scaleY)

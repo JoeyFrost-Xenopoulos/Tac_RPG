@@ -5,7 +5,6 @@ local SoldierConfig = {
     type = "Soldier",
     avatar = love.graphics.newImage("assets/ui/avatars/Avatars_01.png"),
     uiVariant = 1,
-    uiAnchor = "left",
     isPlayer = true,
     maxMoveRange = 4,
     maxHealth = 120,

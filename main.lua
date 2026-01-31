@@ -37,7 +37,7 @@ function love.load()
     UnitManager.add(Enemy_Soldier.unit)
 
     Soldier.setPosition(3, 3)
-    Enemy_Soldier.setPosition(3, 4)
+    Enemy_Soldier.setPosition(8, 2)
 end
 
 function love.update(dt)

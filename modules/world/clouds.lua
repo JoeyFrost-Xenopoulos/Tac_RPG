@@ -6,8 +6,8 @@ Clouds.instances = {}
 Clouds.minSpeed = 10
 Clouds.maxSpeed = 30
 Clouds.minY = 0
-Clouds.maxY = WINDOW_HEIGHT * 0.6
-Clouds.spawnDelay = 5
+Clouds.maxY = WINDOW_HEIGHT * 0.8
+Clouds.spawnDelay = 0
 Clouds.timer = 0
 Clouds.maxClouds = 5
 

@@ -98,6 +98,13 @@ function Menu.clicked(mx, my)
     return false
 end
 
+function Menu.isHovered(mx, my)
+    if not Menu.visible then return false end
+
+    return mx >= Menu.x and mx <= Menu.x + Menu.width
+       and my >= Menu.y and my <= Menu.y + Menu.currentHeight
+end
+
 function Menu.draw()
     if not Menu.visible then return end
     local v = Menu.variants[1]

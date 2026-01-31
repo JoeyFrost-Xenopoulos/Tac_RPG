@@ -5,7 +5,6 @@ local EnemyConfig = {
     type = "Enemy",
     avatar = love.graphics.newImage("assets/ui/avatars/Avatars_06.png"),
     uiVariant = 2,
-    uiAnchor = "right",
     isPlayer = false,
     maxMoveRange = 4,
     animations = {
