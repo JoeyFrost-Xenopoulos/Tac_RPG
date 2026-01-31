@@ -33,7 +33,7 @@ function love.load()
     Arrows.load()
     Menu.load()
     Effects.load()
-    Effects.playMainTheme()
+    --Effects.playMainTheme()
     Clouds.load()
 
     UnitManager.add(Soldier.unit)

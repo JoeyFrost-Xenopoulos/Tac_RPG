@@ -99,11 +99,11 @@ end
 
 function UnitManager.cancelMove()
     local unit = UnitManager.selectedUnit
+    UnitManager.state = "idle"
     if unit then
         unit.tileX = unit.prevX
         unit.tileY = unit.prevY
         unit.isMoving = false
-        UnitManager.state = "idle"
         MovementRange.show(unit) 
     end
     Menu.hide()
