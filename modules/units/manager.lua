@@ -54,8 +54,7 @@ function UnitManager.update(dt)
         return 
     end
 
-    -- Don't allow player input during enemy turn
-    if TurnManager.getCurrentTurn() ~= "player" then
+   if TurnManager.getCurrentTurn() ~= "player" then
         Arrows.clear()
         return
     end

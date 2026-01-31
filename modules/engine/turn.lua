@@ -1,11 +1,11 @@
 -- modules/engine/turn.lua
--- Turn management system for tactical RPG
 local TurnManager = {}
 
-TurnManager.currentTurn = "player" -- "player" or "enemy"
+TurnManager.currentTurn = "player"
 TurnManager.currentUnitIndex = 0
-TurnManager.unitsThatHaveMoved = {} -- Set to track which units have moved
-TurnManager.enemyTurnState = "idle" -- "idle", "moving"
+TurnManager.unitsThatHaveMoved = {}
+TurnManager.enemyTurnState = "idle"
+local TurnAI = require("modules.engine.turn_ai")
 
 local function getAvailableUnits()
     local UnitManager = require("modules.units.manager")
@@ -42,78 +42,17 @@ local function getNextAvailableUnit()
         end
     end
     
-    -- If all units have moved, turn is over
     return nil
 end
 
-local function findNearestEnemyUnit(enemyUnit)
-    local UnitManager = require("modules.units.manager")
-    local nearestDist = math.huge
-    local nearestUnit = nil
-    
-    for _, unit in ipairs(UnitManager.units) do
-        if unit.isPlayer then
-            local dist = math.abs(unit.tileX - enemyUnit.tileX) + 
-                         math.abs(unit.tileY - enemyUnit.tileY)
-            if dist < nearestDist then
-                nearestDist = dist
-                nearestUnit = unit
-            end
-        end
-    end
-    
-    return nearestUnit
-end
-
-local function isUnitOccupyingTile(toX, toY, excludeUnit)
-    local UnitManager = require("modules.units.manager")
-    for _, unit in ipairs(UnitManager.units) do
-        if unit ~= excludeUnit and unit.tileX == toX and unit.tileY == toY then
-            return true
-        end
-    end
-    return false
-end
-
 local function moveEnemyToward(enemyUnit, targetUnit)
-    local Pathfinding = require("modules.engine.pathfinding")
-    local Map = require("modules.world.map")
-    local MovementEngine = require("modules.engine.movement")
-    
-    local path = Pathfinding.findPath(
-        enemyUnit.tileX, enemyUnit.tileY, 
-        targetUnit.tileX, targetUnit.tileY, 
-        Map.canMove
-    )
-    
-    if path and #path > 1 then
-        local steps = math.min(#path - 1, enemyUnit.maxMoveRange)
-        if steps > 0 then
-            local finalPos = path[steps + 1]
-            if isUnitOccupyingTile(finalPos.x, finalPos.y, enemyUnit) then
-                steps = steps - 1
-            end
-            
-            if steps > 0 then
-                local trimmedPath = {path[1]}
-                for i = 2, steps + 1 do
-                    table.insert(trimmedPath, path[i])
-                end
-                MovementEngine.start(enemyUnit, trimmedPath)
-                return true
-            end
-        end
-    end
-    
-    return false
+    return TurnAI.moveEnemyToward(enemyUnit, targetUnit)
 end
 
 function TurnManager.startTurn()
-    -- Reset units that have acted
     TurnManager.unitsThatHaveMoved = {}
     TurnManager.currentUnitIndex = 0
     
-    -- Mark all units as not acted
     local UnitManager = require("modules.units.manager")
     for _, unit in ipairs(UnitManager.units) do
         unit.hasActed = false
@@ -133,7 +72,6 @@ function TurnManager.selectNextUnit()
         local UnitManager = require("modules.units.manager")
         UnitManager.select(unit)
     else
-        -- All units have moved, end turn
         TurnManager.endTurn()
     end
 end
@@ -160,21 +98,18 @@ function TurnManager.updateEnemyTurn(dt)
     
     local units = getAvailableUnits()
     
-    -- Move to next enemy that hasn't moved
     if TurnManager.currentUnitIndex < #units then
         local currentUnit = units[TurnManager.currentUnitIndex + 1]
         
         if not TurnManager.unitsThatHaveMoved[currentUnit] then
-            -- First time seeing this unit, move it
             if not currentUnit.hasMoveOrderQueued then
-                local targetUnit = findNearestEnemyUnit(currentUnit)
+                local targetUnit = TurnAI.findNearestEnemyUnit(currentUnit)
                 if targetUnit then
                     moveEnemyToward(currentUnit, targetUnit)
                 end
                 currentUnit.hasMoveOrderQueued = true
             end
             
-            -- Wait for movement to complete
             if not currentUnit.isMoving then
                 TurnManager.markUnitAsMoved(currentUnit)
                 currentUnit.hasMoveOrderQueued = false
@@ -184,7 +119,6 @@ function TurnManager.updateEnemyTurn(dt)
             TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
         end
     else
-        -- All enemies have moved, end turn
         TurnManager.endTurn()
     end
 end
