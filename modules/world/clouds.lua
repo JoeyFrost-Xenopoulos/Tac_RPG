@@ -61,9 +61,11 @@ function Clouds.update(dt)
             c.y = c.y + c.dy * dt
         end
 
-        if c.dir == 1 and c.x > WINDOW_WIDTH + 200 then
+        local w = c.img:getWidth()
+
+        if c.dir == 1 and c.x > WINDOW_WIDTH then
             table.remove(Clouds.instances, i)
-        elseif c.dir == -1 and c.x < -200 then
+        elseif c.dir == -1 and c.x + w < 0 then
             table.remove(Clouds.instances, i)
         end
     end
