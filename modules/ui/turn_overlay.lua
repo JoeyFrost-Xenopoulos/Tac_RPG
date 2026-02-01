@@ -3,7 +3,7 @@ local TurnOverlay = {}
 TurnOverlay.isVisible = false
 TurnOverlay.text = ""
 TurnOverlay.timer = 0
-TurnOverlay.totalDuration = 2.5 
+TurnOverlay.totalDuration = 1.5 
 TurnOverlay.slideDuration = 0.5 
 TurnOverlay.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 128)
 TurnOverlay.swordImage = love.graphics.newImage("assets/ui/swords/Swords.png")
@@ -12,7 +12,7 @@ TurnOverlay.swordHeight = 128
 
 local segments = {
     {x = 0,   w = 128, targetW = 128, xOffset = 0},
-    {x = 190, w = 66,  targetW = 300, xOffset = -10},
+    {x = 190, w = 66,  targetW = 200, xOffset = -10},
     {x = 320, w = 128, targetW = 200, xOffset = -2}
 }
 
