@@ -18,6 +18,24 @@ function Effects.load()
     Effects.mainTheme:setVolume(0.1)
 end
 
+function Effects.setMusicVolume(v)
+    if Effects.mainTheme then
+        Effects.mainTheme:setVolume(v * 0.1)
+    end
+end
+
+function Effects.setSFXVolume(v)
+    local sfx = {
+        Effects.menuIn, Effects.menuOut, Effects.click,
+        Effects.select, Effects.runGrass,
+        Effects.back, Effects.confirm
+    }
+
+    for _, src in ipairs(sfx) do
+        if src then src:setVolume(v) end
+    end
+end
+
 function Effects.playMainTheme()
     if Effects.mainTheme:isPlaying() then return end
     Effects.mainTheme:play()

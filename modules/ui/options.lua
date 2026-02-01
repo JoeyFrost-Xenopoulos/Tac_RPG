@@ -15,6 +15,16 @@ Options.cursorImage = nil
 local quadW = {left = 308, mid = 154, right = 204}
 local quadH = {top = 310, mid = 310, bot = 310}
 
+Options.volumeLevels = {
+    { label = "Off", value = 0.0 },
+    { label = "L",   value = 0.3 },
+    { label = "M",   value = 0.6 },
+    { label = "H",   value = 1.0 }
+}
+
+Options.musicLevel = 3
+Options.sfxLevel   = 3
+
 function Options.load()
     Options.menuImage = love.graphics.newImage("assets/ui/menu/options_menu.png")
     local imgW, imgH = Options.menuImage:getDimensions()
@@ -39,8 +49,11 @@ function Options.load()
         sfx = love.graphics.newImage("assets/ui/icons/sfx.png")
     }
 
-    Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)    
+    Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
     Options.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
+
+    Effects.setMusicVolume(Options.volumeLevels[Options.musicLevel].value)
+    Effects.setSFXVolume(Options.volumeLevels[Options.sfxLevel].value)
 end
 
 function Options.clicked(mx, my)
@@ -60,8 +73,23 @@ function Options.clicked(mx, my)
                 Effects.playClick()
                 return true
             end
+
+            if item.name == "Music" then
+                Options.musicLevel = Options.musicLevel % #Options.volumeLevels + 1
+                Effects.setMusicVolume(Options.volumeLevels[Options.musicLevel].value)
+                Effects.playSelect()
+                return true
+            end
+
+            if item.name == "SFX" then
+                Options.sfxLevel = Options.sfxLevel % #Options.volumeLevels + 1
+                Effects.setSFXVolume(Options.volumeLevels[Options.sfxLevel].value)
+                Effects.playSelect()
+                return true
+            end
         end
     end
+
     return false
 end
 
@@ -158,28 +186,34 @@ function Options.draw()
 
             local mx, my = love.mouse.getPosition()
             local currentHover = nil
+            local rightX = x + totalW - 125
 
             for i, item in ipairs(items) do
-                local isHovered = mx > x + 100 and mx < x + totalW and my > item.y and my < item.y + 50
-                if isHovered then
-                    currentHover = i
-                    
-                    if Options.hoveredIndex ~= i then
-                        Options.hoveredIndex = i
-                        Effects.playClick()
+                local isHovered = mx > x + 100 and mx < x + totalW
+                    and my > item.y and my < item.y + 50
+                    -- HIGHLIGHT
+                    if isHovered then
+                        love.graphics.setColor(1, 1, 1, 0.12)
+                        love.graphics.rectangle("fill",x + 100,item.y - (80 - 40) / 2,totalW - 140,80,8, 8)
                     end
 
-                    local bob = math.sin(Options.cursorTime * 8) * 4
                     love.graphics.setColor(1, 1, 1, 1)
-                    love.graphics.draw(Options.cursorImage, x + 220 + bob, item.y - 5, 90, 2, 2)
-                end
 
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.print(item.name, x + 140 + textOffsetX, item.y)
+                    -- Cursor
+                    if isHovered then
+                        local bob = math.sin(Options.cursorTime * 8) * 4
+                        love.graphics.draw(Options.cursorImage, x + 220 + bob, item.y - 5, 90, 2, 2)
+                    end
+
+                    -- Text
+                    love.graphics.print(item.name, x + 140 + textOffsetX, item.y)
+                if item.name == "Music" then
+                    love.graphics.print(Options.volumeLevels[Options.musicLevel].label, rightX, item.y)
+                elseif item.name == "SFX" then
+                    love.graphics.print(Options.volumeLevels[Options.sfxLevel].label, rightX, item.y)
+                end
             end
-            if not currentHover then
-                Options.hoveredIndex = nil
-            end
+
         end
     end
 end
