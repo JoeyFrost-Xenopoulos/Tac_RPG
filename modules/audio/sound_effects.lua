@@ -6,7 +6,7 @@ function Effects.load()
     Effects.menuOut  = love.audio.newSource("assets/audio/Menu_Out.wav", "static")
     Effects.click    = love.audio.newSource("assets/audio/Click.wav", "static")
     Effects.select   = love.audio.newSource("assets/audio/Select.wav", "static")
-    Effects.select:setVolume(0.2)
+    Effects.select:setVolume(0.1)
     Effects.runGrass = love.audio.newSource("assets/audio/Running_In_Grass.wav", "static")
     Effects.runGrass:setLooping(true)
 
@@ -15,7 +15,7 @@ function Effects.load()
 
     Effects.mainTheme = love.audio.newSource("assets/audio/Main_Theme.mp3", "stream")
     Effects.mainTheme:setLooping(true)
-    Effects.mainTheme:setVolume(0.3)
+    Effects.mainTheme:setVolume(0.1)
 end
 
 function Effects.playMainTheme()

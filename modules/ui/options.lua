@@ -8,7 +8,6 @@ Options.menuImage = nil
 Options.scaleX = 0.85
 Options.scaleY = 0.85
 
--- Cursor and Hover State
 Options.cursorTime = 0
 Options.hoveredIndex = nil
 Options.cursorImage = nil
@@ -46,10 +45,8 @@ end
 
 function Options.clicked(mx, my)
     if not Options.visible then return false end
-
     local x = (love.graphics.getWidth() - (quadW.left + quadW.mid + quadW.right) * Options.scaleX) / 2 - 45
     local y = (love.graphics.getHeight() - (quadH.top + quadH.mid + quadH.bot) * Options.scaleY) / 2
-
     local items = {
         { name = "Back",  y = y + 175, iconY = y + 160 },
         { name = "Music", y = y + 305, iconY = y + 290 },
@@ -63,7 +60,6 @@ function Options.clicked(mx, my)
                 Effects.playClick()
                 return true
             end
-            -- TODO: Add music/sfx toggle logic
         end
     end
     return false
@@ -89,9 +85,7 @@ function Options.hide()
 end
 
 function Options.update(dt)
-    if not Options.visible then return end
-    
-    -- Update cursor animation timer
+    if not Options.visible then return end    
     Options.cursorTime = Options.cursorTime + dt
 
     if Options.video then
@@ -124,13 +118,10 @@ function Options.draw()
 
     if Options.menuImage and Options.variants then
         local v = Options.variants[1]
-
         local col2X = x + (quadW.left * Options.scaleX) - 2
         local col3X = col2X + (quadW.mid * Options.scaleX) - 5
-        
         local row2Y = y + (quadH.top * Options.scaleY) - 5
         local row3Y = row2Y + (quadH.mid * Options.scaleY) - 135
-
         love.graphics.setColor(1, 1, 1, 1)
         
         -- Top row
