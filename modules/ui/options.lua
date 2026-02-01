@@ -26,6 +26,14 @@ function Options.load()
             botRight  = love.graphics.newQuad(768, 768, quadW.right, quadH.bot, imgW, imgH)
         }
     }
+
+    Options.icons = {
+        back  = love.graphics.newImage("assets/ui/icons/back.png"),
+        music = love.graphics.newImage("assets/ui/icons/music.png"),
+        sfx = love.graphics.newImage("assets/ui/icons/sfx.png")
+    }
+
+    Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
 end
 
 function Options.show()
@@ -98,6 +106,33 @@ function Options.draw()
         love.graphics.draw(Options.menuImage, v.botLeft,  x,     row3Y, 0, Options.scaleX, Options.scaleY)
         love.graphics.draw(Options.menuImage, v.botMid,   col2X, row3Y, 0, Options.scaleX, Options.scaleY)
         love.graphics.draw(Options.menuImage, v.botRight, col3X, row3Y, 0, Options.scaleX, Options.scaleY)
+    end
+
+    if Options.icons then
+        local totalW = (quadW.left + quadW.mid + quadW.right) * Options.scaleX
+        local totalH = (quadH.top + quadH.mid + quadH.bot) * Options.scaleY
+
+        local offsetX = 45
+        local x = (love.graphics.getWidth() - totalW) / 2 - offsetX
+        local y = (love.graphics.getHeight() - totalH) / 2
+
+        love.graphics.draw(Options.icons.back, x + 160, y + 160, 0, 1, 1)
+        love.graphics.draw(Options.icons.music, x + 160, y + 290, 0, 1, 1)
+        love.graphics.draw(Options.icons.sfx, x + 120, y + 380, 0, 0.16, 0.16)
+
+        if Options.font then
+            love.graphics.setFont(Options.font)
+            love.graphics.setColor(1, 1, 1, 1)
+
+            local textOffsetX = 140
+            local backTextY  = y + 175
+            local musicTextY = y + 305
+            local sfxTextY   = y + 430
+
+            love.graphics.print("Back", x + 140 + textOffsetX, backTextY)
+            love.graphics.print("Music", x + 135 + textOffsetX, musicTextY)
+            love.graphics.print("SFX", x + 150 + textOffsetX, sfxTextY)
+        end
     end
 end
 
