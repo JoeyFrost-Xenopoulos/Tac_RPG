@@ -12,8 +12,10 @@ function Mouse.pressed(x, y, button)
     if TurnManager.getCurrentTurn() ~= "player" then
         return
     end
-    -- block input while options overlay is visible
     if Options.visible then
+        if button == 1 then
+            Options.clicked(x, y)
+        end
         return
     end
     
@@ -54,7 +56,6 @@ function Mouse.pressed(x, y, button)
                 UnitManager.deselectAll()
             end
         else
-            -- Clicked on empty tile with no unit selected: show End menu near click
             if not currentSelected and UnitManager.state == "idle" then
                 UnitManager.showEndTurnMenu(tx, ty)
             else

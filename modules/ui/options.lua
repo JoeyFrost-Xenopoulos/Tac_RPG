@@ -1,3 +1,5 @@
+local Effects = require("modules.audio.sound_effects")
+
 local Options = {}
 
 Options.visible = false
@@ -5,6 +7,11 @@ Options.video = nil
 Options.menuImage = nil
 Options.scaleX = 0.85
 Options.scaleY = 0.85
+
+-- Cursor and Hover State
+Options.cursorTime = 0
+Options.hoveredIndex = nil
+Options.cursorImage = nil
 
 local quadW = {left = 308, mid = 154, right = 204}
 local quadH = {top = 310, mid = 310, bot = 310}
@@ -33,7 +40,33 @@ function Options.load()
         sfx = love.graphics.newImage("assets/ui/icons/sfx.png")
     }
 
-    Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
+    Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)    
+    Options.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
+end
+
+function Options.clicked(mx, my)
+    if not Options.visible then return false end
+
+    local x = (love.graphics.getWidth() - (quadW.left + quadW.mid + quadW.right) * Options.scaleX) / 2 - 45
+    local y = (love.graphics.getHeight() - (quadH.top + quadH.mid + quadH.bot) * Options.scaleY) / 2
+
+    local items = {
+        { name = "Back",  y = y + 175, iconY = y + 160 },
+        { name = "Music", y = y + 305, iconY = y + 290 },
+        { name = "SFX",   y = y + 430, iconY = y + 380 }
+    }
+
+    for i, item in ipairs(items) do
+        if mx > x + 100 and mx < x + 500 and my > item.y and my < item.y + 50 then
+            if item.name == "Back" then
+                Options.hide()
+                Effects.playClick()
+                return true
+            end
+            -- TODO: Add music/sfx toggle logic
+        end
+    end
+    return false
 end
 
 function Options.show()
@@ -44,6 +77,7 @@ function Options.show()
         Options.video:play()
     end
     Options.visible = true
+    Options.hoveredIndex = nil
 end
 
 function Options.hide()
@@ -51,13 +85,20 @@ function Options.hide()
         Options.video:pause()
     end
     Options.visible = false
+    Options.hoveredIndex = nil
 end
 
 function Options.update(dt)
-    if not Options.visible or not Options.video then return end
-    if not Options.video:isPlaying() then
-        Options.video:rewind()
-        Options.video:play()
+    if not Options.visible then return end
+    
+    -- Update cursor animation timer
+    Options.cursorTime = Options.cursorTime + dt
+
+    if Options.video then
+        if not Options.video:isPlaying() then
+            Options.video:rewind()
+            Options.video:play()
+        end
     end
 end
 
@@ -75,14 +116,14 @@ function Options.draw()
         love.graphics.draw(Options.video, 0, 0, 0, sx, sy)
     end
 
+    local totalW = (quadW.left + quadW.mid + quadW.right) * Options.scaleX
+    local totalH = (quadH.top + quadH.mid + quadH.bot) * Options.scaleY         
+    local offsetX = 45
+    local x = (screenW - totalW) / 2 - offsetX
+    local y = (screenH - totalH) / 2
+
     if Options.menuImage and Options.variants then
         local v = Options.variants[1]
-
-        local totalW = (quadW.left + quadW.mid + quadW.right) * Options.scaleX
-        local totalH = (quadH.top + quadH.mid + quadH.bot) * Options.scaleY        
-        local offsetX = 45
-        local x = (screenW - totalW) / 2 - offsetX
-        local y = (screenH - totalH) / 2
 
         local col2X = x + (quadW.left * Options.scaleX) - 2
         local col3X = col2X + (quadW.mid * Options.scaleX) - 5
@@ -93,45 +134,61 @@ function Options.draw()
         love.graphics.setColor(1, 1, 1, 1)
         
         -- Top row
-        love.graphics.draw(Options.menuImage, v.topLeft,  x,     y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.topMid,   col2X, y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.topLeft,   x,     y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.topMid,    col2X, y, 0, Options.scaleX, Options.scaleY)
         love.graphics.draw(Options.menuImage, v.topRight, col3X, y, 0, Options.scaleX, Options.scaleY)
 
         -- Middle row
-        love.graphics.draw(Options.menuImage, v.midLeft,  x,     row2Y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.midMid,   col2X, row2Y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.midLeft,   x,     row2Y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.midMid,    col2X, row2Y, 0, Options.scaleX, Options.scaleY)
         love.graphics.draw(Options.menuImage, v.midRight, col3X, row2Y, 0, Options.scaleX, Options.scaleY)
 
         -- Bottom row
-        love.graphics.draw(Options.menuImage, v.botLeft,  x,     row3Y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.botMid,   col2X, row3Y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.botLeft,   x,     row3Y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.botMid,    col2X, row3Y, 0, Options.scaleX, Options.scaleY)
         love.graphics.draw(Options.menuImage, v.botRight, col3X, row3Y, 0, Options.scaleX, Options.scaleY)
     end
 
     if Options.icons then
-        local totalW = (quadW.left + quadW.mid + quadW.right) * Options.scaleX
-        local totalH = (quadH.top + quadH.mid + quadH.bot) * Options.scaleY
-
-        local offsetX = 45
-        local x = (love.graphics.getWidth() - totalW) / 2 - offsetX
-        local y = (love.graphics.getHeight() - totalH) / 2
-
+        love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(Options.icons.back, x + 160, y + 160, 0, 1, 1)
         love.graphics.draw(Options.icons.music, x + 160, y + 290, 0, 1, 1)
         love.graphics.draw(Options.icons.sfx, x + 120, y + 380, 0, 0.16, 0.16)
 
         if Options.font then
             love.graphics.setFont(Options.font)
-            love.graphics.setColor(1, 1, 1, 1)
-
+            
             local textOffsetX = 140
-            local backTextY  = y + 175
-            local musicTextY = y + 305
-            local sfxTextY   = y + 430
+            local items = {
+                { name = "Back",  y = y + 175, iconY = y + 160 },
+                { name = "Music", y = y + 305, iconY = y + 290 },
+                { name = "SFX",   y = y + 430, iconY = y + 380 }
+            }
 
-            love.graphics.print("Back", x + 140 + textOffsetX, backTextY)
-            love.graphics.print("Music", x + 135 + textOffsetX, musicTextY)
-            love.graphics.print("SFX", x + 150 + textOffsetX, sfxTextY)
+            local mx, my = love.mouse.getPosition()
+            local currentHover = nil
+
+            for i, item in ipairs(items) do
+                local isHovered = mx > x + 100 and mx < x + totalW and my > item.y and my < item.y + 50
+                if isHovered then
+                    currentHover = i
+                    
+                    if Options.hoveredIndex ~= i then
+                        Options.hoveredIndex = i
+                        Effects.playClick()
+                    end
+
+                    local bob = math.sin(Options.cursorTime * 8) * 4
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.draw(Options.cursorImage, x + 220 + bob, item.y - 5, 90, 2, 2)
+                end
+
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.print(item.name, x + 140 + textOffsetX, item.y)
+            end
+            if not currentHover then
+                Options.hoveredIndex = nil
+            end
         end
     end
 end
