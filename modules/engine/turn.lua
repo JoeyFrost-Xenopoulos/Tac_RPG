@@ -60,10 +60,10 @@ function TurnManager.startTurn()
     end
     
     if TurnManager.currentTurn == "player" then
-        TurnOverlay.show("Player Turn")
+        TurnOverlay.show("Player Turn", true)
         TurnManager.enemyTurnState = "idle"
     else
-        TurnOverlay.show("Enemy Turn")
+        TurnOverlay.show("Enemy Turn", false)
         TurnManager.enemyTurnState = "moving"
     end
 end
