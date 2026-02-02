@@ -19,7 +19,7 @@ Cursor.pulse = 0
 
 Cursor.cursors = {}
 Cursor.current = nil
-Cursor.selectCooldown = 0.06
+Cursor.selectCooldown = 0.10
 Cursor.selectTimer = 0
 
 function Cursor.load()
