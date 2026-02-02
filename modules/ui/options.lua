@@ -27,6 +27,9 @@ Options.sfxLevel   = 2
 
 function Options.load()
     Options.menuImage = love.graphics.newImage("assets/ui/menu/options_menu.png")
+    Options.menuImage:setFilter("nearest", "nearest")
+    Options.menuImage:setWrap("clamp", "clamp")
+
     local imgW, imgH = Options.menuImage:getDimensions()
 
     Options.variants = {
@@ -147,7 +150,7 @@ function Options.draw()
     if Options.menuImage and Options.variants then
         local v = Options.variants[1]
         local col2X = x + (quadW.left * Options.scaleX) - 2
-        local col3X = col2X + (quadW.mid * Options.scaleX) - 5
+        local col3X = col2X + (quadW.mid * Options.scaleX) - 4
         local row2Y = y + (quadH.top * Options.scaleY) - 5
         local row3Y = row2Y + (quadH.mid * Options.scaleY) - 135
         love.graphics.setColor(1, 1, 1, 1)
