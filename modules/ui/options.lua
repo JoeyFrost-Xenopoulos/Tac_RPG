@@ -23,7 +23,7 @@ Options.volumeLevels = {
 }
 
 Options.musicLevel = 3
-Options.sfxLevel   = 3
+Options.sfxLevel   = 2
 
 function Options.load()
     Options.menuImage = love.graphics.newImage("assets/ui/menu/options_menu.png")

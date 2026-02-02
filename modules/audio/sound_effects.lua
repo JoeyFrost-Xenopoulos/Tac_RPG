@@ -6,7 +6,6 @@ function Effects.load()
     Effects.menuOut  = love.audio.newSource("assets/audio/Menu_Out.wav", "static")
     Effects.click    = love.audio.newSource("assets/audio/Click.wav", "static")
     Effects.select   = love.audio.newSource("assets/audio/Select.wav", "static")
-    Effects.select:setVolume(0.1)
     Effects.runGrass = love.audio.newSource("assets/audio/Running_In_Grass.wav", "static")
     Effects.runGrass:setLooping(true)
 
@@ -16,6 +15,16 @@ function Effects.load()
     Effects.mainTheme = love.audio.newSource("assets/audio/Main_Theme.mp3", "stream")
     Effects.mainTheme:setLooping(true)
     Effects.mainTheme:setVolume(0.1)
+
+    Effects.baseVolumes = {
+        menuIn   = 1.0,
+        menuOut  = 1.0,
+        click    = 1.0,
+        select   = 0.05,
+        runGrass = 1.0,
+        back     = 1.0,
+        confirm  = 1.0
+    }
 end
 
 function Effects.setMusicVolume(v)
@@ -26,13 +35,20 @@ end
 
 function Effects.setSFXVolume(v)
     local sfx = {
-        Effects.menuIn, Effects.menuOut, Effects.click,
-        Effects.select, Effects.runGrass,
-        Effects.back, Effects.confirm
+        menuIn   = Effects.menuIn,
+        menuOut  = Effects.menuOut,
+        click    = Effects.click,
+        select   = Effects.select,
+        runGrass = Effects.runGrass,
+        back     = Effects.back,
+        confirm  = Effects.confirm
     }
 
-    for _, src in ipairs(sfx) do
-        if src then src:setVolume(v) end
+    for name, src in pairs(sfx) do
+        if src then
+            local base = Effects.baseVolumes[name] or 1
+            src:setVolume(v * base)
+        end
     end
 end
 
