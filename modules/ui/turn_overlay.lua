@@ -13,6 +13,7 @@ TurnOverlay.swordImage:setFilter("nearest", "nearest")
 TurnOverlay.swordHeight = 128
 TurnOverlay.overlap = 1
 
+-- Define sword segments
 local segments = {
     {x = 0,   w = 128, targetW = 128, xOffset = -10},
     {x = 190, w = 66,  targetW = 200, xOffset = -10},
@@ -21,12 +22,10 @@ local segments = {
 
 TurnOverlay.combinedWidth = 0
 for _, s in ipairs(segments) do
-    TurnOverlay.combinedWidth =
-        TurnOverlay.combinedWidth + s.targetW + s.xOffset - TurnOverlay.overlap
+    TurnOverlay.combinedWidth = TurnOverlay.combinedWidth + s.targetW + s.xOffset - TurnOverlay.overlap
 end
 
 TurnOverlay.swordQuads = {}
-
 for i = 0, 4 do
     TurnOverlay.swordQuads[i + 1] = {}
     for j, seg in ipairs(segments) do
@@ -40,6 +39,34 @@ for i = 0, 4 do
     end
 end
 
+TurnOverlay.combinedCanvases = {}
+
+local function createCombinedCanvas(swordIndex)
+    if TurnOverlay.combinedCanvases[swordIndex] then
+        return TurnOverlay.combinedCanvases[swordIndex]
+    end
+
+    local canvas = love.graphics.newCanvas(TurnOverlay.combinedWidth, TurnOverlay.swordHeight)
+    love.graphics.push()
+    love.graphics.origin()
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
+    love.graphics.setColor(1, 1, 1, 1)
+
+    local drawX = 0
+    for i, quad in ipairs(TurnOverlay.swordQuads[swordIndex]) do
+        local cfg = segments[i]
+        local sx = cfg.targetW / cfg.w
+        love.graphics.draw(TurnOverlay.swordImage, quad, drawX, 0, 0, sx, 1)
+        drawX = drawX + cfg.targetW + cfg.xOffset - TurnOverlay.overlap
+    end
+
+    love.graphics.setCanvas()
+    love.graphics.pop()
+    TurnOverlay.combinedCanvases[swordIndex] = canvas
+    return canvas
+end
+
 TurnOverlay.swordIndex = 1
 
 function TurnOverlay.show(text, isPlayerTurn)
@@ -47,11 +74,12 @@ function TurnOverlay.show(text, isPlayerTurn)
     TurnOverlay.timer = 0
     TurnOverlay.isVisible = true
     TurnOverlay.swordIndex = isPlayerTurn and 1 or 2
+
+    createCombinedCanvas(TurnOverlay.swordIndex)
 end
 
 function TurnOverlay.update(dt)
     if not TurnOverlay.isVisible then return end
-
     TurnOverlay.timer = TurnOverlay.timer + dt
     if TurnOverlay.timer >= TurnOverlay.totalDuration then
         TurnOverlay.isVisible = false
@@ -69,7 +97,6 @@ function TurnOverlay.draw()
     local sDur = TurnOverlay.slideDuration
 
     local animX = 0
-
     if t < sDur then
         local p = t / sDur
         p = 1 - math.pow(1 - p, 3)
@@ -79,7 +106,6 @@ function TurnOverlay.draw()
         p = math.pow(p, 3)
         animX = screenW * p
     end
-
     animX = math.floor(animX + 0.5)
 
     local alpha = 1
@@ -89,43 +115,18 @@ function TurnOverlay.draw()
         alpha = 1 - ((t - (dur - sDur)) / sDur)
     end
 
+    -- Draw semi-transparent background
     love.graphics.setColor(0, 0, 0, 0.5 * alpha)
     love.graphics.rectangle("fill", 0, 0, screenW, screenH)
 
-    local quads = TurnOverlay.swordQuads[TurnOverlay.swordIndex]
-    if quads then
-        local startX =
-            math.floor((screenW - TurnOverlay.combinedWidth) / 2 + animX + 0.5)
-        local swordY =
-            math.floor((screenH - TurnOverlay.swordHeight) / 2 - 50 + 0.5)
-
-        love.graphics.setColor(1, 1, 1, alpha)
-
-        local drawX = startX
-        for i = 1, #quads do
-            local quad = quads[i]
-            local cfg = segments[i]
-
-            local sx = cfg.targetW / cfg.w
-
-            love.graphics.draw(
-                TurnOverlay.swordImage,
-                quad,
-                drawX,
-                swordY,
-                0,
-                sx,
-                1
-            )
-
-            drawX = drawX + cfg.targetW + cfg.xOffset - TurnOverlay.overlap
-            drawX = math.floor(drawX + 0.5)
-        end
-    end
-
+    -- Draw pre-combined sword canvas
+    local canvas = createCombinedCanvas(TurnOverlay.swordIndex)
+    local swordY = math.floor((screenH - TurnOverlay.swordHeight) / 2 - 50 + 0.5)
+    local swordX = math.floor((screenW - TurnOverlay.combinedWidth) / 2 + animX + 0.5)
     love.graphics.setColor(1, 1, 1, alpha)
-    love.graphics.setFont(TurnOverlay.font)
+    love.graphics.draw(canvas, swordX, swordY)
 
+    love.graphics.setFont(TurnOverlay.font)
     local textW = TurnOverlay.font:getWidth(TurnOverlay.text)
     love.graphics.print(
         TurnOverlay.text,
