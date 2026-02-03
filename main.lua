@@ -23,6 +23,7 @@ Effects = require("modules.audio.sound_effects")
 UnitManager = require("modules.units.manager")
 Soldier = require("modules.units.soldier")
 Soldier2 = require("modules.units.soldier_2")
+Harpoon_Fish = require("modules.units.harpoon_fish")
 Enemy_Soldier = require("modules.units.enemy_soldier")
 
 function love.load()
@@ -43,11 +44,12 @@ function love.load()
     UnitManager.add(Soldier.unit)
     UnitManager.add(Soldier2.unit)
     UnitManager.add(Enemy_Soldier.unit)
+    --UnitManager.add(Harpoon_Fish.unit)
 
     Soldier.setPosition(3, 3)
     Soldier2.setPosition(5, 2)
     Enemy_Soldier.setPosition(8, 2)
-    
+    --Harpoon_Fish.setPosition(4, 5)
     TurnManager.startTurn()
 end
 
