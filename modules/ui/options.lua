@@ -12,8 +12,8 @@ Options.cursorTime = 0
 Options.hoveredIndex = nil
 Options.cursorImage = nil
 
-local quadW = {left = 308, mid = 150, right = 204}
-local quadH = {top = 310, mid = 310, bot = 310}
+local quadW = {left = 308, mid = 152, right = 200}
+local quadH = {top = 310, mid = 308, bot = 310}
 
 Options.volumeLevels = {
     { label = "Off", value = 0.0 },
@@ -36,9 +36,9 @@ function Options.load()
             topLeft   = love.graphics.newQuad(0,   0,   quadW.left,  quadH.top, imgW, imgH),
             topMid    = love.graphics.newQuad(464, 0,   quadW.mid,   quadH.top, imgW, imgH),
             topRight  = love.graphics.newQuad(774, 0,   quadW.right, quadH.top, imgW, imgH),
-            midLeft   = love.graphics.newQuad(0,   462, quadW.left,  quadH.mid, imgW, imgH),
-            midMid    = love.graphics.newQuad(464, 462, quadW.mid,   quadH.mid, imgW, imgH),
-            midRight  = love.graphics.newQuad(774, 462, quadW.right, quadH.mid, imgW, imgH),
+            midLeft   = love.graphics.newQuad(0,   457, quadW.left,  quadH.mid, imgW, imgH),
+            midMid    = love.graphics.newQuad(464, 457, quadW.mid,   quadH.mid, imgW, imgH),
+            midRight  = love.graphics.newQuad(774, 458, quadW.right, quadH.mid, imgW, imgH),
             botLeft   = love.graphics.newQuad(0,   768, quadW.left,  quadH.bot, imgW, imgH),
             botMid    = love.graphics.newQuad(464, 768, quadW.mid,   quadH.bot, imgW, imgH),
             botRight  = love.graphics.newQuad(774, 768, quadW.right, quadH.bot, imgW, imgH)
@@ -152,7 +152,7 @@ function Options.draw()
         local col2X = x + (quadW.left * Options.scaleX) - 1
         local col3X = col2X + (quadW.mid * Options.scaleX) - 0
 
-        local row2Y = y + (quadH.top * Options.scaleY) - 5
+        local row2Y = y + (quadH.top * Options.scaleY) - 8
         local row3Y = row2Y + (quadH.mid * Options.scaleY) - 135
         
         love.graphics.setColor(1, 1, 1, 1)
