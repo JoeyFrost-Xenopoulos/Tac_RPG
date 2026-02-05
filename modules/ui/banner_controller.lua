@@ -38,10 +38,8 @@ end
 
 function BannerController.draw()
     local unit = BannerController.activeUnit
-    
-local unit = BannerController.activeUnit
 
-if unit and Banner.activeVariant and Banner.currentWidth > 0 then
+    if unit and Banner.activeVariant and Banner.currentWidth > 0 then
     Banner.draw()
         if unit.avatar then
             local scale = 0.75

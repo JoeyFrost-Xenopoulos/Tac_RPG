@@ -5,6 +5,7 @@ local MovementRange = require("modules.engine.movement_range")
 local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
 local Options = require("modules.ui.options")
+local CameraManager = require("modules.engine.camera_manager")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
@@ -19,7 +20,7 @@ Cursor.pulse = 0
 
 Cursor.cursors = {}
 Cursor.current = nil
-Cursor.selectCooldown = 0.10
+Cursor.selectCooldown = 0.06
 Cursor.selectTimer = 0
 
 function Cursor.load()
@@ -64,16 +65,20 @@ function Cursor.update()
         Cursor.setMouse("default")
         return
     end
-    local scaledX = mx / Cursor.scaleX
-    local scaledY = my / Cursor.scaleY
+    
+    -- Convert screen coordinates to world coordinates using camera
+    local worldX, worldY = CameraManager.screenToWorld(mx, my)
+    
+    local scaledX = worldX / Cursor.scaleX
+    local scaledY = worldY / Cursor.scaleY
 
     local prevX, prevY = Cursor.tileX, Cursor.tileY
 
     Cursor.tileX = math.floor(scaledX / Cursor.tileSize) + 1
     Cursor.tileY = math.floor(scaledY / Cursor.tileSize) + 1
 
-    Cursor.tileX = math.max(1, math.min(Cursor.tileX, Cursor.gridWidth))
-    Cursor.tileY = math.max(1, math.min(Cursor.tileY, Cursor.gridHeight))
+    Cursor.tileX = math.max(1, math.min(Cursor.tileX, 18))  -- Map width
+    Cursor.tileY = math.max(1, math.min(Cursor.tileY, 15))  -- Map height
 
     local dt = love.timer.getDelta()
     Cursor.pulse = Cursor.pulse + dt

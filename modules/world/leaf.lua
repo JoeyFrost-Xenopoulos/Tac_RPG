@@ -13,6 +13,10 @@ local leaves = {}
 local maxLeaves = 25
 local frameDuration = 0.12
 
+-- Map bounds (in world pixels)
+local MAP_WIDTH = 18 * 64  -- 1152
+local MAP_HEIGHT = 15 * 64  -- 960
+
 local BEHAVIOR = {
     FALL = 1,
     DIAGONAL = 2,
@@ -46,9 +50,9 @@ function Leaf.spawnLeaf(randomY)
         behavior = behavior,
 
         x = (behavior == BEHAVIOR.DIAGONAL) and -16
-            or love.math.random(0, WINDOW_WIDTH),
+            or love.math.random(0, MAP_WIDTH),
 
-        y = randomY and love.math.random(0, WINDOW_HEIGHT) or -16,
+        y = randomY and love.math.random(0, MAP_HEIGHT) or -16,
 
         vx = 0,
         vy = love.math.random(15, 30),
@@ -66,7 +70,7 @@ function Leaf.spawnLeaf(randomY)
 
         canLand = love.math.random() < 0.6,
         landed = false,
-        landY = love.math.random(WINDOW_HEIGHT * 0.4, WINDOW_HEIGHT * 0.85)
+        landY = love.math.random(MAP_HEIGHT * 0.4, MAP_HEIGHT * 0.85)
     }
 
     if behavior == BEHAVIOR.DIAGONAL then
@@ -121,8 +125,8 @@ function Leaf.update(dt)
             end
         end
 
-        if leaf.y > WINDOW_HEIGHT + 20
-        or leaf.x > WINDOW_WIDTH + 20
+        if leaf.y > MAP_HEIGHT + 20
+        or leaf.x > MAP_WIDTH + 20
         or leaf.x < -40 then
             table.remove(leaves, i)
             Leaf.spawnLeaf(false)

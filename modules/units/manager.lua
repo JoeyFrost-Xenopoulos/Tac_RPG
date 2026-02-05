@@ -185,6 +185,10 @@ function UnitManager.getUnitAt(tileX, tileY)
     return nil
 end
 
+function UnitManager.getSelected()
+    return UnitManager.selectedUnit
+end
+
 function UnitManager.deselectAll()
     for _, unit in ipairs(UnitManager.units) do
         unit:setSelected(false)

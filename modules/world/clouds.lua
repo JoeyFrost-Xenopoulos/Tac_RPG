@@ -5,11 +5,13 @@ Clouds.instances = {}
 
 Clouds.minSpeed = 10
 Clouds.maxSpeed = 30
-Clouds.minY = 0
-Clouds.maxY = WINDOW_HEIGHT * 0.8
 Clouds.spawnDelay = 0
 Clouds.timer = 0
-Clouds.maxClouds = 5
+Clouds.maxClouds = 8
+
+-- Map bounds (in world pixels)
+Clouds.mapWidth = 18 * 64  -- 1152
+Clouds.mapHeight = 15 * 64  -- 960
 
 function Clouds.load()
     for i = 1, 6 do
@@ -25,12 +27,13 @@ function Clouds.spawn()
 
     local img = Clouds.images[love.math.random(#Clouds.images)]
     local w = img:getWidth()
+    local h = img:getHeight()
 
     local fromLeft = love.math.random() < 0.5
 
     local cloud = {
         img = img,
-        y = love.math.random(Clouds.minY, Clouds.maxY),
+        y = love.math.random(0, Clouds.mapHeight - h),
         speed = love.math.random(Clouds.minSpeed, Clouds.maxSpeed),
         dir = fromLeft and 1 or -1
     }
@@ -38,7 +41,7 @@ function Clouds.spawn()
     if fromLeft then
         cloud.x = -w
     else
-        cloud.x = WINDOW_WIDTH + w
+        cloud.x = Clouds.mapWidth
     end
 
     table.insert(Clouds.instances, cloud)
@@ -63,7 +66,7 @@ function Clouds.update(dt)
 
         local w = c.img:getWidth()
 
-        if c.dir == 1 and c.x > WINDOW_WIDTH then
+        if c.dir == 1 and c.x > Clouds.mapWidth then
             table.remove(Clouds.instances, i)
         elseif c.dir == -1 and c.x + w < 0 then
             table.remove(Clouds.instances, i)
