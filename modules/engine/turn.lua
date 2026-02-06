@@ -104,7 +104,7 @@ function TurnManager.updateEnemyTurn(dt)
         return
     end
     
-    local Battle = require("modules.ui.battle")
+    local Battle = require("modules.combat.battle")
     
     -- If a battle is in progress, wait for it to complete
     if Battle.visible then

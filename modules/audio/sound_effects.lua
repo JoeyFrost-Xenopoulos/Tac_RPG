@@ -11,6 +11,8 @@ function Effects.load()
 
     Effects.back = love.audio.newSource("assets/audio/Back.wav", "static")
     Effects.confirm = love.audio.newSource("assets/audio/Confirmation.wav", "static")
+    Effects.attackSwing = love.audio.newSource("assets/audio/combat/Attack_1.wav", "static")
+    Effects.attackHit = love.audio.newSource("assets/audio/combat/Attack_Hit_1.wav", "static")
 
     Effects.mainTheme = love.audio.newSource("assets/audio/Main_Theme.mp3", "stream")
     Effects.mainTheme:setLooping(true)
@@ -23,7 +25,9 @@ function Effects.load()
         select   = 0.05,
         runGrass = 1.0,
         back     = 1.0,
-        confirm  = 1.0
+        confirm  = 1.0,
+        attackSwing = 0.8,
+        attackHit = 0.8
     }
 
     -- Apply default SFX volume immediately
@@ -44,7 +48,9 @@ function Effects.setSFXVolume(v)
         select   = Effects.select,
         runGrass = Effects.runGrass,
         back     = Effects.back,
-        confirm  = Effects.confirm
+        confirm  = Effects.confirm,
+        attackSwing = Effects.attackSwing,
+        attackHit = Effects.attackHit
     }
 
     for name, src in pairs(sfx) do
@@ -105,6 +111,20 @@ end
 function Effects.playMenuOut()
     Effects.menuOut:stop()
     Effects.menuOut:play()
+end
+
+function Effects.playAttackSwing()
+    if Effects.attackSwing then
+        Effects.attackSwing:stop()
+        Effects.attackSwing:play()
+    end
+end
+
+function Effects.playAttackHit()
+    if Effects.attackHit then
+        Effects.attackHit:stop()
+        Effects.attackHit:play()
+    end
 end
 
 return Effects

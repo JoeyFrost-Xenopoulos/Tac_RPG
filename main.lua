@@ -15,7 +15,7 @@ Leaf = require("modules.world.leaf")
 TurnManager = require("modules.engine.turn")
 TurnOverlay = require("modules.ui.turn_overlay")
 Options = require("modules.ui.options")
-Battle = require("modules.ui.battle")
+Battle = require("modules.combat.battle")
 CameraManager = require("modules.engine.camera_manager")
 
 -- Music

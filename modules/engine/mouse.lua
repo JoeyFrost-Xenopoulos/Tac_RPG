@@ -17,7 +17,7 @@ function Mouse.pressed(x, y, button)
         return
     end
     
-    local Battle = require("modules.ui.battle")
+    local Battle = require("modules.combat.battle")
     if Battle.visible then
         if button == 1 then
             Battle.clicked(x, y)

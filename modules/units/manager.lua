@@ -281,7 +281,7 @@ function UnitManager.performAttack(attacker, target)
     Effects.playSelect()
     
     -- Show battle screen
-    local Battle = require("modules.ui.battle")
+    local Battle = require("modules.combat.battle")
     Battle.startBattle(attacker, target)
     
     -- Store the attacker and target for the battle to process
