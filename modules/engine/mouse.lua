@@ -95,7 +95,7 @@ function Mouse.pressed(x, y, button)
             end
         end
     end
-    if button == 2 and UnitManager.selectedUnit then
+    if button == 2 and UnitManager.selectedUnit and UnitManager.state ~= "moving" then
         Effects.backPlay()
         UnitManager.deselectAll()
     end
