@@ -9,6 +9,8 @@ local Soldier2Config = {
     maxMoveRange = 4,
     maxHealth = 120,
     health = 120,
+    attackRange = 1,
+    attackDamage = 5,
     animations = {
         idle = {
             img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Idle.png"),
@@ -32,7 +34,8 @@ local Soldier2Config = {
         attack = {
             img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Attack1.png"),
             frames = {
-                {x=0,y=0,width=68,height=126},{x=188,y=0,width=70,height=126}
+                {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
+                {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192}
             },
             speed = 0.15
         }

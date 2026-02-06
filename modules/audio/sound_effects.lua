@@ -25,6 +25,9 @@ function Effects.load()
         back     = 1.0,
         confirm  = 1.0
     }
+
+    -- Apply default SFX volume immediately
+    Effects.setSFXVolume(0.6)
 end
 
 function Effects.setMusicVolume(v)

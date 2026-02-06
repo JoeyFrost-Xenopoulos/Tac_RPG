@@ -7,14 +7,46 @@ local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
+local Attack = require("modules.engine.attack")
 
 function Mouse.pressed(x, y, button)
-    if TurnManager.getCurrentTurn() ~= "player" then
-        return
-    end
     if Options.visible then
         if button == 1 then
             Options.clicked(x, y)
+        end
+        return
+    end
+    
+    local Battle = require("modules.ui.battle")
+    if Battle.visible then
+        if button == 1 then
+            Battle.clicked(x, y)
+        end
+        return
+    end
+    
+    if TurnManager.getCurrentTurn() ~= "player" then
+        return
+    end
+    
+    if UnitManager.state == "selectingAttack" then
+        if button == 1 then
+            local clickedUnit = UnitManager.getUnitAt(Cursor.tileX, Cursor.tileY)
+            if clickedUnit and not clickedUnit.isPlayer then
+                -- Check if unit is in range
+                local attacker = UnitManager.selectedUnit
+                local enemies = Attack.getEnemiesInRange(attacker)
+                for _, enemy in ipairs(enemies) do
+                    if enemy == clickedUnit then
+                        UnitManager.performAttack(attacker, clickedUnit)
+                        return
+                    end
+                end
+            end
+        elseif button == 2 then
+            -- Cancel attack selection
+            UnitManager.state = "idle"
+            MovementRange.show(UnitManager.selectedUnit)
         end
         return
     end

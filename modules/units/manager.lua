@@ -10,10 +10,12 @@ local Grid = require("modules.ui.grid")
 local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
+local Attack = require("modules.engine.attack")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
 UnitManager.state = "idle"
+UnitManager.damageDisplays = {}
 
 function UnitManager.add(unit)
     table.insert(UnitManager.units, unit)
@@ -26,6 +28,8 @@ function UnitManager.update(dt)
     for _, unit in ipairs(UnitManager.units) do
         unit:update(dt)
     end
+    
+    UnitManager.updateDamageDisplays(dt)
 
     local unit = UnitManager.selectedUnit    
     if UnitManager.state == "moving" then
@@ -46,10 +50,17 @@ function UnitManager.update(dt)
                 mx = 60
             end
 
-            Menu.show(mx, my, {
-                { text = "Wait", callback = UnitManager.confirmMove },
-                { text = "Cancel", callback = UnitManager.cancelMove }
-            })
+            local menuOptions = {}
+            
+            -- Check if unit can attack
+            if unit.isPlayer and Attack.canAttack(unit) then
+                table.insert(menuOptions, { text = "Attack", callback = UnitManager.performAttackPrompt })
+            end
+            
+            table.insert(menuOptions, { text = "Wait", callback = UnitManager.confirmMove })
+            table.insert(menuOptions, { text = "Cancel", callback = UnitManager.cancelMove })
+
+            Menu.show(mx, my, menuOptions)
         end
         return 
     elseif UnitManager.state == "menu" then
@@ -101,11 +112,21 @@ end
 
 function UnitManager.cancelMove()
     local unit = UnitManager.selectedUnit
+    
+    if unit then
+        -- Check if a move actually happened
+        local hasMoved = (unit.tileX ~= unit.prevX) or (unit.tileY ~= unit.prevY)
+        
+        -- Revert position back to where we started
+        if hasMoved then
+            unit.tileX = unit.prevX
+            unit.tileY = unit.prevY
+            unit.isMoving = false
+        end
+    end
+    
     UnitManager.state = "idle"
     if unit then
-        unit.tileX = unit.prevX
-        unit.tileY = unit.prevY
-        unit.isMoving = false
         MovementRange.show(unit) 
     end
     Menu.hide()
@@ -114,6 +135,10 @@ end
 function UnitManager.showWaitMenu()
     local unit = UnitManager.selectedUnit
     if not unit then return end
+    
+    -- Update prevX/prevY to current position so cancel won't revert to old positions from previous turns
+    unit.prevX = unit.tileX
+    unit.prevY = unit.tileY
     
     UnitManager.state = "menu"
     local screenW = love.graphics.getWidth()
@@ -128,10 +153,17 @@ function UnitManager.showWaitMenu()
         mx = 60
     end
     
-    Menu.show(mx, my, {
-        { text = "Wait", callback = UnitManager.confirmMove },
-        { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end }
-    })
+    local menuOptions = {}
+    
+    -- Check if unit can attack
+    if unit.isPlayer and Attack.canAttack(unit) then
+        table.insert(menuOptions, { text = "Attack", callback = UnitManager.performAttackPrompt })
+    end
+    
+    table.insert(menuOptions, { text = "Wait", callback = UnitManager.confirmMove })
+    table.insert(menuOptions, { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end })
+    
+    Menu.show(mx, my, menuOptions)
 end
 
 function UnitManager.showEndTurnMenu(tx, ty)
@@ -210,6 +242,93 @@ function UnitManager.select(unit)
     UnitManager.state = "idle"
     MovementRange.show(unit)
     Effects.playConfirm()
+end
+
+function UnitManager.performAttackPrompt()
+    local unit = UnitManager.selectedUnit
+    if not unit then return end
+    
+    local enemies = Attack.getEnemiesInRange(unit)
+    if #enemies == 0 then 
+        Menu.hide()
+        UnitManager.state = "idle"
+        return 
+    end
+    
+    -- Show available targets for attack
+    UnitManager.state = "selectingAttack"
+    Menu.hide()
+    MovementRange.clear()
+    Grid.clearHighlights()
+    
+    -- Highlight enemies in range with a different color
+    for _, enemy in ipairs(enemies) do
+        Grid.highlightTile(enemy.tileX, enemy.tileY, {1.0, 0.0, 0.0, 0.6})
+    end
+end
+
+function UnitManager.performAttack(attacker, target)
+    if not attacker or not target then return end
+    
+    -- Make attacker face the target
+    if target.tileX > attacker.tileX then
+        attacker.facingX = 1
+    elseif target.tileX < attacker.tileX then
+        attacker.facingX = -1
+    end
+    
+    -- Play attack sound
+    Effects.playSelect()
+    
+    -- Show battle screen
+    local Battle = require("modules.ui.battle")
+    Battle.startBattle(attacker, target)
+    
+    -- Store the attacker and target for the battle to process
+    UnitManager.battleAttacker = attacker
+    UnitManager.battleTarget = target
+    
+    -- Deselect unit (will end turn once battle completes)
+    UnitManager.deselectAll()
+end
+
+function UnitManager.showDamage(target, damage)
+    -- Create a damage display at the target's position
+    table.insert(UnitManager.damageDisplays, {
+        x = target.tileX * Grid.tileSize + 32,
+        y = target.tileY * Grid.tileSize,
+        damage = damage,
+        time = 0,
+        duration = 1.0
+    })
+end
+
+function UnitManager.updateDamageDisplays(dt)
+    for i = #UnitManager.damageDisplays, 1, -1 do
+        local display = UnitManager.damageDisplays[i]
+        display.time = display.time + dt
+        
+        if display.time >= display.duration then
+            table.remove(UnitManager.damageDisplays, i)
+        end
+    end
+end
+
+function UnitManager.drawDamageDisplays()
+    if #UnitManager.damageDisplays == 0 then return end
+    
+    love.graphics.setFont(love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48))
+    love.graphics.setColor(1, 0, 0, 1) -- Red color for damage
+    
+    for _, display in ipairs(UnitManager.damageDisplays) do
+        local alpha = 1 - (display.time / display.duration)
+        local offsetY = display.time * 30  -- Move up over time
+        
+        love.graphics.setColor(1, 0, 0, alpha)
+        love.graphics.printf(tostring(display.damage), display.x - 20, display.y - offsetY, 40, "center")
+    end
+    
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 return UnitManager

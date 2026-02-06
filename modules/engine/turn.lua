@@ -7,6 +7,7 @@ TurnManager.unitsThatHaveMoved = {}
 TurnManager.enemyTurnState = "idle"
 local TurnAI = require("modules.engine.turn_ai")
 local TurnOverlay = require("modules.ui.turn_overlay")
+local Attack = require("modules.engine.attack")
 
 local function getAvailableUnits()
     local UnitManager = require("modules.units.manager")
@@ -103,6 +104,26 @@ function TurnManager.updateEnemyTurn(dt)
         return
     end
     
+    local Battle = require("modules.ui.battle")
+    
+    -- If a battle is in progress, wait for it to complete
+    if Battle.visible then
+        return
+    end
+    
+    -- Check if we just finished a battle
+    if TurnManager.enemyBattleInProgress then
+        local currentUnit = TurnManager.enemyCurrentUnit
+        if currentUnit then
+            TurnManager.markUnitAsMoved(currentUnit)
+            currentUnit.hasMoveOrderQueued = false
+        end
+        TurnManager.enemyBattleInProgress = false
+        TurnManager.enemyCurrentUnit = nil
+        TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
+        return
+    end
+    
     local units = getAvailableUnits()
     
     if TurnManager.currentUnitIndex < #units then
@@ -118,9 +139,33 @@ function TurnManager.updateEnemyTurn(dt)
             end
             
             if not currentUnit.isMoving then
-                TurnManager.markUnitAsMoved(currentUnit)
-                currentUnit.hasMoveOrderQueued = false
-                TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
+                -- Enemy finished moving, check if they can attack
+                if Attack.canAttack(currentUnit) then
+                    local enemies = Attack.getEnemiesInRange(currentUnit)
+                    if #enemies > 0 then
+                        local target = enemies[1]
+                        -- Make attacker face the target
+                        if target.tileX > currentUnit.tileX then
+                            currentUnit.facingX = 1
+                        elseif target.tileX < currentUnit.tileX then
+                            currentUnit.facingX = -1
+                        end
+                        -- Show battle screen instead of direct damage
+                        Battle.startBattle(currentUnit, target)
+                        TurnManager.enemyBattleInProgress = true
+                        TurnManager.enemyCurrentUnit = currentUnit
+                    else
+                        -- No target, just mark as moved
+                        TurnManager.markUnitAsMoved(currentUnit)
+                        currentUnit.hasMoveOrderQueued = false
+                        TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
+                    end
+                else
+                    -- Can't attack, just mark as moved
+                    TurnManager.markUnitAsMoved(currentUnit)
+                    currentUnit.hasMoveOrderQueued = false
+                    TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
+                end
             end
         else
             TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1

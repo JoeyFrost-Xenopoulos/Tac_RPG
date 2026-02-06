@@ -7,6 +7,10 @@ local EnemyConfig = {
     uiVariant = 2,
     isPlayer = false,
     maxMoveRange = 4,
+    maxHealth = 100,
+    health = 100,
+    attackRange = 1,
+    attackDamage = 5,
     animations = {
         idle = {
             img = love.graphics.newImage("assets/units/Enemy/Soldier/Warrior_Idle.png"),
@@ -30,7 +34,8 @@ local EnemyConfig = {
         attack = {
             img = love.graphics.newImage("assets/units/Enemy/Soldier/Warrior_Attack1.png"),
             frames = {
-                {x=0,y=0,width=68,height=126},{x=188,y=0,width=70,height=126}
+                {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
+                {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192}
             },
             speed = 0.15
         }
