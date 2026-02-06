@@ -1,5 +1,6 @@
 -- modules/combat/battle_transition_draw.lua
 local TransitionDraw = {}
+local UiDraw = require("modules.combat.battle_ui_draw")
 
 local function clamp(value, minValue, maxValue)
     if value < minValue then return minValue end
@@ -84,6 +85,22 @@ local function drawPlatformAt(state, centerX, centerY, flipX, scale, alpha)
     love.graphics.setColor(1, 1, 1, 1)
 end
 
+local function drawFrameAt(state, screenW, screenH, progress)
+    if not state.battleFrameImage then return end
+
+    local frameW, frameH = state.battleFrameImage:getDimensions()
+    local targetX = (screenW - frameW) / 2
+    local targetY = (screenH - frameH) / 2
+    local startY = screenH + frameH * 0.2
+    local currentY = lerp(startY, targetY, progress)
+    local scale = lerp(0.9, 1.0, progress)
+    local alpha = lerp(0.0, 1.0, progress)
+
+    love.graphics.setColor(1, 1, 1, alpha)
+    love.graphics.draw(state.battleFrameImage, targetX + frameW / 2, currentY + frameH / 2, 0, scale, scale, frameW / 2, frameH / 2)
+    love.graphics.setColor(1, 1, 1, 1)
+end
+
 function TransitionDraw.draw(state, screenW, screenH, drawUnit)
     if state.transitionPhase ~= "platform_move" then
         return false
@@ -143,6 +160,10 @@ function TransitionDraw.draw(state, screenW, screenH, drawUnit)
         local attackerFacingX = attackerOnRight and -1 or 1
         drawUnit(state, state.attacker, attackerUnitX, attackerUnitY, attackerFacingX, false, "walk", nil, unitScale)
     end
+
+    drawFrameAt(state, screenW, screenH, progress)
+
+    UiDraw.drawBigBar(state, screenW, screenH, progress)
 
     love.graphics.setShader()
     love.graphics.setColor(1, 1, 1, 1)

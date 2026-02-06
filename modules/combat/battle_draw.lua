@@ -2,6 +2,7 @@
 local Anim = require("modules.combat.battle_anim")
 local Effects = require("modules.combat.battle_effects")
 local TransitionDraw = require("modules.combat.battle_transition_draw")
+local UiDraw = require("modules.combat.battle_ui_draw")
 
 local Draw = {}
 
@@ -60,6 +61,16 @@ function Draw.draw(state)
             Draw.drawUnit(state, state.attacker, attackerX, platformY - 60, attackerFacingX, false, attackAnim)
         end
     end
+
+    if state.battleFrameImage then
+        local frameW, frameH = state.battleFrameImage:getDimensions()
+        local frameX = (screenW - frameW) / 2
+        local frameY = (screenH - frameH) / 2
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(state.battleFrameImage, frameX, frameY - 60)
+    end
+
+    UiDraw.drawBigBar(state, screenW, screenH)
 
     Effects.drawFlash(state, screenW, screenH)
 
