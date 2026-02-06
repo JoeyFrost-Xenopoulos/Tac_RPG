@@ -82,8 +82,22 @@ function UnitManager.update(dt)
     if MovementRange.canReach(tx, ty)
        and not (tx == unit.tileX and ty == unit.tileY) then
 
+        local function canMoveWithUnits(fromX, fromY, toX, toY)
+            if not Map.canMove(fromX, fromY, toX, toY) then
+                return false
+            end
+            for _, otherUnit in ipairs(UnitManager.units) do
+                if otherUnit ~= unit and otherUnit.tileX == toX and otherUnit.tileY == toY then
+                    if not otherUnit.isPlayer then
+                        return false
+                    end
+                end
+            end
+            return true
+        end
+
         local path = Pathfinding.findPath(
-            unit.tileX, unit.tileY, tx, ty, Map.canMove
+            unit.tileX, unit.tileY, tx, ty, canMoveWithUnits
         )
         if path and unit.maxMoveRange and #path > unit.maxMoveRange + 1 then
             local trimmed = {}
@@ -275,6 +289,13 @@ function UnitManager.performAttack(attacker, target)
         attacker.facingX = 1
     elseif target.tileX < attacker.tileX then
         attacker.facingX = -1
+    end
+
+    -- Make defender face the attacker
+    if attacker.tileX > target.tileX then
+        target.facingX = 1
+    elseif attacker.tileX < target.tileX then
+        target.facingX = -1
     end
     
     -- Play attack sound

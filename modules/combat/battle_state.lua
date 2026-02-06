@@ -11,6 +11,20 @@ State.battleTimer = 0
 State.battleDuration = 1.5
 State.runDuration = 0.8
 State.attackDuration = 0.7
+State.transitionPhase = "none"
+State.transitionTimer = 0
+State.transitionCloseDuration = 0.4
+State.transitionWhiteDuration = 0.08
+State.transitionMoveDuration = 0.4
+State.transitionCenterX = 0
+State.transitionCenterY = 0
+State.transitionTargetW = 0
+State.transitionTargetH = 0
+State.transitionSquareSize = 0
+State.transitionStartAttackerX = 0
+State.transitionStartAttackerY = 0
+State.transitionStartDefenderX = 0
+State.transitionStartDefenderY = 0
 
 State.hitEffectImage = nil
 State.hitEffectActive = false
@@ -31,6 +45,8 @@ function State.resetTimers()
     State.attackFrameIndex = 0
     State.attackSwingPlayed = false
     State.attackHitPlayed = false
+    State.transitionPhase = "none"
+    State.transitionTimer = 0
 end
 
 return State

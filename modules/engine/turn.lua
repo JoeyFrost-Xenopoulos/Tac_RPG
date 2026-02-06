@@ -54,10 +54,13 @@ end
 function TurnManager.startTurn()
     TurnManager.unitsThatHaveMoved = {}
     TurnManager.currentUnitIndex = 0
+    TurnManager.enemyBattleInProgress = false
+    TurnManager.enemyCurrentUnit = nil
     
     local UnitManager = require("modules.units.manager")
     for _, unit in ipairs(UnitManager.units) do
         unit.hasActed = false
+        unit.hasMoveOrderQueued = false
     end
     
     if TurnManager.currentTurn == "player" then
@@ -149,6 +152,12 @@ function TurnManager.updateEnemyTurn(dt)
                             currentUnit.facingX = 1
                         elseif target.tileX < currentUnit.tileX then
                             currentUnit.facingX = -1
+                        end
+                        -- Make defender face the attacker
+                        if currentUnit.tileX > target.tileX then
+                            target.facingX = 1
+                        elseif currentUnit.tileX < target.tileX then
+                            target.facingX = -1
                         end
                         -- Show battle screen instead of direct damage
                         Battle.startBattle(currentUnit, target)
