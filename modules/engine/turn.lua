@@ -194,6 +194,9 @@ function TurnManager.endTurn()
     else
         TurnManager.currentTurn = "player"
         TurnManager.startTurn()
+        -- Increment turn counter when a new player turn begins
+        local TurnCounter = require("modules.ui.turn_counter")
+        TurnCounter.incrementTurn()
     end
 end
 

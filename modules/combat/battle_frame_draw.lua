@@ -72,20 +72,21 @@ function FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, swordIconImage,
         local weaponType = state.attacker.weapon or "sword"
         local weaponName = WEAPON_NAMES[weaponType] or "Unknown"
         love.graphics.print(weaponName, attackerSwordX + swordW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset, 
-            attackerSwordY)
+            attackerSwordY + 10
+        )
     end
 
     -- Defender weapon (right side)
     if state.defender then
         local defenderSwordX = frameX + frameW + WEAPON_CONFIG.defenderX
         local defenderSwordY = frameY + WEAPON_CONFIG.iconY
-        love.graphics.draw(swordIconImage, defenderSwordX, defenderSwordY, 0, 
+        love.graphics.draw(swordIconImage, defenderSwordX - 60, defenderSwordY, 0, 
             WEAPON_CONFIG.iconScale, WEAPON_CONFIG.iconScale)
         
         local weaponType = state.defender.weapon or "sword"
         local weaponName = WEAPON_NAMES[weaponType] or "Unknown"
-        love.graphics.print(weaponName, defenderSwordX + swordW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset, 
-            defenderSwordY)
+        love.graphics.print(weaponName, defenderSwordX + swordW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset - 60, 
+            defenderSwordY + 10)
     end
 end
 

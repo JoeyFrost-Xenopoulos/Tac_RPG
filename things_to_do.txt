@@ -1,0 +1,5 @@
+- add in the select weapon stage before selecting enemy after selecting attack
+- add in names in battle frame
+- add in bushes
+- add in counter attacking
+- add in turn counter

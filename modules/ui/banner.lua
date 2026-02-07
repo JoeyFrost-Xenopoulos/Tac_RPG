@@ -88,11 +88,11 @@ function Banner.draw()
 
     love.graphics.draw(Banner.image, left, x, Banner.y)
 
-    local midX = x + lw
+    local midX = x + lw - 1
     love.graphics.draw(Banner.image, mid, midX, Banner.y, 0, scaleX, 1)
 
     local rightX = midX + mw * scaleX
-    love.graphics.draw(Banner.image, right, rightX - 1, Banner.y)
+    love.graphics.draw(Banner.image, right, rightX - 2, Banner.y)
 end
 
 function Banner.reset()
