@@ -8,11 +8,21 @@ local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
 local Attack = require("modules.engine.attack")
+local WeaponSelect = require("modules.ui.weapon_select")
 
 function Mouse.pressed(x, y, button)
     if Options.visible then
         if button == 1 then
             Options.clicked(x, y)
+        end
+        return
+    end
+
+    if WeaponSelect.visible then
+        if button == 1 then
+            WeaponSelect.clicked(x, y)
+        elseif button == 2 then
+            WeaponSelect.cancel()
         end
         return
     end
@@ -44,9 +54,15 @@ function Mouse.pressed(x, y, button)
                 end
             end
         elseif button == 2 then
-            -- Cancel attack selection
-            UnitManager.state = "idle"
-            MovementRange.show(UnitManager.selectedUnit)
+            -- Return to weapon selection
+            UnitManager.showWeaponSelect(UnitManager.selectedUnit)
+        end
+        return
+    end
+
+    if UnitManager.state == "selectingWeapon" then
+        if button == 2 then
+            UnitManager.returnToWaitMenuFromWeaponSelect(UnitManager.selectedUnit)
         end
         return
     end

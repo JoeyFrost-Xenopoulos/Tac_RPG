@@ -11,6 +11,7 @@ local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
 local Attack = require("modules.engine.attack")
+local WeaponSelect = require("modules.ui.weapon_select")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
@@ -180,6 +181,19 @@ function UnitManager.showWaitMenu()
     Menu.show(mx, my, menuOptions)
 end
 
+function UnitManager.returnToWaitMenuFromWeaponSelect(unit)
+    local resolvedUnit = unit or UnitManager.selectedUnit
+    if not resolvedUnit then return end
+
+    if UnitManager.selectedUnit ~= resolvedUnit then
+        UnitManager.selectedUnit = resolvedUnit
+        resolvedUnit:setSelected(true)
+    end
+
+    UnitManager.state = "menu"
+    UnitManager.showWaitMenu()
+end
+
 function UnitManager.showEndTurnMenu(tx, ty)
     -- position End menu using the same left/right logic as Wait menu
     UnitManager.state = "menu"
@@ -269,12 +283,47 @@ function UnitManager.performAttackPrompt()
         return 
     end
     
+    UnitManager.showWeaponSelect(unit)
+end
+
+function UnitManager.showWeaponSelect(unit)
+    if not unit then return end
+
+    if UnitManager.selectedUnit ~= unit then
+        UnitManager.selectedUnit = unit
+        unit:setSelected(true)
+    end
+
+    UnitManager.state = "selectingWeapon"
+    Menu.hide()
+
+    WeaponSelect.show(unit, function(option)
+        unit.weapon = option.id or unit.weapon
+        UnitManager.beginAttackTargeting(unit)
+    end, function()
+        UnitManager.returnToWaitMenuFromWeaponSelect(unit)
+    end)
+end
+
+function UnitManager.beginAttackTargeting(unit)
+    if not unit then return end
+
+    if UnitManager.selectedUnit ~= unit then
+        UnitManager.selectedUnit = unit
+        unit:setSelected(true)
+    end
+
+    local enemies = Attack.getEnemiesInRange(unit)
+    if #enemies == 0 then
+        UnitManager.state = "idle"
+        return
+    end
+
     -- Show available targets for attack
     UnitManager.state = "selectingAttack"
-    Menu.hide()
     MovementRange.clear()
     Grid.clearHighlights()
-    
+
     -- Highlight enemies in range with a different color
     for _, enemy in ipairs(enemies) do
         Grid.highlightTile(enemy.tileX, enemy.tileY, {1.0, 0.0, 0.0, 0.6})

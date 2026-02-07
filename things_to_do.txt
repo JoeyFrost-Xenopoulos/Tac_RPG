@@ -2,4 +2,3 @@
 - add in names in battle frame
 - add in bushes
 - add in counter attacking
-- add in turn counter

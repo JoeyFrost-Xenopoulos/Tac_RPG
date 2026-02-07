@@ -23,6 +23,7 @@ function Stats.init(self, config)
     self.attackRange = config.attackRange or 1
     self.attackDamage = config.attackDamage or 5
     self.weapon = config.weapon or "sword"
+    self.weapons = config.weapons
 
     self.avatar = config.avatar
     self.uiVariant = config.uiVariant
