@@ -8,7 +8,7 @@ local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
 local Attack = require("modules.engine.attack")
-local WeaponSelect = require("modules.ui.weapon_select")
+local WeaponSelect = require("modules.ui.weapon_selector")
 
 function Mouse.pressed(x, y, button)
     if Options.visible then

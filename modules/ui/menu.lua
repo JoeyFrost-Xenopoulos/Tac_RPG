@@ -55,8 +55,8 @@ function Menu.show(x, y, options)
     Effects.playMenuIn()
 end
 
-function Menu.hide()
-    if Menu.visible then
+function Menu.hide(silent)
+    if Menu.visible and not silent then
         Effects.playMenuOut()
     end
     Menu.visible = false
@@ -88,7 +88,9 @@ function Menu.clicked(mx, my)
        for i, opt in ipairs(Menu.options) do
             local optY = startY + (i-1)*30
             if my >= optY and my < optY + 30 then
-                Effects.playMenuOut()
+                if opt.playSound ~= false then
+                    Effects.playMenuOut()
+                end
                 if opt.callback then opt.callback() end
                 return true
             end

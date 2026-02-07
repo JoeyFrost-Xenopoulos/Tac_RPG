@@ -11,7 +11,7 @@ local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
 local Attack = require("modules.engine.attack")
-local WeaponSelect = require("modules.ui.weapon_select")
+local WeaponSelect = require("modules.ui.weapon_selector")
 
 UnitManager.units = {}
 UnitManager.selectedUnit = nil
@@ -55,11 +55,20 @@ function UnitManager.update(dt)
             
             -- Check if unit can attack
             if unit.isPlayer and Attack.canAttack(unit) then
-                table.insert(menuOptions, { text = "Attack", callback = UnitManager.performAttackPrompt })
+                table.insert(menuOptions, { text = "Attack", callback = function()
+                    Effects.playConfirm()
+                    UnitManager.performAttackPrompt()
+                end, playSound = false })
             end
             
-            table.insert(menuOptions, { text = "Wait", callback = UnitManager.confirmMove })
-            table.insert(menuOptions, { text = "Cancel", callback = UnitManager.cancelMove })
+            table.insert(menuOptions, { text = "Wait", callback = function()
+                Effects.playConfirm()
+                UnitManager.confirmMove()
+            end })
+            table.insert(menuOptions, { text = "Cancel", callback = function()
+                Effects.playConfirm()
+                UnitManager.cancelMove()
+            end })
 
             Menu.show(mx, my, menuOptions)
         end
@@ -172,11 +181,21 @@ function UnitManager.showWaitMenu()
     
     -- Check if unit can attack
     if unit.isPlayer and Attack.canAttack(unit) then
-        table.insert(menuOptions, { text = "Attack", callback = UnitManager.performAttackPrompt })
+        table.insert(menuOptions, { text = "Attack", callback = function()
+            Effects.playConfirm()
+            UnitManager.performAttackPrompt()
+        end, playSound = false })
     end
     
-    table.insert(menuOptions, { text = "Wait", callback = UnitManager.confirmMove })
-    table.insert(menuOptions, { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end })
+    table.insert(menuOptions, { text = "Wait", callback = function()
+        Effects.playConfirm()
+        UnitManager.confirmMove()
+    end })
+    table.insert(menuOptions, { text = "Cancel", callback = function()
+        Effects.playConfirm()
+        UnitManager.state = "idle"
+        Menu.hide()
+    end })
     
     Menu.show(mx, my, menuOptions)
 end
@@ -211,10 +230,26 @@ function UnitManager.showEndTurnMenu(tx, ty)
     end
 
     Menu.show(mx, my, {
-        { text = "End All", callback = UnitManager.endPlayerTurn },
-        { text = "Options", callback = function() UnitManager.state = "idle"; Menu.hide(); Options.show() end },
-        { text = "Suspend", callback = function() Menu.hide(); love.event.quit() end },
-        { text = "Cancel", callback = function() UnitManager.state = "idle"; Menu.hide() end }
+        { text = "End All", callback = function()
+            Effects.playConfirm()
+            UnitManager.endPlayerTurn()
+        end },
+        { text = "Options", callback = function()
+            Effects.playConfirm()
+            UnitManager.state = "idle"
+            Menu.hide()
+            Options.show()
+        end },
+        { text = "Suspend", callback = function()
+            Effects.playConfirm()
+            Menu.hide()
+            love.event.quit()
+        end },
+        { text = "Cancel", callback = function()
+            Effects.playConfirm()
+            UnitManager.state = "idle"
+            Menu.hide()
+        end }
     })
 end
 
@@ -295,7 +330,7 @@ function UnitManager.showWeaponSelect(unit)
     end
 
     UnitManager.state = "selectingWeapon"
-    Menu.hide()
+    Menu.hide(true)
 
     WeaponSelect.show(unit, function(option)
         unit.weapon = option.id or unit.weapon

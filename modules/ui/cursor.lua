@@ -7,7 +7,7 @@ local Effects = require("modules.audio.sound_effects")
 local Options = require("modules.ui.options")
 local CameraManager = require("modules.engine.camera_manager")
 local Attack = require("modules.engine.attack")
-local WeaponSelect = require("modules.ui.weapon_select")
+local WeaponSelect = require("modules.ui.weapon_selector")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
