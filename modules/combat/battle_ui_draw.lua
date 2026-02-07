@@ -1,11 +1,7 @@
 -- modules/combat/battle_ui_draw.lua
-local UiDraw = {}
+local Helpers = require("modules.combat.battle_helpers")
 
-local function clamp(value, minValue, maxValue)
-    if value < minValue then return minValue end
-    if value > maxValue then return maxValue end
-    return value
-end
+local UiDraw = {}
 
 local BAR_W = 320
 local BAR_H = 64
@@ -30,29 +26,9 @@ local function lerp(startValue, endValue, t)
     return startValue + (endValue - startValue) * t
 end
 
-local function getPlayerUnit(state)
-    if state.attacker and state.attacker.isPlayer then
-        return state.attacker
-    end
-    if state.defender and state.defender.isPlayer then
-        return state.defender
-    end
-    return nil
-end
-
-local function getEnemyUnit(state)
-    if state.attacker and not state.attacker.isPlayer then
-        return state.attacker
-    end
-    if state.defender and not state.defender.isPlayer then
-        return state.defender
-    end
-    return nil
-end
-
 local function getFillPercent(unit)
     if unit and unit.maxHealth and unit.maxHealth > 0 then
-        return clamp(unit.health / unit.maxHealth, 0, 1)
+        return Helpers.clamp(unit.health / unit.maxHealth, 0, 1)
     end
     return 1
 end
@@ -119,15 +95,15 @@ end
 function UiDraw.drawBigBar(state, screenW, screenH, progress)
     if not state.bigBarBaseImage or not state.bigBarFillImage then return end
 
-    local playerUnit = getPlayerUnit(state)
-    local enemyUnit = getEnemyUnit(state)
+    local playerUnit = Helpers.getPlayerUnit(state.attacker, state.defender)
+    local enemyUnit = Helpers.getEnemyUnit(state.attacker, state.defender)
 
     local scale = 1
     local alpha = 1
     local offsetX = 0
     local offsetY = 0
     if progress ~= nil then
-        progress = clamp(progress, 0, 1)
+        progress = Helpers.clamp(progress, 0, 1)
         scale = 0.9 + 0.1 * progress
         alpha = progress
         offsetX = (1 - progress) * -20
@@ -140,7 +116,7 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress)
         local leftX = BAR_MARGIN + offsetX - 10
         local enemyDisplayHealth = state.defenderHealthDisplay or enemyUnit.health
         local fillPercent = enemyUnit.maxHealth and enemyUnit.maxHealth > 0
-            and clamp(enemyDisplayHealth / enemyUnit.maxHealth, 0, 1) or 1
+            and Helpers.clamp(enemyDisplayHealth / enemyUnit.maxHealth, 0, 1) or 1
             drawBarBase(state.bigBarBaseImage, leftX, baseY, scale, alpha, false)
             drawBarFill(state.bigBarFillImage, leftX, baseY, scale, alpha, false, fillPercent)
         
@@ -158,7 +134,7 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress)
         local rightX = screenW - BAR_W * scale - (BAR_MARGIN + 10) - offsetX - 60
         local playerDisplayHealth = state.playerHealthDisplay or playerUnit.health
         local fillPercent = playerUnit.maxHealth and playerUnit.maxHealth > 0
-            and clamp(playerDisplayHealth / playerUnit.maxHealth, 0, 1) or 1
+            and Helpers.clamp(playerDisplayHealth / playerUnit.maxHealth, 0, 1) or 1
             drawBarBase(state.bigBarBaseImage, rightX, baseY, scale, alpha, true)
             drawBarFill(state.bigBarFillImage, rightX, baseY, scale, alpha, false, fillPercent)
         

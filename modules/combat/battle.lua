@@ -4,39 +4,10 @@ local Assets = require("modules.combat.battle_assets")
 local Effects = require("modules.combat.battle_effects")
 local Anim = require("modules.combat.battle_anim")
 local Draw = require("modules.combat.battle_draw")
+local Helpers = require("modules.combat.battle_helpers")
 local CameraManager = require("modules.engine.camera_manager")
 
 local Battle = State
-
-local function clamp(value, minValue, maxValue)
-    if value < minValue then return minValue end
-    if value > maxValue then return maxValue end
-    return value
-end
-
-local function easeOutQuad(t)
-    return 1 - (1 - t) * (1 - t)
-end
-
-local function getPlayerUnit(attacker, defender)
-    if attacker and attacker.isPlayer then
-        return attacker
-    end
-    if defender and defender.isPlayer then
-        return defender
-    end
-    return nil
-end
-
-local function getEnemyUnit(attacker, defender)
-    if attacker and not attacker.isPlayer then
-        return attacker
-    end
-    if defender and not defender.isPlayer then
-        return defender
-    end
-    return nil
-end
 
 function Battle.load()
     Assets.load(Battle)
@@ -47,8 +18,8 @@ function Battle.startBattle(attacker, defender)
     Battle.defender = defender
     Battle.visible = true
     Battle.resetTimers()
-    local playerUnit = getPlayerUnit(attacker, defender)
-    local enemyUnit = getEnemyUnit(attacker, defender)
+    local playerUnit = Helpers.getPlayerUnit(attacker, defender)
+    local enemyUnit = Helpers.getEnemyUnit(attacker, defender)
     Battle.defenderHealthDisplay = enemyUnit and enemyUnit.health or 0
     Battle.playerHealthDisplay = playerUnit and playerUnit.health or 0
     Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
@@ -125,8 +96,8 @@ function Battle.update(dt)
         if Battle.attacker and Battle.defender then
             local Attack = require("modules.engine.attack")
             local UnitManager = require("modules.units.manager")
-            local playerUnit = getPlayerUnit(Battle.attacker, Battle.defender)
-            local enemyUnit = getEnemyUnit(Battle.attacker, Battle.defender)
+            local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
+            local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
 
             -- Store previous health for animation
             Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
@@ -144,10 +115,10 @@ function Battle.update(dt)
 
     if Battle.damageApplied and Battle.isHealthAnimating then
         local elapsedTime = Battle.battleTimer - Battle.healthAnimStartTime
-        local t = clamp(elapsedTime / Battle.healthAnimDuration, 0, 1)
-        local eased = easeOutQuad(t)
-        local playerUnit = getPlayerUnit(Battle.attacker, Battle.defender)
-        local enemyUnit = getEnemyUnit(Battle.attacker, Battle.defender)
+        local t = Helpers.clamp(elapsedTime / Battle.healthAnimDuration, 0, 1)
+        local eased = Helpers.easeOutQuad(t)
+        local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
+        local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
 
         Battle.defenderHealthDisplay = Battle.defenderPreviousHealth
             + ((enemyUnit and enemyUnit.health or 0) - Battle.defenderPreviousHealth) * eased
