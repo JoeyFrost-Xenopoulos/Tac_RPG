@@ -1,6 +1,12 @@
 -- modules/combat/battle_anim.lua
 local Anim = {}
 
+local function clamp(value, minValue, maxValue)
+    if value < minValue then return minValue end
+    if value > maxValue then return maxValue end
+    return value
+end
+
 function Anim.getAnimationFrame(state, unit, animName, timeOffset)
     local anim = unit.animations[animName]
     if not anim or not anim.quads then return nil end
@@ -43,7 +49,10 @@ function Anim.getAttackFrame(state, unit)
 end
 
 function Anim.getAttackerDisplayPosition(state, screenW, platformW)
-    local runProgress = math.min(state.battleTimer / state.runDuration, 1.0)
+    local runDuration = state.runDuration or 0
+    local attackDuration = state.attackDuration or 0
+    local returnDuration = state.returnDuration or 0
+    local time = state.battleTimer
 
     local startX
     if state.attacker.isPlayer then
@@ -59,8 +68,18 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW)
         endX = screenW / 2 + platformW * 0.25 - 70
     end
 
-    local x = startX + (endX - startX) * runProgress
-    return x
+    if runDuration > 0 and time <= runDuration then
+        local runProgress = clamp(time / runDuration, 0, 1)
+        return startX + (endX - startX) * runProgress
+    end
+
+    local attackEndTime = runDuration + attackDuration
+    if time <= attackEndTime or returnDuration <= 0 then
+        return endX
+    end
+
+    local returnProgress = clamp((time - attackEndTime) / returnDuration, 0, 1)
+    return endX + (startX - endX) * returnProgress
 end
 
 return Anim

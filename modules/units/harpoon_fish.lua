@@ -11,6 +11,7 @@ local Harpoon_Fish = {
     health = 120,
     attackRange = 1,
     attackDamage = 5,
+    weapon = "sword",
     animations = {
         idle = {
             img = love.graphics.newImage("assets/units/Enemy/HarpoonFish/HarpoonFish_Idle.png"),

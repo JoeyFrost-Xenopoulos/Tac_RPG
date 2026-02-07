@@ -11,6 +11,7 @@ local EnemyConfig = {
     health = 100,
     attackRange = 1,
     attackDamage = 20,
+    weapon = "sword",
     animations = {
         idle = {
             img = love.graphics.newImage("assets/units/Enemy/Soldier/Warrior_Idle.png"),

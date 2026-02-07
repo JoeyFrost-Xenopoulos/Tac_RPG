@@ -6,6 +6,11 @@ local UiDraw = require("modules.combat.battle_ui_draw")
 
 local Draw = {}
 
+local WEAPON_NAMES = {
+    sword = "Heavy Sword",
+    -- Add more weapons as needed
+}
+
 function Draw.draw(state)
     if not state.visible then return end
 
@@ -35,7 +40,16 @@ function Draw.draw(state)
         state.platformX = leftPlatformX
         state.platformY = platformY
 
-        local isRunPhase = state.battleTimer < state.runDuration
+        local runDuration = state.runDuration or 0
+        local attackDuration = state.attackDuration or 0
+        local returnDuration = state.returnDuration or 0
+        local returnStartTime = runDuration + attackDuration
+        local isRunPhase = state.battleTimer < runDuration
+        local isAttackPhase = state.battleTimer >= runDuration
+            and state.battleTimer < returnStartTime
+        local isReturnPhase = returnDuration > 0
+            and state.battleTimer >= returnStartTime
+            and state.battleTimer < returnStartTime + returnDuration
 
         local defenderX, defenderFacingX
         if state.attacker.isPlayer then
@@ -57,7 +71,14 @@ function Draw.draw(state)
         if state.attacker then
             local attackerX = Anim.getAttackerDisplayPosition(state, screenW, platformW)
             local attackerFacingX = state.attacker.isPlayer and -1 or 1
-            local attackAnim = isRunPhase and "walk" or "attack"
+            local attackAnim
+            if isRunPhase or isReturnPhase then
+                attackAnim = "walk"
+            elseif isAttackPhase then
+                attackAnim = "attack"
+            else
+                attackAnim = "idle"
+            end
             Draw.drawUnit(state, state.attacker, attackerX, platformY - 60, attackerFacingX, false, attackAnim)
         end
     end
@@ -68,6 +89,26 @@ function Draw.draw(state)
         local frameY = (screenH - frameH) / 2
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(state.battleFrameImage, frameX, frameY - 60)
+
+        if state.pixelFont then
+            local enemyPreview = state.enemyAttackPreview or {}
+            local playerPreview = state.playerAttackPreview or {}
+            local previewTopY = frameY + 60
+            local leftPreviewX = frameX + 80
+            local rightPreviewX = frameX + frameW - 300
+            local previewWidth = 220
+            local lineHeight = state.previewFont:getHeight() + 2
+
+            love.graphics.setFont(state.previewFont)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.print(string.format("Hit: %d%%", enemyPreview.hit or 0), leftPreviewX + 50, previewTopY + 620)
+            love.graphics.print(string.format("Dmg: %d", enemyPreview.damage or 0), leftPreviewX + 50, previewTopY + 620 + lineHeight)
+            love.graphics.print(string.format("Crit: %d%%", enemyPreview.crit or 0), leftPreviewX + 50, previewTopY + 620 + lineHeight * 2)
+
+            love.graphics.printf(string.format("Hit: %d%%", playerPreview.hit or 0), rightPreviewX - 112, previewTopY + 620, previewWidth, "right")
+            love.graphics.printf(string.format("Dmg: %d", playerPreview.damage or 0), rightPreviewX - 118, previewTopY + 620 + lineHeight, previewWidth, "right")
+            love.graphics.printf(string.format("Crit: %d%%", playerPreview.crit or 0), rightPreviewX - 100, previewTopY + 620 + lineHeight * 2, previewWidth, "right")
+        end
         
         -- Draw sword icons for attacker and defender
         if state.swordIconImage then
@@ -78,6 +119,15 @@ function Draw.draw(state)
                 local attackerSwordX = frameX + 290
                 local attackerSwordY = frameY + 735
                 love.graphics.draw(state.swordIconImage, attackerSwordX, attackerSwordY, 0, 0.80, 0.80)
+                
+                -- Draw attacker weapon name
+                local weaponType = state.attacker.weapon or "sword"
+                local weaponName = WEAPON_NAMES[weaponType] or "Unknown"
+                if state.weaponFont then
+                    love.graphics.setFont(state.weaponFont)
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.print(weaponName, attackerSwordX + swordW * 0.80 + 10, attackerSwordY)
+                end
             end
             
             -- Defender sword icon (right side)
@@ -85,6 +135,15 @@ function Draw.draw(state)
                 local defenderSwordX = frameX + frameW - swordW - 500
                 local defenderSwordY = frameY + 735
                 love.graphics.draw(state.swordIconImage, defenderSwordX, defenderSwordY, 0, 0.80, 0.80)
+                
+                -- Draw defender weapon name
+                local weaponType = state.defender.weapon or "sword"
+                local weaponName = WEAPON_NAMES[weaponType] or "Unknown"
+                if state.weaponFont then
+                    love.graphics.setFont(state.weaponFont)
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.print(weaponName, defenderSwordX + swordW * 0.80 + 10, defenderSwordY)
+                end
             end
         end
     end

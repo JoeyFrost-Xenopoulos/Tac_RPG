@@ -8,9 +8,10 @@ State.platformImage = nil
 State.platformX = 0
 State.platformY = 0
 State.battleTimer = 0
-State.battleDuration = 2.5
 State.runDuration = 0.8
 State.attackDuration = 0.7
+State.returnDuration = 0.8
+State.battleDuration = State.runDuration + State.attackDuration + State.returnDuration
 State.transitionPhase = "none"
 State.transitionTimer = 0
 State.transitionCloseDuration = 0.4
@@ -37,6 +38,8 @@ State.defenderHitY = 0
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
+State.playerAttackPreview = { hit = 0, damage = 0, crit = 0 }
+State.enemyAttackPreview = { hit = 0, damage = 0, crit = 0 }
 State.defenderHealthDisplay = 0
 State.playerHealthDisplay = 0
 State.defenderPreviousHealth = 0

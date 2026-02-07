@@ -120,7 +120,8 @@ function Battle.update(dt)
 
     Effects.update(Battle, attackFrameIndex)
 
-    if Battle.battleTimer >= Battle.battleDuration and not Battle.damageApplied then
+    local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
+    if Battle.battleTimer >= totalDuration and not Battle.damageApplied then
         if Battle.attacker and Battle.defender then
             local Attack = require("modules.engine.attack")
             local UnitManager = require("modules.units.manager")

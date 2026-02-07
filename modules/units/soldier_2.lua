@@ -11,6 +11,7 @@ local Soldier2Config = {
     health = 120,
     attackRange = 1,
     attackDamage = 20,
+    weapon = "sword",
     animations = {
         idle = {
             img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Idle.png"),
