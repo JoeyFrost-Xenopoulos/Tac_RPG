@@ -8,6 +8,36 @@ local CameraManager = require("modules.engine.camera_manager")
 
 local Battle = State
 
+local function clamp(value, minValue, maxValue)
+    if value < minValue then return minValue end
+    if value > maxValue then return maxValue end
+    return value
+end
+
+local function easeOutQuad(t)
+    return 1 - (1 - t) * (1 - t)
+end
+
+local function getPlayerUnit(attacker, defender)
+    if attacker and attacker.isPlayer then
+        return attacker
+    end
+    if defender and defender.isPlayer then
+        return defender
+    end
+    return nil
+end
+
+local function getEnemyUnit(attacker, defender)
+    if attacker and not attacker.isPlayer then
+        return attacker
+    end
+    if defender and not defender.isPlayer then
+        return defender
+    end
+    return nil
+end
+
 function Battle.load()
     Assets.load(Battle)
 end
@@ -17,6 +47,12 @@ function Battle.startBattle(attacker, defender)
     Battle.defender = defender
     Battle.visible = true
     Battle.resetTimers()
+    local playerUnit = getPlayerUnit(attacker, defender)
+    local enemyUnit = getEnemyUnit(attacker, defender)
+    Battle.defenderHealthDisplay = enemyUnit and enemyUnit.health or 0
+    Battle.playerHealthDisplay = playerUnit and playerUnit.health or 0
+    Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
+    Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
 
     local screenW = love.graphics.getWidth()
     local screenH = love.graphics.getHeight()
@@ -84,23 +120,50 @@ function Battle.update(dt)
 
     Effects.update(Battle, attackFrameIndex)
 
-    if Battle.battleTimer >= Battle.battleDuration then
+    if Battle.battleTimer >= Battle.battleDuration and not Battle.damageApplied then
         if Battle.attacker and Battle.defender then
             local Attack = require("modules.engine.attack")
-            local TurnManager = require("modules.engine.turn")
             local UnitManager = require("modules.units.manager")
+            local playerUnit = getPlayerUnit(Battle.attacker, Battle.defender)
+            local enemyUnit = getEnemyUnit(Battle.attacker, Battle.defender)
+
+            -- Store previous health for animation
+            Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
+            Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
 
             local damage = Attack.performAttack(Battle.attacker, Battle.defender)
             UnitManager.showDamage(Battle.defender, damage)
 
-            TurnManager.markUnitAsMoved(Battle.attacker)
+            -- Start health animation
+            Battle.isHealthAnimating = true
+            Battle.healthAnimStartTime = Battle.battleTimer
+            Battle.damageApplied = true
+        end
+    end
 
+    if Battle.damageApplied and Battle.isHealthAnimating then
+        local elapsedTime = Battle.battleTimer - Battle.healthAnimStartTime
+        local t = clamp(elapsedTime / Battle.healthAnimDuration, 0, 1)
+        local eased = easeOutQuad(t)
+        local playerUnit = getPlayerUnit(Battle.attacker, Battle.defender)
+        local enemyUnit = getEnemyUnit(Battle.attacker, Battle.defender)
+
+        Battle.defenderHealthDisplay = Battle.defenderPreviousHealth
+            + ((enemyUnit and enemyUnit.health or 0) - Battle.defenderPreviousHealth) * eased
+        Battle.playerHealthDisplay = Battle.playerPreviousHealth
+            + ((playerUnit and playerUnit.health or 0) - Battle.playerPreviousHealth) * eased
+
+        if t >= 1 then
+            Battle.isHealthAnimating = false
+            Battle.defenderHealthDisplay = enemyUnit and enemyUnit.health or 0
+            Battle.playerHealthDisplay = playerUnit and playerUnit.health or 0
+            local TurnManager = require("modules.engine.turn")
+            TurnManager.markUnitAsMoved(Battle.attacker)
             if TurnManager.areAllUnitsMoved() then
                 TurnManager.endTurn()
             end
+            Battle.endBattle()
         end
-
-        Battle.endBattle()
     end
 end
 

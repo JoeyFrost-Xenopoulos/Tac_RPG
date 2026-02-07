@@ -6,6 +6,7 @@ local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
 local Options = require("modules.ui.options")
 local CameraManager = require("modules.engine.camera_manager")
+local Attack = require("modules.engine.attack")
 
 Cursor.color = {1, 1, 0, 0.5}
 Cursor.tileX = 1
@@ -94,6 +95,24 @@ function Cursor.update()
     local UnitManager = require("modules.units.manager")
     local tx, ty = Cursor.tileX, Cursor.tileY
     local selectedUnit = UnitManager.selectedUnit
+
+    if selectedUnit and UnitManager.state == "selectingAttack" then
+        local hoveredUnit = UnitManager.getUnitAt(tx, ty)
+        if hoveredUnit and not hoveredUnit.isPlayer then
+            local enemies = Attack.getEnemiesInRange(selectedUnit)
+            local inRange = false
+            for _, enemy in ipairs(enemies) do
+                if enemy == hoveredUnit then
+                    inRange = true
+                    break
+                end
+            end
+            Cursor.setMouse(inRange and "hover" or "blocked")
+        else
+            Cursor.setMouse("blocked")
+        end
+        return
+    end
 
     if selectedUnit then
         if (tx == selectedUnit.tileX and ty == selectedUnit.tileY)

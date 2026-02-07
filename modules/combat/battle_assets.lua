@@ -12,6 +12,9 @@ function Assets.load(state)
     state.bigBarBaseImage:setFilter("nearest", "nearest")
     state.bigBarFillImage = love.graphics.newImage("assets/ui/bars/BigBar_Fill.png")
     state.bigBarFillImage:setFilter("nearest", "nearest")
+    state.pixelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
+    state.swordIconImage = love.graphics.newImage("assets/ui/icons/sword.png")
+    state.swordIconImage:setFilter("nearest", "nearest")
 end
 
 return Assets

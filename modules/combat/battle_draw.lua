@@ -68,6 +68,25 @@ function Draw.draw(state)
         local frameY = (screenH - frameH) / 2
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(state.battleFrameImage, frameX, frameY - 60)
+        
+        -- Draw sword icons for attacker and defender
+        if state.swordIconImage then
+            local swordW, swordH = state.swordIconImage:getDimensions()
+            
+            -- Attacker sword icon (left side)
+            if state.attacker then
+                local attackerSwordX = frameX + 290
+                local attackerSwordY = frameY + 735
+                love.graphics.draw(state.swordIconImage, attackerSwordX, attackerSwordY, 0, 0.80, 0.80)
+            end
+            
+            -- Defender sword icon (right side)
+            if state.defender then
+                local defenderSwordX = frameX + frameW - swordW - 500
+                local defenderSwordY = frameY + 735
+                love.graphics.draw(state.swordIconImage, defenderSwordX, defenderSwordY, 0, 0.80, 0.80)
+            end
+        end
     end
 
     UiDraw.drawBigBar(state, screenW, screenH)

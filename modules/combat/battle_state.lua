@@ -8,7 +8,7 @@ State.platformImage = nil
 State.platformX = 0
 State.platformY = 0
 State.battleTimer = 0
-State.battleDuration = 5.5
+State.battleDuration = 2.5
 State.runDuration = 0.8
 State.attackDuration = 0.7
 State.transitionPhase = "none"
@@ -37,6 +37,14 @@ State.defenderHitY = 0
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
+State.defenderHealthDisplay = 0
+State.playerHealthDisplay = 0
+State.defenderPreviousHealth = 0
+State.playerPreviousHealth = 0
+State.healthAnimDuration = 0.8
+State.healthAnimStartTime = 0
+State.isHealthAnimating = false
+State.damageApplied = false
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -47,6 +55,9 @@ function State.resetTimers()
     State.attackHitPlayed = false
     State.transitionPhase = "none"
     State.transitionTimer = 0
+    State.isHealthAnimating = false
+    State.healthAnimStartTime = 0
+    State.damageApplied = false
 end
 
 return State

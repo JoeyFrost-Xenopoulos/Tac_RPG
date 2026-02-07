@@ -23,6 +23,12 @@ local BAR_BOTTOM_MARGIN = 30
 local BAR_CENTER_OFFSET = 30
 local FILL_INSET = 50
 local FILL_START_OFFSET = 0
+local HEALTH_TEXT_OFFSET_X = -20
+local HEALTH_TEXT_OFFSET_Y = 15
+
+local function lerp(startValue, endValue, t)
+    return startValue + (endValue - startValue) * t
+end
 
 local function getPlayerUnit(state)
     if state.attacker and state.attacker.isPlayer then
@@ -131,17 +137,39 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress)
     local baseY = screenH - BAR_H * scale - BAR_BOTTOM_MARGIN + BAR_CENTER_OFFSET + offsetY
 
     if enemyUnit then
-        local leftX = BAR_MARGIN + offsetX
-        local fillPercent = getFillPercent(enemyUnit)
-        drawBarBase(state.bigBarBaseImage, leftX, baseY, scale, alpha, false)
-        drawBarFill(state.bigBarFillImage, leftX, baseY, scale, alpha, false, fillPercent)
+        local leftX = BAR_MARGIN + offsetX - 10
+        local enemyDisplayHealth = state.defenderHealthDisplay or enemyUnit.health
+        local fillPercent = enemyUnit.maxHealth and enemyUnit.maxHealth > 0
+            and clamp(enemyDisplayHealth / enemyUnit.maxHealth, 0, 1) or 1
+            drawBarBase(state.bigBarBaseImage, leftX, baseY, scale, alpha, false)
+            drawBarFill(state.bigBarFillImage, leftX, baseY, scale, alpha, false, fillPercent)
+        
+        -- Draw enemy health number
+        if state.pixelFont and enemyUnit.health then
+                local displayHealth = enemyDisplayHealth or enemyUnit.health
+            love.graphics.setFont(state.pixelFont)
+            love.graphics.setColor(1, 1, 1, alpha)
+            love.graphics.print(tostring(math.max(0, math.floor(displayHealth + 0.5))), leftX + HEALTH_TEXT_OFFSET_X, baseY + HEALTH_TEXT_OFFSET_Y)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
     end
 
     if playerUnit then
-        local rightX = screenW - BAR_W * scale - (BAR_MARGIN + 10) - offsetX
-        local fillPercent = getFillPercent(playerUnit)
-        drawBarBase(state.bigBarBaseImage, rightX, baseY, scale, alpha, true)
-        drawBarFill(state.bigBarFillImage, rightX, baseY, scale, alpha, true, fillPercent)
+        local rightX = screenW - BAR_W * scale - (BAR_MARGIN + 10) - offsetX - 60
+        local playerDisplayHealth = state.playerHealthDisplay or playerUnit.health
+        local fillPercent = playerUnit.maxHealth and playerUnit.maxHealth > 0
+            and clamp(playerDisplayHealth / playerUnit.maxHealth, 0, 1) or 1
+            drawBarBase(state.bigBarBaseImage, rightX, baseY, scale, alpha, true)
+            drawBarFill(state.bigBarFillImage, rightX, baseY, scale, alpha, false, fillPercent)
+        
+        -- Draw player health number
+        if state.pixelFont and playerUnit.health then
+                local displayHealth = playerDisplayHealth or playerUnit.health
+            love.graphics.setFont(state.pixelFont)
+            love.graphics.setColor(1, 1, 1, alpha)
+            love.graphics.print(tostring(math.max(0, math.floor(displayHealth + 0.5))), rightX + HEALTH_TEXT_OFFSET_X, baseY + HEALTH_TEXT_OFFSET_Y)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
     end
 end
 
