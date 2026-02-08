@@ -60,13 +60,6 @@ function Mouse.pressed(x, y, button)
         return
     end
 
-    if UnitManager.state == "selectingWeapon" then
-        if button == 2 then
-            UnitManager.returnToWaitMenuFromWeaponSelect(UnitManager.selectedUnit)
-        end
-        return
-    end
-    
     if UnitManager.state == "menu" then
         if button == 1 then
             local hit = Menu.clicked(x, y)

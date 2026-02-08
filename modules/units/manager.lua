@@ -160,10 +160,6 @@ function UnitManager.showWaitMenu()
     local unit = UnitManager.selectedUnit
     if not unit then return end
     
-    -- Update prevX/prevY to current position so cancel won't revert to old positions from previous turns
-    unit.prevX = unit.tileX
-    unit.prevY = unit.tileY
-    
     UnitManager.state = "menu"
     local screenW = love.graphics.getWidth()
     local unitPixelX = unit.tileX * Grid.tileSize
@@ -302,6 +298,9 @@ function UnitManager.select(unit)
     UnitManager.deselectAll()
     unit:setSelected(true)
     UnitManager.selectedUnit = unit
+    -- Save position BEFORE any movement in this turn
+    unit.prevX = unit.tileX
+    unit.prevY = unit.tileY
     UnitManager.state = "idle"
     MovementRange.show(unit)
     Effects.playConfirm()

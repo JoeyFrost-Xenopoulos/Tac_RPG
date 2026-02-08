@@ -1,8 +1,27 @@
 - add in names in battle frame
-- add in bushes
 - add in combat system
+    - damage calcs
+    - atk, def, dodge, luk
+    - weapon might for each weapon
+    - calculation for physical damage: str + weapon_might - defenders_def
+    - if crit then x2
 - fix enemy weapon name being attached to attacker weapon name
 - add in after you select a unit to attack it shows the combat info
-- add in a force for you to have to select one of the units in attackRange after picking weapon
-    - force highlight tile to be ontop of one of those units
-    - make highlight tile red for clarity
+
+
+--- Specifics about combat system ---
+Str: Damage with weapons. Damage = Str + Weapon Mt.
+
+Mag: Damage with Magic. Damage = Mag + Tome Mt.
+
+Skill: A GOD STAT. Chance to hit and chance to critical. Hit = [(Skill x 3 + Luck) / 2] + Weapon Hit Rate. 
+Crit = (Skill / 2) + Weapon's Critical.
+
+Spd: Chance to avoid. Avoid = (Speed x 3 + Luck) / 2. 
+Also if your Spd is 5 points higher than the enemy you will attack twice, if your Spd is 5 points lower then they will attack twice.
+
+Luck: Slightly raises Hit AND Avoid. Reduces chance of enemy critical hits. Crit Avoid = Luck
+
+Def: Lowers damage of weapon attacks. Weapon Damage Reduction = Def.
+
+Res: Lowers damage of magic attacks. Magic Damage Reduction = Res.
