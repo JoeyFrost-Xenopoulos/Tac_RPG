@@ -37,28 +37,56 @@ function Draw.draw(state)
         state.platformX = leftPlatformX
         state.platformY = platformY
 
-        local defenderX, defenderFacingX
+        local defenderStaticX, defenderFacingX
         if state.attacker.isPlayer then
-            defenderX = centerX - platformW * 0.3
+            defenderStaticX = centerX - platformW * 0.3
             defenderFacingX = 1
         else
-            defenderX = centerX + platformW * 0.3
+            defenderStaticX = centerX + platformW * 0.3
             defenderFacingX = -1
         end
 
-        if state.defender then
-            Draw.drawUnit(state, state.defender, defenderX, platformY - 60, defenderFacingX, false, nil, true)
-        end
-
-        if state.defender and state.hitEffectActive then
-            Effects.drawBreak(state, defenderX, platformY + 160)
-        end
-
-        if state.attacker then
-            local attackerX = Anim.getAttackerDisplayPosition(state, screenW, platformW)
+        -- Determine which unit is animating and which is static
+        if state.battlePhase == "counterattack" then
+            -- During counterattack: defender animates, attacker is static
+            local attackerStaticX
+            if state.attacker.isPlayer then
+                attackerStaticX = centerX + platformW * 0.3
+            else
+                attackerStaticX = centerX - platformW * 0.3
+            end
             local attackerFacingX = state.attacker.isPlayer and -1 or 1
-            local attackAnim = Helpers.getAttackAnimName(state)
-            Draw.drawUnit(state, state.attacker, attackerX, platformY - 60, attackerFacingX, false, attackAnim)
+            
+            if state.attacker then
+                Draw.drawUnit(state, state.attacker, attackerStaticX, platformY - 60, attackerFacingX, false, "idle")
+            end
+
+            if state.defender then
+                local defenderX = Anim.getAttackerDisplayPosition(state, screenW, platformW)
+                local defenderAnim = Helpers.getAttackAnimName(state)
+                Draw.drawUnit(state, state.defender, defenderX, platformY - 60, defenderFacingX, false, defenderAnim)
+            end
+
+            -- Hit effect should be on the attacker during counterattack
+            if state.attacker and state.hitEffectActive then
+                Effects.drawBreak(state, attackerStaticX, platformY + 160)
+            end
+        else
+            -- During initial attack: attacker animates, defender is static
+            if state.defender then
+                Draw.drawUnit(state, state.defender, defenderStaticX, platformY - 60, defenderFacingX, false, nil, true)
+            end
+
+            if state.defender and state.hitEffectActive then
+                Effects.drawBreak(state, defenderStaticX, platformY + 160)
+            end
+
+            if state.attacker then
+                local attackerX = Anim.getAttackerDisplayPosition(state, screenW, platformW)
+                local attackerFacingX = state.attacker.isPlayer and -1 or 1
+                local attackAnim = Helpers.getAttackAnimName(state)
+                Draw.drawUnit(state, state.attacker, attackerX, platformY - 60, attackerFacingX, false, attackAnim)
+            end
         end
     end
 

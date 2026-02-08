@@ -35,6 +35,8 @@ State.breakAnimDuration = 0.7
 State.hitFrameStartTime = 0
 State.defenderHitX = 0
 State.defenderHitY = 0
+State.hitTargetX = 0
+State.hitTargetY = 0
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
@@ -50,6 +52,11 @@ State.isHealthAnimating = false
 State.damageApplied = false
 State.damageAmount = 0
 State.healthAnimDurationActual = 0.8
+State.battlePhase = "initial_attack"
+State.counterattackEnabled = true
+State.counterattackDamage = 0
+State.counterattackApplied = false
+State.defenderCounterAttackPlayed = false
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -58,6 +65,7 @@ function State.resetTimers()
     State.attackFrameIndex = 0
     State.attackSwingPlayed = false
     State.attackHitPlayed = false
+    State.defenderCounterAttackPlayed = false
     State.transitionPhase = "none"
     State.transitionTimer = 0
     State.isHealthAnimating = false
@@ -65,6 +73,10 @@ function State.resetTimers()
     State.damageApplied = false
     State.damageAmount = 0
     State.healthAnimDurationActual = 0.8
+    State.battlePhase = "initial_attack"
+    State.counterattackEnabled = true
+    State.counterattackDamage = 0
+    State.counterattackApplied = false
 end
 
 return State

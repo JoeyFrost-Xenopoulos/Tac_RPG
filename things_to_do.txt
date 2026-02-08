@@ -1,5 +1,7 @@
 - add in names in battle frame
 - add in bushes
+
 - add in counter attacking
+
 - add in combat system
 - fix enemy weapon name being attached to attacker weapon name

@@ -9,6 +9,10 @@ local CameraManager = require("modules.engine.camera_manager")
 
 local Battle = State
 
+-- ============================================================================
+-- INITIALIZATION & LIFECYCLE
+-- ============================================================================
+
 function Battle.load()
     Assets.load(Battle)
 end
@@ -61,6 +65,165 @@ function Battle.endBattle()
     Battle.resetTimers()
 end
 
+-- ============================================================================
+-- ATTACK SEQUENCE HELPERS
+-- ============================================================================
+
+local function playAttackSounds(attackFrameIndex)
+    local Audio = require("modules.audio.sound_effects")
+    if attackFrameIndex == 2 and not Battle.attackSwingPlayed then
+        Audio.playAttackSwing()
+        Battle.attackSwingPlayed = true
+    end
+    if attackFrameIndex == 3 and not Battle.attackHitPlayed then
+        Audio.playAttackHit()
+        Battle.attackHitPlayed = true
+    end
+end
+
+local function calculateHealthAnimDuration(damage, targetUnit)
+    if targetUnit and targetUnit.maxHealth and targetUnit.maxHealth > 0 then
+        local healthLossPercent = damage / targetUnit.maxHealth
+        return 0.3 + (healthLossPercent * 0.9)
+    end
+    return Battle.healthAnimDuration
+end
+
+local function applyDamageAndStartAnimation(attacker, defender, isCounterattack)
+    local Attack = require("modules.engine.attack")
+    local UnitManager = require("modules.units.manager")
+    local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
+    local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
+
+    -- Store previous health
+    Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
+    Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
+
+    -- Perform attack
+    local damage = Attack.performAttack(attacker, defender)
+    if isCounterattack then
+        Battle.counterattackDamage = damage
+    else
+        Battle.damageAmount = damage
+    end
+    UnitManager.showDamage(defender, damage)
+
+    -- Calculate animation duration
+    Battle.healthAnimDurationActual = calculateHealthAnimDuration(damage, defender)
+
+    -- Start health animation
+    Battle.isHealthAnimating = true
+    Battle.healthAnimStartTime = Battle.battleTimer
+end
+
+local function updateHealthAnimation()
+    local elapsedTime = Battle.battleTimer - Battle.healthAnimStartTime
+    local t = Helpers.clamp(elapsedTime / Battle.healthAnimDurationActual, 0, 1)
+    local eased = Helpers.easeOutQuad(t)
+    local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
+    local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
+
+    Battle.defenderHealthDisplay = Battle.defenderPreviousHealth
+        + ((enemyUnit and enemyUnit.health or 0) - Battle.defenderPreviousHealth) * eased
+    Battle.playerHealthDisplay = Battle.playerPreviousHealth
+        + ((playerUnit and playerUnit.health or 0) - Battle.playerPreviousHealth) * eased
+
+    return t >= 1
+end
+
+local function resetPhaseFlags()
+    Battle.attackSwingPlayed = false
+    Battle.attackHitPlayed = false
+    Battle.hitEffectActive = false
+    Battle.hitFrameStartTime = 0
+end
+
+local function transitionToCounterattack()
+    if Battle.counterattackEnabled and Battle.defender and Battle.defender.health > 0 then
+        Battle.battlePhase = "counterattack"
+        Battle.battleTimer = 0
+        resetPhaseFlags()
+        Battle.counterattackApplied = false
+    else
+        Battle.battlePhase = "done"
+    end
+end
+
+local function finalizeDamageAnimation()
+    Battle.isHealthAnimating = false
+    local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
+    local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
+    Battle.defenderHealthDisplay = enemyUnit and enemyUnit.health or 0
+    Battle.playerHealthDisplay = playerUnit and playerUnit.health or 0
+end
+
+-- ============================================================================
+-- PHASE HANDLERS
+-- ============================================================================
+
+local function updateInitialAttack()
+    local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.attacker)
+    Battle.attackFrameIndex = attackFrameIndex or 0
+
+    playAttackSounds(attackFrameIndex)
+    Effects.update(Battle, attackFrameIndex)
+
+    -- Apply damage when animation completes
+    local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
+    if Battle.battleTimer >= totalDuration and not Battle.damageApplied then
+        if Battle.attacker and Battle.defender then
+            applyDamageAndStartAnimation(Battle.attacker, Battle.defender, false)
+            Battle.damageApplied = true
+        end
+    end
+
+    -- Update health animation and transition
+    if Battle.damageApplied and Battle.isHealthAnimating then
+        if updateHealthAnimation() then
+            finalizeDamageAnimation()
+            transitionToCounterattack()
+        end
+    end
+end
+
+local function updateCounterattack()
+    local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.defender)
+    Battle.attackFrameIndex = attackFrameIndex or 0
+
+    playAttackSounds(attackFrameIndex)
+    Effects.update(Battle, attackFrameIndex)
+
+    -- Apply counterattack damage when animation completes
+    local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
+    if Battle.battleTimer >= totalDuration and not Battle.counterattackApplied then
+        if Battle.attacker and Battle.defender then
+            applyDamageAndStartAnimation(Battle.defender, Battle.attacker, true)
+            Battle.counterattackApplied = true
+        end
+    end
+
+    -- Update health animation and finish battle
+    if Battle.counterattackApplied and Battle.isHealthAnimating then
+        if updateHealthAnimation() then
+            finalizeDamageAnimation()
+            Battle.battlePhase = "done"
+        end
+    end
+end
+
+local function updateDone()
+    local TurnManager = require("modules.engine.turn")
+    TurnManager.markUnitAsMoved(Battle.attacker)
+    if TurnManager.areAllUnitsMoved() then
+        TurnManager.endTurn()
+    end
+    Battle.endBattle()
+end
+
+-- ============================================================================
+-- MAIN UPDATE
+-- ============================================================================
+
 function Battle.update(dt)
     if not Battle.visible then return end
 
@@ -76,79 +239,19 @@ function Battle.update(dt)
     end
 
     Battle.battleTimer = Battle.battleTimer + dt
-    local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.attacker)
-    Battle.attackFrameIndex = attackFrameIndex or 0
 
-    local Audio = require("modules.audio.sound_effects")
-    if attackFrameIndex == 2 and not Battle.attackSwingPlayed then
-        Audio.playAttackSwing()
-        Battle.attackSwingPlayed = true
-    end
-    if attackFrameIndex == 3 and not Battle.attackHitPlayed then
-        Audio.playAttackHit()
-        Battle.attackHitPlayed = true
-    end
-
-    Effects.update(Battle, attackFrameIndex)
-
-    local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
-    if Battle.battleTimer >= totalDuration and not Battle.damageApplied then
-        if Battle.attacker and Battle.defender then
-            local Attack = require("modules.engine.attack")
-            local UnitManager = require("modules.units.manager")
-            local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
-            local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
-
-            -- Store previous health for animation
-            Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
-            Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
-
-            local damage = Attack.performAttack(Battle.attacker, Battle.defender)
-            Battle.damageAmount = damage
-            UnitManager.showDamage(Battle.defender, damage)
-
-            -- Calculate animation duration based on health loss percentage
-            local targetUnit = Battle.defender
-            if targetUnit and targetUnit.maxHealth and targetUnit.maxHealth > 0 then
-                local healthLossPercent = damage / targetUnit.maxHealth
-                -- Scale duration from 0.3s (small damage) to 1.2s (large damage)
-                Battle.healthAnimDurationActual = 0.3 + (healthLossPercent * 0.9)
-            else
-                Battle.healthAnimDurationActual = Battle.healthAnimDuration
-            end
-
-            -- Start health animation
-            Battle.isHealthAnimating = true
-            Battle.healthAnimStartTime = Battle.battleTimer
-            Battle.damageApplied = true
-        end
-    end
-
-    if Battle.damageApplied and Battle.isHealthAnimating then
-        local elapsedTime = Battle.battleTimer - Battle.healthAnimStartTime
-        local t = Helpers.clamp(elapsedTime / Battle.healthAnimDurationActual, 0, 1)
-        local eased = Helpers.easeOutQuad(t)
-        local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
-        local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
-
-        Battle.defenderHealthDisplay = Battle.defenderPreviousHealth
-            + ((enemyUnit and enemyUnit.health or 0) - Battle.defenderPreviousHealth) * eased
-        Battle.playerHealthDisplay = Battle.playerPreviousHealth
-            + ((playerUnit and playerUnit.health or 0) - Battle.playerPreviousHealth) * eased
-
-        if t >= 1 then
-            Battle.isHealthAnimating = false
-            Battle.defenderHealthDisplay = enemyUnit and enemyUnit.health or 0
-            Battle.playerHealthDisplay = playerUnit and playerUnit.health or 0
-            local TurnManager = require("modules.engine.turn")
-            TurnManager.markUnitAsMoved(Battle.attacker)
-            if TurnManager.areAllUnitsMoved() then
-                TurnManager.endTurn()
-            end
-            Battle.endBattle()
-        end
+    if Battle.battlePhase == "initial_attack" then
+        updateInitialAttack()
+    elseif Battle.battlePhase == "counterattack" then
+        updateCounterattack()
+    elseif Battle.battlePhase == "done" then
+        updateDone()
     end
 end
+
+-- ============================================================================
+-- RENDERING & INPUT
+-- ============================================================================
 
 function Battle.draw()
     Draw.draw(Battle)

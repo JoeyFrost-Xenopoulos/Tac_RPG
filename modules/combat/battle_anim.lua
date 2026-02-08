@@ -54,15 +54,21 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW)
     local returnDuration = state.returnDuration or 0
     local time = state.battleTimer
 
+    -- Determine which unit is currently animating
+    local animatingUnit = state.attacker
+    if state.battlePhase == "counterattack" then
+        animatingUnit = state.defender
+    end
+
     local startX
-    if state.attacker.isPlayer then
+    if animatingUnit.isPlayer then
         startX = screenW / 2 + platformW * 0.3
     else
         startX = screenW / 2 - platformW * 0.3
     end
 
     local endX
-    if state.attacker.isPlayer then
+    if animatingUnit.isPlayer then
         endX = screenW / 2 - platformW * 0.25 + 70
     else
         endX = screenW / 2 + platformW * 0.25 - 70
@@ -80,6 +86,13 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW)
 
     local returnProgress = clamp((time - attackEndTime) / returnDuration, 0, 1)
     return endX + (startX - endX) * returnProgress
+end
+
+function Anim.getAnimatingUnit(state)
+    if state.battlePhase == "counterattack" then
+        return state.defender
+    end
+    return state.attacker
 end
 
 return Anim
