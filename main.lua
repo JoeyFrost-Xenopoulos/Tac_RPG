@@ -26,7 +26,6 @@ Effects = require("modules.audio.sound_effects")
 -- Units
 UnitManager = require("modules.units.manager")
 Soldier = require("modules.units.soldier")
-Soldier2 = require("modules.units.soldier_2")
 Enemy_Soldier = require("modules.units.enemy_soldier")
 
 function love.load()
@@ -51,12 +50,14 @@ function love.load()
     Leaf.load()
 
     UnitManager.add(Soldier.unit)
-    UnitManager.add(Soldier2.unit)
+    UnitManager.add(Soldier.unit2)
     UnitManager.add(Enemy_Soldier.unit)
+    UnitManager.add(Enemy_Soldier.unit2)
 
     Soldier.setPosition(3, 3)
-    Soldier2.setPosition(5, 2)
-    Enemy_Soldier.setPosition(8, 2)
+    Soldier.setPosition2(5, 2)
+    Enemy_Soldier.setPosition(9, 2)
+    Enemy_Soldier.setPosition2(8, 3)
     
     TurnManager.startTurn()
 end

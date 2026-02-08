@@ -103,17 +103,25 @@ function Cursor.update()
     local selectedUnit = UnitManager.selectedUnit
 
     if selectedUnit and UnitManager.state == "selectingAttack" then
-        local hoveredUnit = UnitManager.getUnitAt(tx, ty)
-        if hoveredUnit and not hoveredUnit.isPlayer then
-            local enemies = Attack.getEnemiesInRange(selectedUnit)
-            local inRange = false
+        local enemies = Attack.getEnemiesInRange(selectedUnit)
+        
+        -- Force cursor to snap to nearest enemy in range
+        if #enemies > 0 then
+            local nearestEnemy = enemies[1]
+            local minDist = math.abs(tx - nearestEnemy.tileX) + math.abs(ty - nearestEnemy.tileY)
+            
             for _, enemy in ipairs(enemies) do
-                if enemy == hoveredUnit then
-                    inRange = true
-                    break
+                local dist = math.abs(tx - enemy.tileX) + math.abs(ty - enemy.tileY)
+                if dist < minDist then
+                    minDist = dist
+                    nearestEnemy = enemy
                 end
             end
-            Cursor.setMouse(inRange and "hover" or "blocked")
+            
+            -- Snap cursor to nearest enemy
+            Cursor.tileX = nearestEnemy.tileX
+            Cursor.tileY = nearestEnemy.tileY
+            Cursor.setMouse("hover")
         else
             Cursor.setMouse("blocked")
         end
@@ -152,8 +160,18 @@ function Cursor.draw()
     local drawX = tilePx + Cursor.tileSize / 2
     local drawY = tilePy + Cursor.tileSize / 2
 
-    love.graphics.setColor(1, 1, 1, 1)
+    -- Check if we're in attack selection mode for red highlight
+    local UnitManager = require("modules.units.manager")
+    if UnitManager.state == "selectingAttack" then
+        love.graphics.setColor(1, 0.2, 0.2, 1)  -- Red color for attack targeting
+    else
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+    
     love.graphics.draw(Cursor.image, drawX, drawY, 0, scale, scale, imgW / 2, imgH / 2)
+    
+    -- Reset color to white after drawing
+    love.graphics.setColor(1, 1, 1, 1)
 
     love.graphics.pop()
 end

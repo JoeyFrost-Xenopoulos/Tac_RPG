@@ -2,3 +2,7 @@
 - add in bushes
 - add in combat system
 - fix enemy weapon name being attached to attacker weapon name
+- add in after you select a unit to attack it shows the combat info
+- add in a force for you to have to select one of the units in attackRange after picking weapon
+    - force highlight tile to be ontop of one of those units
+    - make highlight tile red for clarity
