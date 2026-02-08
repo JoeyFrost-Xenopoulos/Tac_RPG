@@ -48,6 +48,8 @@ State.healthAnimDuration = 0.8
 State.healthAnimStartTime = 0
 State.isHealthAnimating = false
 State.damageApplied = false
+State.damageAmount = 0
+State.healthAnimDurationActual = 0.8
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -61,6 +63,8 @@ function State.resetTimers()
     State.isHealthAnimating = false
     State.healthAnimStartTime = 0
     State.damageApplied = false
+    State.damageAmount = 0
+    State.healthAnimDurationActual = 0.8
 end
 
 return State

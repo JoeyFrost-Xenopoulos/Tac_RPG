@@ -47,9 +47,10 @@ function BigBar.drawHealthText(x, y, maxWidth, anchor, hp, maxHp)
     love.graphics.setColor(1, 1, 1, 1)
 end
 
-function BigBar.draw(x, y, width, anchor)
+function BigBar.draw(x, y, width, anchor, healthRatio)
     if not width or width <= 0 then return end
 
+    healthRatio = healthRatio or 1
     local barHeight = 64
     local barY = y + 60
 
@@ -68,7 +69,9 @@ function BigBar.draw(x, y, width, anchor)
     local rightX = midX + mw * scaleX
     love.graphics.draw(BigBar_Base, barRightQuad, rightX - 2, barY)
 
-    local totalWidth = width + 15
+    -- Fill scales based on current health ratio
+    local fillWidth = width * healthRatio
+    local totalWidth = fillWidth + 15
     local fillX = barX + 56
     local fillScaleX = totalWidth / BigBar_Fill:getWidth()
     love.graphics.draw(BigBar_Fill, fillX, barY, 0, fillScaleX, 1)

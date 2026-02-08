@@ -104,7 +104,18 @@ function Battle.update(dt)
             Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
 
             local damage = Attack.performAttack(Battle.attacker, Battle.defender)
+            Battle.damageAmount = damage
             UnitManager.showDamage(Battle.defender, damage)
+
+            -- Calculate animation duration based on health loss percentage
+            local targetUnit = Battle.defender
+            if targetUnit and targetUnit.maxHealth and targetUnit.maxHealth > 0 then
+                local healthLossPercent = damage / targetUnit.maxHealth
+                -- Scale duration from 0.3s (small damage) to 1.2s (large damage)
+                Battle.healthAnimDurationActual = 0.3 + (healthLossPercent * 0.9)
+            else
+                Battle.healthAnimDurationActual = Battle.healthAnimDuration
+            end
 
             -- Start health animation
             Battle.isHealthAnimating = true
@@ -115,7 +126,7 @@ function Battle.update(dt)
 
     if Battle.damageApplied and Battle.isHealthAnimating then
         local elapsedTime = Battle.battleTimer - Battle.healthAnimStartTime
-        local t = Helpers.clamp(elapsedTime / Battle.healthAnimDuration, 0, 1)
+        local t = Helpers.clamp(elapsedTime / Battle.healthAnimDurationActual, 0, 1)
         local eased = Helpers.easeOutQuad(t)
         local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
         local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
