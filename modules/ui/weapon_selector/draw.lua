@@ -3,16 +3,16 @@ local State = require("modules.ui.weapon_selector.state")
 local Config = require("modules.ui.weapon_selector.config")
 local Input = require("modules.ui.weapon_selector.input")
 
-local function drawMenuFrame()
+local function drawMenuFrameAt(x, y, width, height)
     if not State.menuImage or not State.variants then return end
-    
+
     local v = State.variants
-    local x = math.floor(State.x)
-    local y = math.floor(State.y)
-    local midScaleX = math.max(0, (State.width - Config.SLICE_SIZE * 2) / Config.SLICE_SIZE)
-    local midScaleY = math.max(0, (State.height - Config.SLICE_SIZE * 2) / Config.SLICE_SIZE)
-    local rightX = x + State.width - Config.SLICE_SIZE
-    local bottomY = y + State.height - Config.SLICE_SIZE
+    x = math.floor(x)
+    y = math.floor(y)
+    local midScaleX = math.max(0, (width - Config.SLICE_SIZE * 2) / Config.SLICE_SIZE)
+    local midScaleY = math.max(0, (height - Config.SLICE_SIZE * 2) / Config.SLICE_SIZE)
+    local rightX = x + width - Config.SLICE_SIZE
+    local bottomY = y + height - Config.SLICE_SIZE
 
     love.graphics.setColor(1, 1, 1, 1)
     -- Top row
@@ -31,6 +31,68 @@ local function drawMenuFrame()
     love.graphics.draw(State.menuImage, v.botRight, rightX, bottomY)
 end
 
+local function drawMenuFrame()
+    drawMenuFrameAt(State.x, State.y, State.width, State.height)
+end
+
+local function drawUnitPanel()
+    if not State.unit then return end
+    if not State.unit.avatar then return end
+
+    local screenW = love.graphics.getWidth()
+    local panelW = Config.RIGHT_PANEL_WIDTH
+    local panelX = screenW - panelW - Config.RIGHT_MARGIN
+    local panelY = State.y
+    local avatarPanelH = Config.AVATAR_PANEL_HEIGHT
+    local menuPanelH = Config.RIGHT_MENU_HEIGHT
+    local gap = Config.RIGHT_PANEL_GAP
+
+    drawMenuFrameAt(panelX, panelY, panelW, avatarPanelH)
+    drawMenuFrameAt(panelX, panelY + avatarPanelH + gap, panelW, menuPanelH)
+
+    local avatar = State.unit.avatar
+    local padding = Config.RIGHT_PANEL_PADDING
+    local availW = panelW - padding * 2
+    local availH = avatarPanelH - padding * 2
+    local scale = math.min(availW / avatar:getWidth(), availH / avatar:getHeight())
+    local avatarX = panelX + (panelW - avatar:getWidth() * scale) / 2
+    local avatarY = panelY + (avatarPanelH - avatar:getHeight() * scale) / 2
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(avatar, avatarX, avatarY, 0, scale, scale)
+
+    if State.smallFont or State.font then
+        local stats = {
+            { label = "Atk", value = "--" },
+            { label = "Crit", value = "--" },
+            { label = "Hit", value = "--" },
+            { label = "Avoid", value = "--" }
+        }
+        local statFont = State.smallFont or State.font
+        love.graphics.setFont(statFont)
+        local padding = Config.RIGHT_PANEL_PADDING
+        local startX = panelX + padding
+        local startY = panelY + avatarPanelH + gap + padding
+        local innerW = panelW - padding * 2 - 50
+        local innerH = menuPanelH - padding * 2
+        local colGap = 6
+        local colW = (innerW - colGap) / 2
+        local rowH = innerH / 2
+
+        for i, stat in ipairs(stats) do
+            local col = (i - 1) % 2
+            local row = math.floor((i - 1) / 2)
+            local labelText = stat.label .. ":"
+            local valueText = stat.value
+            local cellX = startX + col * (colW + colGap)
+            local textY = startY + row * rowH + (rowH - statFont:getHeight()) / 2
+            local valueW = statFont:getWidth(valueText)
+            local valueX = cellX + colW - valueW
+            love.graphics.print(labelText, cellX + 20, textY)
+            love.graphics.print(valueText, valueX + 20, textY)
+        end
+    end
+end
+
 local function drawWeaponItems(hoveredIndex)
     local listX = State.x + Config.PANEL_PADDING
     local listY = State.y + Config.TITLE_HEIGHT
@@ -42,7 +104,7 @@ local function drawWeaponItems(hoveredIndex)
 
         if isHovered then
             love.graphics.setColor(1, 1, 1, 0.12)
-            love.graphics.rectangle("fill", listX, itemY + Config.ITEM_VISUAL_OFFSET, listW, Config.ITEM_HOVER_HEIGHT, 6, 6)
+            love.graphics.rectangle("fill", listX, itemY + Config.ITEM_VISUAL_OFFSET - 5, listW, Config.ITEM_HOVER_HEIGHT, 6, 6)
         end
 
         love.graphics.setColor(1, 1, 1, 1)
@@ -80,6 +142,7 @@ function Draw.draw()
 
     drawMenuFrame()
     drawWeaponItems(hoveredIndex)
+    drawUnitPanel()
 
     love.graphics.setColor(1, 1, 1, 1)
 end

@@ -3,13 +3,14 @@ local State = {}
 State.visible = false
 State.x = 0
 State.y = 0
-State.width = 350
+State.width = 390
 State.height = 240
 State.options = {}
 State.cursorTime = 0
 State.onSelect = nil
 State.onCancel = nil
 State.lastHoveredIndex = nil
+State.unit = nil
 
 State.font = nil
 State.smallFont = nil
@@ -25,6 +26,7 @@ function State.show(unit, onSelect, onCancel)
     State.options = Options.buildOptions(unit)
     State.onSelect = onSelect
     State.onCancel = onCancel
+    State.unit = unit
     State.visible = true
     State.cursorTime = 0
     State.lastHoveredIndex = nil
@@ -44,6 +46,7 @@ function State.hide()
     State.onSelect = nil
     State.onCancel = nil
     State.lastHoveredIndex = nil
+    State.unit = nil
 end
 
 function State.cancel()
