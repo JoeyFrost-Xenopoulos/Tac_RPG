@@ -22,6 +22,11 @@ function Battle.startBattle(attacker, defender)
     Battle.defender = defender
     Battle.visible = true
     Battle.resetTimers()
+    
+    -- Start battle music transition
+    local Audio = require("modules.audio.sound_effects")
+    Audio.transitionToBattleTheme()
+    
     local playerUnit = Helpers.getPlayerUnit(attacker, defender)
     local enemyUnit = Helpers.getEnemyUnit(attacker, defender)
     Battle.defenderHealthDisplay = enemyUnit and enemyUnit.health or 0
@@ -63,6 +68,10 @@ function Battle.endBattle()
     Battle.attacker = nil
     Battle.defender = nil
     Battle.resetTimers()
+    
+    -- Return to main theme
+    local Audio = require("modules.audio.sound_effects")
+    Audio.transitionToMainTheme()
 end
 
 -- ============================================================================

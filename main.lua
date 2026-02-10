@@ -76,6 +76,7 @@ function love.update(dt)
     Clouds.update(dt)
     Leaf.update(dt)
     TurnManager.updateEnemyTurn(dt)
+    Effects.update(dt)
 
     local mx, my = love.mouse.getPosition()
     local worldMx, worldMy = CameraManager.screenToWorld(mx, my)

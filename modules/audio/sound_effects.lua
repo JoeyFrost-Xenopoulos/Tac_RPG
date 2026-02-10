@@ -18,6 +18,16 @@ function Effects.load()
     Effects.mainTheme:setLooping(true)
     Effects.mainTheme:setVolume(0.1)
 
+    Effects.battleTheme = love.audio.newSource("assets/audio/Battle_Theme.mp3", "stream")
+    Effects.battleTheme:setLooping(true)
+    Effects.battleTheme:setVolume(0.1)
+
+    -- Fading system
+    Effects.currentMusicVolume = 0.1
+    Effects.targetMusicVolume = 0.1
+    Effects.fadeSpeed = 0.3  -- volume units per second
+    Effects.activeMusicTrack = nil
+
     Effects.baseVolumes = {
         menuIn   = 1.0,
         menuOut  = 1.0,
@@ -61,13 +71,124 @@ function Effects.setSFXVolume(v)
     end
 end
 
+function Effects.update(dt)
+    -- Update music fading
+    if Effects.currentMusicVolume ~= Effects.targetMusicVolume then
+        local diff = Effects.targetMusicVolume - Effects.currentMusicVolume
+        local step = Effects.fadeSpeed * dt
+        
+        if math.abs(diff) <= step then
+            Effects.currentMusicVolume = Effects.targetMusicVolume
+        else
+            Effects.currentMusicVolume = Effects.currentMusicVolume + (diff > 0 and step or -step)
+        end
+        
+        -- Apply volume to active track
+        if Effects.activeMusicTrack == "main" then
+            Effects.mainTheme:setVolume(Effects.currentMusicVolume)
+        elseif Effects.activeMusicTrack == "battle" then
+            Effects.battleTheme:setVolume(Effects.currentMusicVolume)
+        end
+    end
+end
+
 function Effects.playMainTheme()
     if Effects.mainTheme:isPlaying() then return end
+    Effects.activeMusicTrack = "main"
+    Effects.currentMusicVolume = 0.1
+    Effects.targetMusicVolume = 0.1
+    Effects.mainTheme:setVolume(0.1)
     Effects.mainTheme:play()
 end
 
 function Effects.stopMainTheme()
     Effects.mainTheme:stop()
+end
+
+function Effects.pauseMainTheme()
+    if Effects.mainTheme:isPlaying() then
+        Effects.mainTheme:pause()
+    end
+end
+
+function Effects.resumeMainTheme()
+    if not Effects.mainTheme:isPlaying() then
+        Effects.activeMusicTrack = "main"
+        Effects.currentMusicVolume = 0
+        Effects.targetMusicVolume = 0.1
+        Effects.mainTheme:setVolume(0)
+        Effects.mainTheme:play()
+    end
+end
+
+function Effects.playBattleTheme()
+    if not Effects.battleTheme:isPlaying() then
+        Effects.activeMusicTrack = "battle"
+        Effects.currentMusicVolume = 0
+        Effects.targetMusicVolume = 0.1
+        Effects.battleTheme:setVolume(0)
+        Effects.battleTheme:play()
+    end
+end
+
+function Effects.pauseBattleTheme()
+    if Effects.battleTheme:isPlaying() then
+        Effects.battleTheme:pause()
+    end
+end
+
+function Effects.fadeOutCurrentMusic(callback)
+    Effects.targetMusicVolume = 0
+    Effects.fadeCallback = callback
+end
+
+function Effects.fadeInCurrentMusic()
+    Effects.targetMusicVolume = 0.1
+end
+
+function Effects.transitionToBattleTheme()
+    -- If already on battle theme, just ensure it's playing and faded in
+    if Effects.activeMusicTrack == "battle" then
+        if Effects.pendingTransition == "main" then
+            -- Cancel transition to main, stay on battle
+            Effects.pendingTransition = nil
+            Effects.targetMusicVolume = 0.1
+        end
+        return
+    end
+    
+    -- Fade out main theme and transition to battle
+    Effects.targetMusicVolume = 0
+    Effects.pendingTransition = "battle"
+end
+
+function Effects.transitionToMainTheme()
+    -- If already on main theme, just ensure it's playing and faded in
+    if Effects.activeMusicTrack == "main" then
+        if Effects.pendingTransition == "battle" then
+            -- Cancel transition to battle, stay on main
+            Effects.pendingTransition = nil
+            Effects.targetMusicVolume = 0.1
+        end
+        return
+    end
+    
+    -- Fade out battle theme and transition to main
+    Effects.targetMusicVolume = 0
+    Effects.pendingTransition = "main"
+end
+
+function Effects.checkTransition()
+    if Effects.pendingTransition and Effects.currentMusicVolume == 0 then
+        if Effects.pendingTransition == "battle" then
+            Effects.pauseMainTheme()
+            Effects.playBattleTheme()
+        elseif Effects.pendingTransition == "main" then
+            Effects.pauseBattleTheme()
+            Effects.resumeMainTheme()
+        end
+        Effects.pendingTransition = nil
+    end
 end
 
 function Effects.backPlay()
@@ -125,6 +246,31 @@ function Effects.playAttackHit()
         Effects.attackHit:stop()
         Effects.attackHit:play()
     end
+end
+
+-- Called every frame to handle fading
+Effects.update = function(dt)
+    -- Update music fading
+    if Effects.currentMusicVolume ~= Effects.targetMusicVolume then
+        local diff = Effects.targetMusicVolume - Effects.currentMusicVolume
+        local step = Effects.fadeSpeed * dt
+        
+        if math.abs(diff) <= step then
+            Effects.currentMusicVolume = Effects.targetMusicVolume
+        else
+            Effects.currentMusicVolume = Effects.currentMusicVolume + (diff > 0 and step or -step)
+        end
+        
+        -- Apply volume to active track
+        if Effects.activeMusicTrack == "main" then
+            Effects.mainTheme:setVolume(Effects.currentMusicVolume)
+        elseif Effects.activeMusicTrack == "battle" then
+            Effects.battleTheme:setVolume(Effects.currentMusicVolume)
+        end
+    end
+    
+    -- Check if we need to complete a transition
+    Effects.checkTransition()
 end
 
 return Effects
