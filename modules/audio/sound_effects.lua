@@ -11,6 +11,7 @@ function Effects.load()
 
     Effects.back = love.audio.newSource("assets/audio/Back.wav", "static")
     Effects.confirm = love.audio.newSource("assets/audio/Confirmation.wav", "static")
+    Effects.nextTurn = love.audio.newSource("assets/audio/Next_Turn.wav", "static")
     Effects.attackSwing = love.audio.newSource("assets/audio/combat/Attack_1.wav", "static")
     Effects.attackHit = love.audio.newSource("assets/audio/combat/Attack_Hit_1.wav", "static")
 
@@ -36,6 +37,7 @@ function Effects.load()
         runGrass = 1.0,
         back     = 1.0,
         confirm  = 1.0,
+        nextTurn = 1.0,
         attackSwing = 0.8,
         attackHit = 0.8
     }
@@ -59,6 +61,7 @@ function Effects.setSFXVolume(v)
         runGrass = Effects.runGrass,
         back     = Effects.back,
         confirm  = Effects.confirm,
+        nextTurn = Effects.nextTurn,
         attackSwing = Effects.attackSwing,
         attackHit = Effects.attackHit
     }
@@ -200,6 +203,13 @@ function Effects.playConfirm()
     Effects.confirm:setPitch(0.9)
     Effects.confirm:stop()
     Effects.confirm:play()
+end
+
+function Effects.playNextTurn()
+    if Effects.nextTurn then
+        Effects.nextTurn:stop()
+        Effects.nextTurn:play()
+    end
 end
 
 function Effects.playRunGrass()

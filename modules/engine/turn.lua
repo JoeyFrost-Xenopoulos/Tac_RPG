@@ -52,10 +52,13 @@ local function moveEnemyToward(enemyUnit, targetUnit)
 end
 
 function TurnManager.startTurn()
+    local Effects = require("modules.audio.sound_effects")
     TurnManager.unitsThatHaveMoved = {}
     TurnManager.currentUnitIndex = 0
     TurnManager.enemyBattleInProgress = false
     TurnManager.enemyCurrentUnit = nil
+
+    Effects.playNextTurn()
     
     local UnitManager = require("modules.units.manager")
     for _, unit in ipairs(UnitManager.units) do
