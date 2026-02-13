@@ -6,7 +6,7 @@ local Menu = {}
 Menu.visible = false
 Menu.x = 0
 Menu.y = 0
-Menu.width = 160
+Menu.width = 170
 Menu.height = 120
 Menu.options = {}
 

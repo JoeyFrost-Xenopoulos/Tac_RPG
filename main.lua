@@ -2,6 +2,7 @@
 require("config")
 
 -- Core systems
+Input = require("modules.engine.input")
 Mouse = require("modules.engine.mouse")
 Map = require("modules.world.map")
 Grid = require("modules.ui.grid")
@@ -114,29 +115,17 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button)
-    CameraManager.mousepressed(x, y, button)
-    
-    if TurnManager.isOverlayActive() then
-        return
-    end
-    Mouse.pressed(x, y, button)
-end
-
-function love.keypressed(key)
-    if UnitStats.visible and key == "backspace" then
-        UnitStats.hide()
-        return
-    end
-    if UnitStats.visible and key == "down" then
-        UnitStats.nextUnit()
-        return
-    end
+    Input.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-    CameraManager.mousereleased(x, y, button)
+    Input.mousereleased(x, y, button)
 end
 
 function love.wheelmoved(x, y)
-    CameraManager.wheelmoved(x, y)
+    Input.wheelmoved(x, y)
+end
+
+function love.keypressed(key)
+    Input.keypressed(key)
 end
