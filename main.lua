@@ -125,6 +125,11 @@ end
 function love.keypressed(key)
     if UnitStats.visible and key == "backspace" then
         UnitStats.hide()
+        return
+    end
+    if UnitStats.visible and key == "down" then
+        UnitStats.nextUnit()
+        return
     end
 end
 
