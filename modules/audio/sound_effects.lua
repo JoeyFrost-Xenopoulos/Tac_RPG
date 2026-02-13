@@ -1,297 +1,39 @@
--- modulues.audio.sound_effects
+-- modules/audio/sound_effects.lua
 local Effects = {}
+local Music = require("modules.audio.music")
+local Sfx = require("modules.audio.sfx")
 
 function Effects.load()
-    Effects.menuIn   = love.audio.newSource("assets/audio/Menu_In.wav", "static")
-    Effects.menuOut  = love.audio.newSource("assets/audio/Menu_Out.wav", "static")
-    Effects.click    = love.audio.newSource("assets/audio/Click.wav", "static")
-    Effects.select   = love.audio.newSource("assets/audio/Select.wav", "static")
-    Effects.runGrass = love.audio.newSource("assets/audio/Running_In_Grass.wav", "static")
-    Effects.runGrass:setLooping(true)
-
-    Effects.back = love.audio.newSource("assets/audio/Back.wav", "static")
-    Effects.confirm = love.audio.newSource("assets/audio/Confirmation.wav", "static")
-    Effects.nextTurn = love.audio.newSource("assets/audio/Next_Turn.wav", "static")
-    Effects.attackSwing = love.audio.newSource("assets/audio/combat/Attack_1.wav", "static")
-    Effects.attackHit = love.audio.newSource("assets/audio/combat/Attack_Hit_1.wav", "static")
-
-    Effects.mainTheme = love.audio.newSource("assets/audio/Main_Theme.mp3", "stream")
-    Effects.mainTheme:setLooping(true)
-    Effects.mainTheme:setVolume(0.1)
-
-    Effects.battleTheme = love.audio.newSource("assets/audio/Battle_Theme.mp3", "stream")
-    Effects.battleTheme:setLooping(true)
-    Effects.battleTheme:setVolume(0.1)
-
-    -- Fading system (normalized 0..1, scaled by musicMaxVolume)
-    Effects.musicMaxVolume = 0.1
-    Effects.currentMusicVolume = 1
-    Effects.targetMusicVolume = 1
-    Effects.fadeSpeed = 0.8  -- volume units per second
-    Effects.activeMusicTrack = nil
-
-    Effects.baseVolumes = {
-        menuIn   = 1.0,
-        menuOut  = 1.0,
-        click    = 1.0,
-        select   = 0.05,
-        runGrass = 1.0,
-        back     = 1.0,
-        confirm  = 1.0,
-        nextTurn = 1.0,
-        attackSwing = 0.8,
-        attackHit = 0.8
-    }
-
-    -- Apply default SFX volume immediately
-    Effects.setSFXVolume(0.6)
+    Music.load()
+    Sfx.load()
 end
 
-function Effects.setMusicVolume(v)
-    Effects.musicMaxVolume = (v or 1) * 0.1
-    if Effects.activeMusicTrack == "main" then
-        Effects.mainTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
-    elseif Effects.activeMusicTrack == "battle" then
-        Effects.battleTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
-    end
+Effects.setMusicVolume = Music.setMusicVolume
+Effects.setSFXVolume = Sfx.setSFXVolume
+Effects.update = Music.update
 
-    if Effects.pendingTransition == "battle" then
-        Effects.battleTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
-    elseif Effects.pendingTransition == "main" then
-        Effects.mainTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
-    end
-end
+Effects.playMainTheme = Music.playMainTheme
+Effects.stopMainTheme = Music.stopMainTheme
+Effects.pauseMainTheme = Music.pauseMainTheme
+Effects.resumeMainTheme = Music.resumeMainTheme
+Effects.playBattleTheme = Music.playBattleTheme
+Effects.pauseBattleTheme = Music.pauseBattleTheme
+Effects.fadeOutCurrentMusic = Music.fadeOutCurrentMusic
+Effects.fadeInCurrentMusic = Music.fadeInCurrentMusic
+Effects.transitionToBattleTheme = Music.transitionToBattleTheme
+Effects.transitionToMainTheme = Music.transitionToMainTheme
+Effects.checkTransition = Music.checkTransition
 
-function Effects.setSFXVolume(v)
-    local sfx = {
-        menuIn   = Effects.menuIn,
-        menuOut  = Effects.menuOut,
-        click    = Effects.click,
-        select   = Effects.select,
-        runGrass = Effects.runGrass,
-        back     = Effects.back,
-        confirm  = Effects.confirm,
-        nextTurn = Effects.nextTurn,
-        attackSwing = Effects.attackSwing,
-        attackHit = Effects.attackHit
-    }
-
-    for name, src in pairs(sfx) do
-        if src then
-            local base = Effects.baseVolumes[name] or 1
-            src:setVolume(v * base)
-        end
-    end
-end
-
-function Effects.playMainTheme()
-    if Effects.mainTheme:isPlaying() then return end
-    Effects.activeMusicTrack = "main"
-    Effects.currentMusicVolume = 1
-    Effects.targetMusicVolume = 1
-    Effects.mainTheme:setVolume(Effects.musicMaxVolume)
-    Effects.mainTheme:play()
-end
-
-function Effects.stopMainTheme()
-    Effects.mainTheme:stop()
-end
-
-function Effects.pauseMainTheme()
-    if Effects.mainTheme:isPlaying() then
-        Effects.mainTheme:pause()
-    end
-end
-
-function Effects.resumeMainTheme()
-    if not Effects.mainTheme:isPlaying() then
-        Effects.activeMusicTrack = "main"
-        Effects.currentMusicVolume = 0
-        Effects.targetMusicVolume = 1
-        Effects.mainTheme:setVolume(0)
-        Effects.mainTheme:play()
-    end
-end
-
-function Effects.playBattleTheme()
-    if not Effects.battleTheme:isPlaying() then
-        Effects.activeMusicTrack = "battle"
-        Effects.currentMusicVolume = 0
-        Effects.targetMusicVolume = 1
-        Effects.battleTheme:setVolume(0)
-        Effects.battleTheme:play()
-    end
-end
-
-function Effects.pauseBattleTheme()
-    if Effects.battleTheme:isPlaying() then
-        Effects.battleTheme:pause()
-    end
-end
-
-function Effects.fadeOutCurrentMusic(callback)
-    Effects.targetMusicVolume = 0
-    Effects.fadeCallback = callback
-end
-
-function Effects.fadeInCurrentMusic()
-    Effects.targetMusicVolume = 1
-end
-
-function Effects.transitionToBattleTheme()
-    -- If already on battle theme, just ensure it's playing and faded in
-    if Effects.activeMusicTrack == "battle" then
-        if Effects.pendingTransition == "main" then
-            -- Cancel transition to main, stay on battle
-            Effects.pendingTransition = nil
-            Effects.targetMusicVolume = 1
-        end
-        return
-    end
-
-    if not Effects.battleTheme:isPlaying() then
-        Effects.battleTheme:setVolume(0)
-        Effects.battleTheme:play()
-    else
-        Effects.battleTheme:setVolume(0)
-    end
-
-    -- Crossfade from main to battle
-    Effects.targetMusicVolume = 0
-    Effects.pendingTransition = "battle"
-end
-
-function Effects.transitionToMainTheme()
-    -- If already on main theme, just ensure it's playing and faded in
-    if Effects.activeMusicTrack == "main" then
-        if Effects.pendingTransition == "battle" then
-            -- Cancel transition to battle, stay on main
-            Effects.pendingTransition = nil
-            Effects.targetMusicVolume = 1
-        end
-        return
-    end
-
-    if not Effects.mainTheme:isPlaying() then
-        Effects.mainTheme:setVolume(0)
-        Effects.mainTheme:play()
-    else
-        Effects.mainTheme:setVolume(0)
-    end
-
-    -- Crossfade from battle to main
-    Effects.targetMusicVolume = 0
-    Effects.pendingTransition = "main"
-end
-
-function Effects.checkTransition()
-    if Effects.pendingTransition and Effects.currentMusicVolume == 0 then
-        if Effects.pendingTransition == "battle" then
-            Effects.pauseMainTheme()
-            Effects.activeMusicTrack = "battle"
-            Effects.battleTheme:setVolume(Effects.musicMaxVolume)
-        elseif Effects.pendingTransition == "main" then
-            Effects.pauseBattleTheme()
-            Effects.activeMusicTrack = "main"
-            Effects.mainTheme:setVolume(Effects.musicMaxVolume)
-        end
-        Effects.currentMusicVolume = 1
-        Effects.targetMusicVolume = 1
-        Effects.pendingTransition = nil
-    end
-end
-
-function Effects.backPlay()
-    Effects.back:stop()
-    Effects.back:play()
-end
-
-function Effects.playConfirm()
-    Effects.confirm:setPitch(0.9)
-    Effects.confirm:stop()
-    Effects.confirm:play()
-end
-
-function Effects.playNextTurn()
-    if Effects.nextTurn then
-        Effects.nextTurn:stop()
-        Effects.nextTurn:play()
-    end
-end
-
-function Effects.playRunGrass()
-    if Effects.runGrass:isPlaying() then return end
-    Effects.runGrass:setPitch(0.95 + love.math.random() * 0.1)
-    Effects.runGrass:play()
-end
-
-function Effects.stopRunGrass()
-    Effects.runGrass:stop()
-end
-
-function Effects.playClick()
-    Effects.click:stop()
-    Effects.click:play()
-end
-
-function Effects.playSelect()
-    if Effects.select then
-        Effects.select:stop()
-        Effects.select:play()
-    end
-end
-
-function Effects.playMenuIn()
-    Effects.menuIn:stop()
-    Effects.menuIn:play()
-end
-
-function Effects.playMenuOut()
-    Effects.menuOut:stop()
-    Effects.menuOut:play()
-end
-
-function Effects.playAttackSwing()
-    if Effects.attackSwing then
-        Effects.attackSwing:stop()
-        Effects.attackSwing:play()
-    end
-end
-
-function Effects.playAttackHit()
-    if Effects.attackHit then
-        Effects.attackHit:stop()
-        Effects.attackHit:play()
-    end
-end
-
--- Called every frame to handle fading
-function Effects.update(dt)
-    -- Update music fading
-    if Effects.currentMusicVolume ~= Effects.targetMusicVolume then
-        local diff = Effects.targetMusicVolume - Effects.currentMusicVolume
-        local step = Effects.fadeSpeed * dt
-
-        if math.abs(diff) <= step then
-            Effects.currentMusicVolume = Effects.targetMusicVolume
-        else
-            Effects.currentMusicVolume = Effects.currentMusicVolume + (diff > 0 and step or -step)
-        end
-    end
-
-    if Effects.activeMusicTrack == "main" then
-        Effects.mainTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
-        if Effects.pendingTransition == "battle" then
-            Effects.battleTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
-        end
-    elseif Effects.activeMusicTrack == "battle" then
-        Effects.battleTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
-        if Effects.pendingTransition == "main" then
-            Effects.mainTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
-        end
-    end
-
-    Effects.checkTransition()
-end
+Effects.backPlay = Sfx.backPlay
+Effects.playConfirm = Sfx.playConfirm
+Effects.playNextTurn = Sfx.playNextTurn
+Effects.playRunGrass = Sfx.playRunGrass
+Effects.stopRunGrass = Sfx.stopRunGrass
+Effects.playClick = Sfx.playClick
+Effects.playSelect = Sfx.playSelect
+Effects.playMenuIn = Sfx.playMenuIn
+Effects.playMenuOut = Sfx.playMenuOut
+Effects.playAttackSwing = Sfx.playAttackSwing
+Effects.playAttackHit = Sfx.playAttackHit
 
 return Effects
