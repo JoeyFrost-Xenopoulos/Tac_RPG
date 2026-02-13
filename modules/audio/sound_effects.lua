@@ -23,10 +23,11 @@ function Effects.load()
     Effects.battleTheme:setLooping(true)
     Effects.battleTheme:setVolume(0.1)
 
-    -- Fading system
-    Effects.currentMusicVolume = 0.1
-    Effects.targetMusicVolume = 0.1
-    Effects.fadeSpeed = 0.3  -- volume units per second
+    -- Fading system (normalized 0..1, scaled by musicMaxVolume)
+    Effects.musicMaxVolume = 0.1
+    Effects.currentMusicVolume = 1
+    Effects.targetMusicVolume = 1
+    Effects.fadeSpeed = 0.8  -- volume units per second
     Effects.activeMusicTrack = nil
 
     Effects.baseVolumes = {
@@ -47,8 +48,17 @@ function Effects.load()
 end
 
 function Effects.setMusicVolume(v)
-    if Effects.mainTheme then
-        Effects.mainTheme:setVolume(v * 0.1)
+    Effects.musicMaxVolume = (v or 1) * 0.1
+    if Effects.activeMusicTrack == "main" then
+        Effects.mainTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
+    elseif Effects.activeMusicTrack == "battle" then
+        Effects.battleTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
+    end
+
+    if Effects.pendingTransition == "battle" then
+        Effects.battleTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
+    elseif Effects.pendingTransition == "main" then
+        Effects.mainTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
     end
 end
 
@@ -74,33 +84,12 @@ function Effects.setSFXVolume(v)
     end
 end
 
-function Effects.update(dt)
-    -- Update music fading
-    if Effects.currentMusicVolume ~= Effects.targetMusicVolume then
-        local diff = Effects.targetMusicVolume - Effects.currentMusicVolume
-        local step = Effects.fadeSpeed * dt
-        
-        if math.abs(diff) <= step then
-            Effects.currentMusicVolume = Effects.targetMusicVolume
-        else
-            Effects.currentMusicVolume = Effects.currentMusicVolume + (diff > 0 and step or -step)
-        end
-        
-        -- Apply volume to active track
-        if Effects.activeMusicTrack == "main" then
-            Effects.mainTheme:setVolume(Effects.currentMusicVolume)
-        elseif Effects.activeMusicTrack == "battle" then
-            Effects.battleTheme:setVolume(Effects.currentMusicVolume)
-        end
-    end
-end
-
 function Effects.playMainTheme()
     if Effects.mainTheme:isPlaying() then return end
     Effects.activeMusicTrack = "main"
-    Effects.currentMusicVolume = 0.1
-    Effects.targetMusicVolume = 0.1
-    Effects.mainTheme:setVolume(0.1)
+    Effects.currentMusicVolume = 1
+    Effects.targetMusicVolume = 1
+    Effects.mainTheme:setVolume(Effects.musicMaxVolume)
     Effects.mainTheme:play()
 end
 
@@ -118,7 +107,7 @@ function Effects.resumeMainTheme()
     if not Effects.mainTheme:isPlaying() then
         Effects.activeMusicTrack = "main"
         Effects.currentMusicVolume = 0
-        Effects.targetMusicVolume = 0.1
+        Effects.targetMusicVolume = 1
         Effects.mainTheme:setVolume(0)
         Effects.mainTheme:play()
     end
@@ -128,7 +117,7 @@ function Effects.playBattleTheme()
     if not Effects.battleTheme:isPlaying() then
         Effects.activeMusicTrack = "battle"
         Effects.currentMusicVolume = 0
-        Effects.targetMusicVolume = 0.1
+        Effects.targetMusicVolume = 1
         Effects.battleTheme:setVolume(0)
         Effects.battleTheme:play()
     end
@@ -146,7 +135,7 @@ function Effects.fadeOutCurrentMusic(callback)
 end
 
 function Effects.fadeInCurrentMusic()
-    Effects.targetMusicVolume = 0.1
+    Effects.targetMusicVolume = 1
 end
 
 function Effects.transitionToBattleTheme()
@@ -155,12 +144,19 @@ function Effects.transitionToBattleTheme()
         if Effects.pendingTransition == "main" then
             -- Cancel transition to main, stay on battle
             Effects.pendingTransition = nil
-            Effects.targetMusicVolume = 0.1
+            Effects.targetMusicVolume = 1
         end
         return
     end
-    
-    -- Fade out main theme and transition to battle
+
+    if not Effects.battleTheme:isPlaying() then
+        Effects.battleTheme:setVolume(0)
+        Effects.battleTheme:play()
+    else
+        Effects.battleTheme:setVolume(0)
+    end
+
+    -- Crossfade from main to battle
     Effects.targetMusicVolume = 0
     Effects.pendingTransition = "battle"
 end
@@ -171,12 +167,19 @@ function Effects.transitionToMainTheme()
         if Effects.pendingTransition == "battle" then
             -- Cancel transition to battle, stay on main
             Effects.pendingTransition = nil
-            Effects.targetMusicVolume = 0.1
+            Effects.targetMusicVolume = 1
         end
         return
     end
-    
-    -- Fade out battle theme and transition to main
+
+    if not Effects.mainTheme:isPlaying() then
+        Effects.mainTheme:setVolume(0)
+        Effects.mainTheme:play()
+    else
+        Effects.mainTheme:setVolume(0)
+    end
+
+    -- Crossfade from battle to main
     Effects.targetMusicVolume = 0
     Effects.pendingTransition = "main"
 end
@@ -185,11 +188,15 @@ function Effects.checkTransition()
     if Effects.pendingTransition and Effects.currentMusicVolume == 0 then
         if Effects.pendingTransition == "battle" then
             Effects.pauseMainTheme()
-            Effects.playBattleTheme()
+            Effects.activeMusicTrack = "battle"
+            Effects.battleTheme:setVolume(Effects.musicMaxVolume)
         elseif Effects.pendingTransition == "main" then
             Effects.pauseBattleTheme()
-            Effects.resumeMainTheme()
+            Effects.activeMusicTrack = "main"
+            Effects.mainTheme:setVolume(Effects.musicMaxVolume)
         end
+        Effects.currentMusicVolume = 1
+        Effects.targetMusicVolume = 1
         Effects.pendingTransition = nil
     end
 end
@@ -259,25 +266,32 @@ function Effects.playAttackHit()
 end
 
 -- Called every frame to handle fading
-Effects.update = function(dt)
+function Effects.update(dt)
     -- Update music fading
     if Effects.currentMusicVolume ~= Effects.targetMusicVolume then
         local diff = Effects.targetMusicVolume - Effects.currentMusicVolume
         local step = Effects.fadeSpeed * dt
-        
+
         if math.abs(diff) <= step then
             Effects.currentMusicVolume = Effects.targetMusicVolume
         else
             Effects.currentMusicVolume = Effects.currentMusicVolume + (diff > 0 and step or -step)
         end
-        
-        if Effects.activeMusicTrack == "main" then
-            Effects.mainTheme:setVolume(Effects.currentMusicVolume)
-        elseif Effects.activeMusicTrack == "battle" then
-            Effects.battleTheme:setVolume(Effects.currentMusicVolume)
+    end
+
+    if Effects.activeMusicTrack == "main" then
+        Effects.mainTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
+        if Effects.pendingTransition == "battle" then
+            Effects.battleTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
+        end
+    elseif Effects.activeMusicTrack == "battle" then
+        Effects.battleTheme:setVolume(Effects.currentMusicVolume * Effects.musicMaxVolume)
+        if Effects.pendingTransition == "main" then
+            Effects.mainTheme:setVolume((1 - Effects.currentMusicVolume) * Effects.musicMaxVolume)
         end
     end
-        Effects.checkTransition()
+
+    Effects.checkTransition()
 end
 
 return Effects
