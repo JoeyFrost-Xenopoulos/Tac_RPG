@@ -4,14 +4,14 @@ local Pathfinding = require("modules.engine.pathfinding")
 local Map = require("modules.world.map")
 local MovementEngine = require("modules.engine.movement")
 
-local function isUnitOccupyingTile(toX, toY, excludeUnit)
+local function getUnitAtTile(toX, toY, excludeUnit)
     local UnitManager = require("modules.units.manager")
     for _, unit in ipairs(UnitManager.units) do
         if unit ~= excludeUnit and unit.tileX == toX and unit.tileY == toY then
-            return true
+            return unit
         end
     end
-    return false
+    return nil
 end
 
 function TurnAI.findNearestEnemyUnit(enemyUnit)
@@ -34,18 +34,33 @@ function TurnAI.findNearestEnemyUnit(enemyUnit)
 end
 
 function TurnAI.moveEnemyToward(enemyUnit, targetUnit)
+    local UnitManager = require("modules.units.manager")
+    local function canMoveWithUnits(fromX, fromY, toX, toY)
+        if not Map.canMove(fromX, fromY, toX, toY) then
+            return false
+        end
+        local occupying = UnitManager.getUnitAt(toX, toY)
+        return not occupying or occupying == targetUnit
+    end
+
     local path = Pathfinding.findPath(
         enemyUnit.tileX, enemyUnit.tileY, 
         targetUnit.tileX, targetUnit.tileY, 
-        Map.canMove
+        canMoveWithUnits
     )
 
     if path and #path > 1 then
         local steps = math.min(#path - 1, enemyUnit.maxMoveRange)
         if steps > 0 then
             local finalPos = path[steps + 1]
-            if isUnitOccupyingTile(finalPos.x, finalPos.y, enemyUnit) then
+            local occupying = getUnitAtTile(finalPos.x, finalPos.y, enemyUnit)
+            while occupying do
                 steps = steps - 1
+                if steps <= 0 then
+                    break
+                end
+                finalPos = path[steps + 1]
+                occupying = getUnitAtTile(finalPos.x, finalPos.y, enemyUnit)
             end
 
             if steps > 0 then

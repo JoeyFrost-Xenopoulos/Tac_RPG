@@ -84,6 +84,12 @@ function Mouse.pressed(x, y, button)
 
         if clickedUnit then
             if UnitManager.state == "idle" then
+                if not clickedUnit.isPlayer then
+                    UnitManager.deselectAll()
+                    MovementRange.show(clickedUnit)
+                    return
+                end
+
                 if clickedUnit == currentSelected then
                     UnitManager.showWaitMenu()
                 else

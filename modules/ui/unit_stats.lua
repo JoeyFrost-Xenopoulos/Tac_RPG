@@ -78,15 +78,15 @@ function UnitStats.draw()
             local maxPortrait = 160
             local scale = math.min(maxPortrait / unit.avatar:getWidth(), maxPortrait / unit.avatar:getHeight())
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.draw(unit.avatar, panelX + padding, panelY + padding, 0, scale, scale)
+            love.graphics.draw(unit.avatar, panelX + padding - 550, panelY + padding - 70, 0, scale * 2, scale * 2)
         end
 
         local nameY = panelY + padding + 170
         if UnitStats.font then
             love.graphics.setFont(UnitStats.font)
             love.graphics.setColor(1, 1, 1, 1)
-            love.graphics.print(unit.type or "Unknown", panelX + padding, nameY)
-            love.graphics.print(unit.name or "Unknown", panelX + padding, nameY + 36)
+            love.graphics.print(unit.type or "Unknown", panelX + padding - 450, nameY + 100, 0)
+            love.graphics.print(unit.name or "Unknown", panelX + padding - 450, nameY + 136, 0)
         end
 
         local statsX = panelX + padding
