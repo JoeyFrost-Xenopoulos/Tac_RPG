@@ -7,6 +7,7 @@ local Menu = require("modules.ui.menu")
 local Effects = require("modules.audio.sound_effects")
 local TurnManager = require("modules.engine.turn")
 local Options = require("modules.ui.options")
+local UnitStats = require("modules.ui.unit_stats")
 local Attack = require("modules.engine.attack")
 local WeaponSelect = require("modules.ui.weapon_selector")
 
@@ -15,6 +16,10 @@ function Mouse.pressed(x, y, button)
         if button == 1 then
             Options.clicked(x, y)
         end
+        return
+    end
+
+    if UnitStats.visible then
         return
     end
 

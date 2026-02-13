@@ -230,6 +230,13 @@ function UnitManager.showEndTurnMenu(tx, ty)
             Effects.playConfirm()
             UnitManager.endPlayerTurn()
         end },
+        { text = "Unit Stats", callback = function()
+            local UnitStats = require("modules.ui.unit_stats")
+            Effects.playConfirm()
+            UnitManager.state = "idle"
+            Menu.hide()
+            UnitStats.show()
+        end },
         { text = "Options", callback = function()
             Effects.playConfirm()
             UnitManager.state = "idle"
@@ -246,7 +253,7 @@ function UnitManager.showEndTurnMenu(tx, ty)
             UnitManager.state = "idle"
             Menu.hide()
         end }
-    })
+    }, 40)
 end
 
 function UnitManager.endPlayerTurn()

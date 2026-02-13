@@ -17,6 +17,7 @@ Leaf = require("modules.world.leaf")
 TurnManager = require("modules.engine.turn")
 TurnOverlay = require("modules.ui.turn_overlay")
 Options = require("modules.ui.options")
+UnitStats = require("modules.ui.unit_stats")
 Battle = require("modules.combat.battle")
 CameraManager = require("modules.engine.camera_manager")
 
@@ -43,6 +44,7 @@ function love.load()
     WeaponSelect.load()
     TurnCounter.load()
     Options.load()
+    UnitStats.load()
     Battle.load()
     Effects.load()
     Effects.playMainTheme()
@@ -67,6 +69,7 @@ function love.update(dt)
     Map.update(dt)
     Cursor.update()
     Options.update(dt)
+    UnitStats.update(dt)
     Battle.update(dt)
     TurnOverlay.update(dt)
     UnitManager.update(dt)
@@ -102,6 +105,7 @@ function love.draw()
     
     BannerController.draw()
     Options.draw()
+    UnitStats.draw()
     Menu.draw()
     WeaponSelect.draw()
     TurnCounter.draw()
@@ -116,6 +120,12 @@ function love.mousepressed(x, y, button)
         return
     end
     Mouse.pressed(x, y, button)
+end
+
+function love.keypressed(key)
+    if UnitStats.visible and key == "backspace" then
+        UnitStats.hide()
+    end
 end
 
 function love.mousereleased(x, y, button)

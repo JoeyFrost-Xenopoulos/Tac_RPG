@@ -42,9 +42,10 @@ end
 function TurnCounter.draw()
     local Menu = require("modules.ui.menu")
     local WeaponSelect = require("modules.ui.weapon_selector")
+    local UnitStats = require("modules.ui.unit_stats")
     
     -- Hide turn counter if menu is visible
-    if Menu.visible or WeaponSelect.visible then
+    if Menu.visible or WeaponSelect.visible or UnitStats.visible then
         return
     end
     

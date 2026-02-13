@@ -119,9 +119,10 @@ end
 function CameraManager.wheelmoved(x, y)
     local Menu = require("modules.ui.menu")
     local Options = require("modules.ui.options")
+    local UnitStats = require("modules.ui.unit_stats")
     
     -- Don't allow zoom if menus are open
-    if Menu.visible or Options.visible then
+    if Menu.visible or Options.visible or UnitStats.visible then
         return
     end
     

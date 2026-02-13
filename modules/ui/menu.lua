@@ -41,11 +41,11 @@ function Menu.load()
     Menu.cursorW, Menu.cursorH = Menu.cursorImage:getDimensions()
 end
 
-function Menu.show(x, y, options)
+function Menu.show(x, y, options, heightPadding)
     Menu.x = x
     Menu.y = y
     Menu.options = options or {}
-    Menu.height = 30 + (#Menu.options * 30)
+    Menu.height = math.max(128, 30 + (#Menu.options * 30) + (heightPadding or 0))
     Menu.currentHeight = 0
     Menu.animationTime = 0
     Menu.animating = true
@@ -111,19 +111,26 @@ function Menu.draw()
     if not Menu.visible then return end
     local v = Menu.variants[1]
     love.graphics.setColor(1,1,1,1)    
-    local scaleY = Menu.currentHeight / Menu.height
+    local topH = 64
+    local bottomH = 64
+    local midH = math.max(0, Menu.currentHeight - topH - bottomH)
+    local scaleY = midH / 64
+    local midY = Menu.y + topH
+    local botY = midY + midH
 
     love.graphics.draw(Menu.image, v.topLeft,  Menu.x, Menu.y)
     love.graphics.draw(Menu.image, v.topMid,   Menu.x + 64, Menu.y)
     love.graphics.draw(Menu.image, v.topRight, Menu.x + 128, Menu.y)
 
-    love.graphics.draw(Menu.image, v.midLeft,  Menu.x, Menu.y + 64 * scaleY, 0, 1, scaleY)
-    love.graphics.draw(Menu.image, v.midMid,   Menu.x + 64, Menu.y + 64 * scaleY, 0, 1, scaleY)
-    love.graphics.draw(Menu.image, v.midRight, Menu.x + 128, Menu.y + 64 * scaleY, 0, 1, scaleY)
+    if scaleY > 0 then
+        love.graphics.draw(Menu.image, v.midLeft,  Menu.x, midY, 0, 1, scaleY)
+        love.graphics.draw(Menu.image, v.midMid,   Menu.x + 64, midY, 0, 1, scaleY)
+        love.graphics.draw(Menu.image, v.midRight, Menu.x + 128, midY, 0, 1, scaleY)
+    end
 
-    love.graphics.draw(Menu.image, v.botLeft,  Menu.x, Menu.y + 128 * scaleY, 0, 1, scaleY)
-    love.graphics.draw(Menu.image, v.botMid,   Menu.x + 64, Menu.y + 128 * scaleY, 0, 1, scaleY)
-    love.graphics.draw(Menu.image, v.botRight, Menu.x + 128, Menu.y + 128 * scaleY, 0, 1, scaleY)
+    love.graphics.draw(Menu.image, v.botLeft,  Menu.x, botY, 0, 1, 1)
+    love.graphics.draw(Menu.image, v.botMid,   Menu.x + 64, botY, 0, 1, 1)
+    love.graphics.draw(Menu.image, v.botRight, Menu.x + 128, botY, 0, 1, 1)
 
     love.graphics.setFont(Menu.font)
     local startY = Menu.y + 15
