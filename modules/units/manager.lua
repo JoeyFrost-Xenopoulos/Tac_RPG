@@ -70,7 +70,7 @@ function UnitManager.update(dt)
                 UnitManager.cancelMove()
             end })
 
-            Menu.show(mx, my, menuOptions)
+            Menu.show(mx, my, menuOptions, 40)
         end
         return 
     elseif UnitManager.state == "menu" then
@@ -193,7 +193,7 @@ function UnitManager.showWaitMenu()
         Menu.hide()
     end })
     
-    Menu.show(mx, my, menuOptions)
+    Menu.show(mx, my, menuOptions, 40)
 end
 
 function UnitManager.returnToWaitMenuFromWeaponSelect(unit)

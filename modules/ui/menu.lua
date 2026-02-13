@@ -17,6 +17,8 @@ Menu.animationDuration = 0.3
 Menu.currentHeight = 0
 Menu.cursorTime = 0
 Menu.hoveredIndex = nil
+Menu.textFadeDelay = 0.08
+Menu.textFadeDuration = 0.2
 
 function Menu.load()
     Menu.image = love.graphics.newImage("assets/ui/menu/menu.png")
@@ -83,8 +85,8 @@ function Menu.clicked(mx, my)
     if not Menu.visible then return false end
     
     if mx >= Menu.x and mx <= Menu.x + Menu.width and
-       my >= Menu.y and my <= Menu.y + Menu.height then
-       local startY = Menu.y + 15
+       my >= Menu.y and my <= Menu.y + Menu.currentHeight then
+    local startY = Menu.y + 15
        for i, opt in ipairs(Menu.options) do
             local optY = startY + (i-1)*30
             if my >= optY and my < optY + 30 then
@@ -133,14 +135,24 @@ function Menu.draw()
     love.graphics.draw(Menu.image, v.botRight, Menu.x + 128, botY, 0, 1, 1)
 
     love.graphics.setFont(Menu.font)
+    local textAlpha = 1
+    if Menu.animating then
+        local t = Menu.animationTime - Menu.textFadeDelay
+        textAlpha = math.max(0, math.min(1, t / Menu.textFadeDuration))
+    end
     local startY = Menu.y + 15
+    love.graphics.setScissor(Menu.x, Menu.y, Menu.width, Menu.currentHeight)
     for i, opt in ipairs(Menu.options) do
         local optY = startY + (i-1)*30
         if optY > Menu.y + Menu.currentHeight then break end
+        if optY + 30 < Menu.y then
+            goto continue
+        end
 
         local mx, my = love.mouse.getPosition()
         local hovered = mx > Menu.x and mx < Menu.x + Menu.width
-                    and my > optY and my < optY + 30
+                and my > optY and my < optY + 30
+                and my < Menu.y + Menu.currentHeight
 
         if hovered and Menu.hoveredIndex ~= i then
             Menu.hoveredIndex = i
@@ -153,16 +165,20 @@ function Menu.draw()
         end
 
         if hovered then
-            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setColor(1, 1, 1, textAlpha)
             local bob = math.sin(Menu.cursorTime * 8) * 4
             love.graphics.draw(Menu.cursorImage, Menu.x + 60 + bob, optY + 15, 90)
         else
-            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setColor(1, 1, 1, textAlpha)
         end
 
         love.graphics.print(opt.text, Menu.x + 40, optY + 15)
 
+        ::continue::
+
     end
+
+    love.graphics.setScissor()
 
     love.graphics.setColor(1,1,1,1)
 end

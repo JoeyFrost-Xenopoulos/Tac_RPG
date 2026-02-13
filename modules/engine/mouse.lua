@@ -43,6 +43,10 @@ function Mouse.pressed(x, y, button)
     if TurnManager.getCurrentTurn() ~= "player" then
         return
     end
+
+    if UnitManager.state == "moving" then
+        return
+    end
     
     if UnitManager.state == "selectingAttack" then
         if button == 1 then
