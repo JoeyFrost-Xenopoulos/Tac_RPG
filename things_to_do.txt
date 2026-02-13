@@ -8,13 +8,16 @@
 - fix enemy weapon name being attached to attacker weapon name
 - add in after you select a unit to attack it shows the combat info
 
+- add in exp system
+    - characters got lvl growth amounts
+    - after each combat the characters lvl up
 
 --- Specifics about combat system ---
 Str: Damage with weapons. Damage = Str + Weapon Mt.
 
 Mag: Damage with Magic. Damage = Mag + Tome Mt.
 
-Skill: A GOD STAT. Chance to hit and chance to critical. Hit = [(Skill x 3 + Luck) / 2] + Weapon Hit Rate. 
+Skill: Chance to hit and chance to critical. Hit = [(Skill x 3 + Luck) / 2] + Weapon Hit Rate. 
 Crit = (Skill / 2) + Weapon's Critical.
 
 Spd: Chance to avoid. Avoid = (Speed x 3 + Luck) / 2. 

@@ -24,6 +24,7 @@ Cursor.cursors = {}
 Cursor.current = nil
 Cursor.selectCooldown = 0.06
 Cursor.selectTimer = 0
+Cursor.lastSnappedEnemy = nil
 
 function Cursor.load()
     -- Grid cursor
@@ -90,15 +91,18 @@ function Cursor.update()
     local dt = love.timer.getDelta()
     Cursor.pulse = Cursor.pulse + dt
 
+    local UnitManager = require("modules.units.manager")
+
     Cursor.selectTimer = math.max(0, Cursor.selectTimer - dt)
     if prevX ~= Cursor.tileX or prevY ~= Cursor.tileY then
-        if Cursor.selectTimer <= 0 and not Menu.visible and not Options.visible then
+        if Cursor.selectTimer <= 0
+            and not Menu.visible
+            and not Options.visible
+            and UnitManager.state ~= "selectingAttack" then
             Effects.playSelect()
             Cursor.selectTimer = Cursor.selectCooldown
         end
     end
-
-    local UnitManager = require("modules.units.manager")
     local tx, ty = Cursor.tileX, Cursor.tileY
     local selectedUnit = UnitManager.selectedUnit
 
@@ -118,15 +122,23 @@ function Cursor.update()
                 end
             end
             
+            if Cursor.lastSnappedEnemy ~= nearestEnemy then
+                Effects.playSelect()
+                Cursor.lastSnappedEnemy = nearestEnemy
+            end
+
             -- Snap cursor to nearest enemy
             Cursor.tileX = nearestEnemy.tileX
             Cursor.tileY = nearestEnemy.tileY
             Cursor.setMouse("hover")
         else
+            Cursor.lastSnappedEnemy = nil
             Cursor.setMouse("blocked")
         end
         return
     end
+
+    Cursor.lastSnappedEnemy = nil
 
     if selectedUnit then
         if (tx == selectedUnit.tileX and ty == selectedUnit.tileY)

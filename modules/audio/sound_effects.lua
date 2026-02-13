@@ -261,16 +261,13 @@ Effects.update = function(dt)
             Effects.currentMusicVolume = Effects.currentMusicVolume + (diff > 0 and step or -step)
         end
         
-        -- Apply volume to active track
         if Effects.activeMusicTrack == "main" then
             Effects.mainTheme:setVolume(Effects.currentMusicVolume)
         elseif Effects.activeMusicTrack == "battle" then
             Effects.battleTheme:setVolume(Effects.currentMusicVolume)
         end
     end
-    
-    -- Check if we need to complete a transition
-    Effects.checkTransition()
+        Effects.checkTransition()
 end
 
 return Effects
