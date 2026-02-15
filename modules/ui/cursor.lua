@@ -63,13 +63,15 @@ function Cursor.getTile()
 end
 
 function Cursor.update()
+    local Menu = require("modules.ui.menu")
+    local WeaponSelect = require("modules.ui.weapon_selector")
+    local UnitStats = require("modules.ui.unit_stats")
+    local Options = require("modules.ui.options")
+    
     local mx, my = love.mouse.getPosition()
-    if Menu.isHovered(mx, my) then
-        Cursor.setMouse("default")
-        return
-    end
-
-    if WeaponSelect.visible then
+    
+    -- Reset cursor if any overlay menu is visible
+    if Menu.isHovered(mx, my) or WeaponSelect.visible or UnitStats.visible or Options.visible then
         Cursor.setMouse("default")
         return
     end

@@ -7,6 +7,13 @@ local BannerController = {}
 BannerController.activeUnit = nil
 
 function BannerController.update(mx, my)
+    local UnitStats = require("modules.ui.unit_stats")
+    
+    -- Don't update banner if UnitStats is visible
+    if UnitStats.visible then
+        return
+    end
+    
     local hoveredUnit = nil
 
     for _, unit in ipairs(UnitManager.units) do

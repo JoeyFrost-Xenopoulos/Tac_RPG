@@ -9,6 +9,11 @@ local TurnManager = require("modules.engine.turn")
 local UnitStats = require("modules.ui.unit_stats")
 
 function Input.mousepressed(x, y, button)
+    -- Block mouse input if UnitStats is visible
+    if UnitStats.isVisible() then
+        return
+    end
+    
     CameraManager.mousepressed(x, y, button)
     
     if TurnManager.isOverlayActive() then
@@ -26,12 +31,19 @@ function Input.wheelmoved(x, y)
 end
 
 function Input.keypressed(key)
-    if UnitStats.visible and key == "backspace" then
-        UnitStats.hide()
-        return
-    end
-    if UnitStats.visible and key == "down" then
-        UnitStats.nextUnit()
+    -- Handle UnitStats input
+    if UnitStats.isVisible() then
+        if key == "backspace" then
+            UnitStats.hide()
+            return
+        elseif key == "down" or key == "right" then
+            UnitStats.nextUnit()
+            return
+        elseif key == "up" or key == "left" then
+            UnitStats.previousUnit()
+            return
+        end
+        -- Block all other input while UnitStats is visible
         return
     end
 end
