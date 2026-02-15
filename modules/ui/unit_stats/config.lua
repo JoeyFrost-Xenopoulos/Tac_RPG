@@ -23,7 +23,7 @@ Config.NAME_Y_OFFSET_FROM_TYPE = 36
 -- HP and Level display
 Config.HP_X_OFFSET = -540
 Config.HP_Y_OFFSET = 270
-Config.LEVEL_Y_OFFSET = 306
+Config.LEVEL_Y_OFFSET = 316
 
 -- Animation positioning
 Config.ANIM_X_OFFSET = -240
@@ -47,6 +47,8 @@ Config.BACK_TEXT_Y_OFFSET = 40
 -- Font sizes
 Config.MAIN_FONT_SIZE = 46
 Config.SMALL_FONT_SIZE = 38
+Config.HP_FONT_SIZE = 50
+Config.LEVEL_FONT_SIZE = 44
 Config.STATS_FONT_SIZE = 48
 Config.HEADER_FONT_SIZE = 46
 

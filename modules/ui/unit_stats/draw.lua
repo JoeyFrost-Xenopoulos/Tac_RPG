@@ -111,11 +111,12 @@ function Draw.drawNameAndType(unit, panelX, panelY, padding, nameY, opacity)
 end
 
 function Draw.drawHPAndLevel(unit, panelX, padding, nameY, opacity)
-    if Resources.smallFont then
-        love.graphics.setFont(Resources.smallFont)
+    if Resources.hpFont and Resources.levelFont then
         love.graphics.setColor(1, 1, 1, opacity)
         local hpText = string.format("HP: %d/%d", unit.health or 0, unit.maxHealth or 0)
+        love.graphics.setFont(Resources.hpFont)
         love.graphics.print(hpText, panelX + padding + Config.HP_X_OFFSET, nameY + Config.HP_Y_OFFSET, 0)
+        love.graphics.setFont(Resources.levelFont)
         love.graphics.print("Lvl: --", panelX + padding + Config.HP_X_OFFSET, nameY + Config.LEVEL_Y_OFFSET, 0)
     end
 end
