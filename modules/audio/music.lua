@@ -3,8 +3,12 @@ local Music = {}
 
 function Music.load()
     Music.mainTheme = love.audio.newSource("assets/audio/Main_Theme.mp3", "stream")
-    Music.mainTheme:setLooping(true)
+    Music.mainTheme:setLooping(false)
     Music.mainTheme:setVolume(0.1)
+
+    Music.overworld2 = love.audio.newSource("assets/audio/Overworld_2.mp3", "stream")
+    Music.overworld2:setLooping(false)
+    Music.overworld2:setVolume(0.1)
 
     Music.battleTheme = love.audio.newSource("assets/audio/Battle_Theme.mp3", "stream")
     Music.battleTheme:setLooping(true)
@@ -18,6 +22,10 @@ function Music.load()
     Music.activeMusicTrack = nil
     Music.pendingTransition = nil
     Music.fadeCallback = nil
+    
+    -- Music queue for cycling main theme and overworld_2
+    Music.musicQueue = {"main", "overworld2"}
+    Music.currentQueueIndex = 1
 end
 
 function Music.setMusicVolume(v)
@@ -53,6 +61,8 @@ function Music.update(dt)
         if Music.pendingTransition == "battle" and Music.battleTheme then
             Music.battleTheme:setVolume((1 - Music.currentMusicVolume) * Music.musicMaxVolume)
         end
+    elseif Music.activeMusicTrack == "overworld2" and Music.overworld2 then
+        Music.overworld2:setVolume(Music.currentMusicVolume * Music.musicMaxVolume)
     elseif Music.activeMusicTrack == "battle" and Music.battleTheme then
         Music.battleTheme:setVolume(Music.currentMusicVolume * Music.musicMaxVolume)
         if Music.pendingTransition == "main" and Music.mainTheme then
@@ -61,6 +71,7 @@ function Music.update(dt)
     end
 
     Music.checkTransition()
+    Music.checkMusicQueue()
 
     if Music.fadeCallback and Music.currentMusicVolume == 0 then
         local cb = Music.fadeCallback
@@ -76,6 +87,7 @@ function Music.playMainTheme()
     Music.targetMusicVolume = 1
     Music.mainTheme:setVolume(Music.musicMaxVolume)
     Music.mainTheme:play()
+    Music.currentQueueIndex = 1  -- Start queue cycle
 end
 
 function Music.stopMainTheme()
@@ -187,6 +199,27 @@ function Music.checkTransition()
         Music.currentMusicVolume = 1
         Music.targetMusicVolume = 1
         Music.pendingTransition = nil
+    end
+end
+
+function Music.checkMusicQueue()
+    -- Check if current track has finished and queue the next one
+    if Music.activeMusicTrack == "main" and Music.mainTheme and not Music.mainTheme:isPlaying() then
+        -- Main theme finished, play overworld2
+        Music.currentQueueIndex = 2
+        if Music.overworld2 then
+            Music.activeMusicTrack = "overworld2"
+            Music.overworld2:setVolume(Music.musicMaxVolume)
+            Music.overworld2:play()
+        end
+    elseif Music.activeMusicTrack == "overworld2" and Music.overworld2 and not Music.overworld2:isPlaying() then
+        -- Overworld2 finished, loop back to main theme
+        Music.currentQueueIndex = 1
+        if Music.mainTheme then
+            Music.activeMusicTrack = "main"
+            Music.mainTheme:setVolume(Music.musicMaxVolume)
+            Music.mainTheme:play()
+        end
     end
 end
 
