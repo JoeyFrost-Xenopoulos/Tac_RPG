@@ -91,7 +91,7 @@ function UnitStats.draw()
         love.graphics.setColor(1, 1, 1, 1)
         local headerText = "Personal Data"
         local headerW = UnitStats.headerFont:getWidth(headerText)
-        love.graphics.print(headerText, (screenW - headerW) / 2, 30)
+        love.graphics.print(headerText, (screenW - headerW) / 2 + 180, 30)
     end
 
     local unit = UnitStats.units[UnitStats.index]
@@ -143,7 +143,6 @@ function UnitStats.draw()
         if UnitStats.smallFont then
             love.graphics.setFont(UnitStats.smallFont)
             local leftColumn = {
-                { label = "HP", value = string.format("%d/%d", unit.health or 0, unit.maxHealth or 0) },
                 { label = "Str", value = unit.strength and tostring(unit.strength) or "--" },
                 { label = "Mag", value = unit.magic and tostring(unit.magic) or "--" },
                 { label = "Skill", value = unit.skill and tostring(unit.skill) or "--" },
@@ -159,16 +158,16 @@ function UnitStats.draw()
             -- Draw left column
             for i, stat in ipairs(leftColumn) do
                 local lineY = statsY + (i - 1) * 40
-                love.graphics.print(stat.label .. ":", statsX - 100, lineY)
-                love.graphics.print(stat.value, statsX + 120- 100, lineY)
+                love.graphics.print(stat.label .. ":", statsX - 100, lineY - 250)
+                love.graphics.print(stat.value, statsX + 120- 100, lineY - 250)
             end
             
             -- Draw right column
             local rightX = statsX + 240
             for i, stat in ipairs(rightColumn) do
                 local lineY = statsY + (i - 1) * 40
-                love.graphics.print(stat.label .. ":", rightX- 100, lineY)
-                love.graphics.print(stat.value, rightX + 120- 100, lineY)
+                love.graphics.print(stat.label .. ":", rightX- 100, lineY - 250)
+                love.graphics.print(stat.value, rightX + 120- 100, lineY - 250)
             end
         end
     end
