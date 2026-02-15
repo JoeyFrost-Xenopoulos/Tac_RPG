@@ -89,6 +89,7 @@ function Mouse.pressed(x, y, button)
         if clickedUnit then
             if UnitManager.state == "idle" then
                 if not clickedUnit.isPlayer then
+                    Effects.playClick()
                     UnitManager.deselectAll()
                     MovementRange.show(clickedUnit)
                     return
@@ -122,6 +123,10 @@ function Mouse.pressed(x, y, button)
     if button == 2 and UnitManager.selectedUnit and UnitManager.state ~= "moving" then
         Effects.backPlay()
         UnitManager.deselectAll()
+    elseif button == 2 and UnitManager.state == "idle" then
+        -- Right-click to deselect enemy unit and clear their attack range
+        Effects.backPlay()
+        MovementRange.clear()
     end
 end
 

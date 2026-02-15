@@ -32,8 +32,8 @@ Config.ANIM_DRAW_X_OFFSET = -140
 Config.ANIM_DRAW_Y_OFFSET = 60
 
 -- Stats display
-Config.STATS_Y_BASE_OFFSET = 90
-Config.STATS_LINE_HEIGHT = 55
+Config.STATS_Y_BASE_OFFSET = 120
+Config.STATS_LINE_HEIGHT = 80
 Config.STATS_LABEL_X_OFFSET = -120
 Config.STATS_VALUE_X_OFFSET = 0
 Config.STATS_COLUMN_GAP = 240
@@ -49,5 +49,9 @@ Config.MAIN_FONT_SIZE = 46
 Config.SMALL_FONT_SIZE = 38
 Config.STATS_FONT_SIZE = 48
 Config.HEADER_FONT_SIZE = 46
+
+-- Transition animation
+Config.TRANSITION_DURATION = 0.2  -- Duration in seconds
+Config.TRANSITION_SLIDE_DISTANCE = 800  -- How far to slide in pixels (off screen)
 
 return Config

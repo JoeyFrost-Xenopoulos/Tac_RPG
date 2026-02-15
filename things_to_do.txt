@@ -5,6 +5,7 @@
     - weapon might for each weapon
     - calculation for physical damage: str + weapon_might - defenders_def
     - if crit then x2
+
 - fix enemy weapon name being attached to attacker weapon name
 - add in after you select a unit to attack it shows the combat info
 
@@ -12,7 +13,7 @@
     - characters got lvl growth amounts
     - after each combat the characters lvl up
 
-- add in unit information background
+- For each specific stat, add a text when you click on it that describes what it does
 
 --- Specifics about combat system ---
 Str: Damage with weapons. Damage = Str + Weapon Mt.
@@ -30,3 +31,7 @@ Luck: Slightly raises Hit AND Avoid. Reduces chance of enemy critical hits. Crit
 Def: Lowers damage of weapon attacks. Weapon Damage Reduction = Def.
 
 Res: Lowers damage of magic attacks. Magic Damage Reduction = Res.
+
+Consitution: Constitution or physical size affects resuce
+
+Aid: If you unit has lower constituion then can be rescued
