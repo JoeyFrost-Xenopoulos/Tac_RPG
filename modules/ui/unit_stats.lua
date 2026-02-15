@@ -7,10 +7,14 @@ UnitStats.background = nil
 UnitStats.units = {}
 UnitStats.index = 1
 UnitStats.smallFont = nil
+UnitStats.headerFont = nil
+UnitStats.animTimer = 0
+UnitStats.animFrame = 1
 
 function UnitStats.load()
-    UnitStats.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 36)
-    UnitStats.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 28)
+    UnitStats.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 46)
+    UnitStats.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 38)
+    UnitStats.headerFont = love.graphics.newFont("assets/ui/font/Star_Crush_Font.otf", 46)
     UnitStats.background = love.graphics.newImage("assets/ui/menu/stats_menu.png")
 end
 
@@ -39,6 +43,20 @@ function UnitStats.nextUnit()
 end
 
 function UnitStats.update(dt)
+    if not UnitStats.visible then return end
+    
+    local unit = UnitStats.units[UnitStats.index]
+    if unit and unit.animations and unit.animations.idle then
+        local anim = unit.animations.idle
+        UnitStats.animTimer = UnitStats.animTimer + dt
+        if UnitStats.animTimer >= (anim.speed or 0.1) then
+            UnitStats.animTimer = UnitStats.animTimer - (anim.speed or 0.1)
+            UnitStats.animFrame = UnitStats.animFrame + 1
+            if UnitStats.animFrame > anim.frameCount then
+                UnitStats.animFrame = 1
+            end
+        end
+    end
 end
 
 function UnitStats.draw()
@@ -67,6 +85,15 @@ function UnitStats.draw()
         love.graphics.print(text, (screenW - textW) / 2, screenH - textH - 40)
     end
 
+    -- Draw "Personal Data" header
+    if UnitStats.headerFont then
+        love.graphics.setFont(UnitStats.headerFont)
+        love.graphics.setColor(1, 1, 1, 1)
+        local headerText = "Personal Data"
+        local headerW = UnitStats.headerFont:getWidth(headerText)
+        love.graphics.print(headerText, (screenW - headerW) / 2, 30)
+    end
+
     local unit = UnitStats.units[UnitStats.index]
     if unit then
         local panelW = math.min(420, math.floor(screenW * 0.35))
@@ -88,21 +115,60 @@ function UnitStats.draw()
             love.graphics.print(unit.type or "Unknown", panelX + padding - 450, nameY + 100, 0)
             love.graphics.print(unit.name or "Unknown", panelX + padding - 450, nameY + 136, 0)
         end
+        
+        -- Draw HP and Level under name
+        if UnitStats.smallFont then
+            love.graphics.setFont(UnitStats.smallFont)
+            love.graphics.setColor(1, 1, 1, 1)
+            local hpText = string.format("HP: %d/%d", unit.health or 0, unit.maxHealth or 0)
+            love.graphics.print(hpText, panelX + padding - 540, nameY + 270, 0)
+            love.graphics.print("Lvl: --", panelX + padding - 540, nameY + 306, 0)
+        end
+        
+        -- Draw mini idle animation to the right
+        if unit.animations and unit.animations.idle then
+            local anim = unit.animations.idle
+            if anim.quads and anim.quads[UnitStats.animFrame] and anim.img then
+                local quad = anim.quads[UnitStats.animFrame]
+                local animScale = 1  -- Scale down the animation
+                local animX = panelX + padding - 240
+                local animY = nameY + 140
+                love.graphics.setColor(1, 1, 1, 1)
+                love.graphics.draw(anim.img, quad, animX - 140, animY + 60, 0, animScale, animScale)
+            end
+        end
 
         local statsX = panelX + padding
         local statsY = nameY + 90
         if UnitStats.smallFont then
             love.graphics.setFont(UnitStats.smallFont)
-            local stats = {
+            local leftColumn = {
                 { label = "HP", value = string.format("%d/%d", unit.health or 0, unit.maxHealth or 0) },
-                { label = "Atk", value = tostring(unit.attackDamage or 0) },
-                { label = "Range", value = tostring(unit.attackRange or 0) },
+                { label = "Str", value = unit.strength and tostring(unit.strength) or "--" },
+                { label = "Mag", value = unit.magic and tostring(unit.magic) or "--" },
+                { label = "Skill", value = unit.skill and tostring(unit.skill) or "--" },
+                { label = "Spd", value = unit.speed and tostring(unit.speed) or "--" }
+            }
+            local rightColumn = {
+                { label = "Luck", value = unit.luck and tostring(unit.luck) or "--" },
+                { label = "Def", value = unit.defense and tostring(unit.defense) or "--" },
+                { label = "Res", value = unit.resistance and tostring(unit.resistance) or "--" },
                 { label = "Move", value = tostring(unit.maxMoveRange or 0) }
             }
-            for i, stat in ipairs(stats) do
-                local lineY = statsY + (i - 1) * 28
-                love.graphics.print(stat.label .. ":", statsX, lineY)
-                love.graphics.print(stat.value, statsX + 120, lineY)
+            
+            -- Draw left column
+            for i, stat in ipairs(leftColumn) do
+                local lineY = statsY + (i - 1) * 40
+                love.graphics.print(stat.label .. ":", statsX - 100, lineY)
+                love.graphics.print(stat.value, statsX + 120- 100, lineY)
+            end
+            
+            -- Draw right column
+            local rightX = statsX + 240
+            for i, stat in ipairs(rightColumn) do
+                local lineY = statsY + (i - 1) * 40
+                love.graphics.print(stat.label .. ":", rightX- 100, lineY)
+                love.graphics.print(stat.value, rightX + 120- 100, lineY)
             end
         end
     end
