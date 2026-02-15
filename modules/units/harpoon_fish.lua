@@ -12,6 +12,16 @@ local Harpoon_Fish = {
     attackRange = 1,
     attackDamage = 5,
     weapon = "sword",
+    -- Combat stats
+    strength = 11,
+    magic = 8,
+    skill = 14,
+    speed = 13,
+    luck = 3,
+    defense = 4,
+    resistance = 6,
+    constitution = 9,
+    aid = 0,
     animations = {
         idle = {
             img = love.graphics.newImage("assets/units/Enemy/HarpoonFish/HarpoonFish_Idle.png"),

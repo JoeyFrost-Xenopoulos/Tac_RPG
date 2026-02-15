@@ -40,6 +40,14 @@ function UnitStats.previousUnit()
     State.previousUnit()
 end
 
+function UnitStats.switchToEnemyView()
+    State.switchToEnemyView()
+end
+
+function UnitStats.switchToPlayerView()
+    State.switchToPlayerView()
+end
+
 function UnitStats.update(dt)
     State.update(dt)
 end

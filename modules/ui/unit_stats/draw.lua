@@ -28,6 +28,27 @@ function Draw.getTransitionValues()
     return offset, opacity, overlayOpacity
 end
 
+function Draw.getHorizontalTransitionValues()
+    if not State.isTransitioning or State.transitionType ~= "horizontal" then
+        return 0, 1, 0  -- offset, opacity, overlay_opacity
+    end
+    
+    local progress = State.transitionProgress
+    local direction = State.transitionDirection
+    
+    -- Easing function for smoother transition
+    local easeProgress = progress < 0.5 and 2 * progress * progress or 1 - (-2 * progress + 2) ^ 2 / 2
+    
+    -- Calculate offset and opacity for the horizontal slide/fade effect
+    local offset = easeProgress * Config.TRANSITION_SLIDE_DISTANCE * direction
+    local opacity = 1 - math.abs(easeProgress * 2 - 1) * 0.6  -- Fades to 0.4 at midpoint
+    
+    -- Black overlay fades in and out (peaks at midpoint)
+    local overlayOpacity = math.abs(easeProgress * 2 - 1) * 0.5  -- Peaks at 0.5 opacity
+    
+    return offset, opacity, overlayOpacity
+end
+
 function Draw.drawBackground(screenW, screenH)
     if Resources.background then
         local imgW, imgH = Resources.background:getDimensions()
@@ -52,13 +73,22 @@ function Draw.drawBackButton(screenW, screenH)
     end
 end
 
-function Draw.drawHeader(screenW)
+function Draw.drawHeader(screenW, offset, opacity, isHorizontal)
+    offset = offset or 0
+    opacity = opacity or 1
+    isHorizontal = isHorizontal or false
     if Resources.headerFont then
         love.graphics.setFont(Resources.headerFont)
-        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setColor(1, 1, 1, opacity)
         local headerText = "Personal Data"
         local headerW = Resources.headerFont:getWidth(headerText)
-        love.graphics.print(headerText, (screenW - headerW) / 2 + Config.HEADER_X_OFFSET, Config.HEADER_Y)
+        if isHorizontal then
+            -- For horizontal transitions, offset affects X position
+            love.graphics.print(headerText, (screenW - headerW) / 2 + Config.HEADER_X_OFFSET + offset, Config.HEADER_Y)
+        else
+            -- For vertical transitions, offset affects Y position
+            love.graphics.print(headerText, (screenW - headerW) / 2 + Config.HEADER_X_OFFSET, Config.HEADER_Y + offset)
+        end
     end
 end
 
@@ -159,12 +189,10 @@ function Draw.drawUnitWithOffset(unit, screenW, offset, opacity)
     Draw.drawStats(unit, panelX, padding, nameY, statsY, opacity)
 end
 
-function Draw.drawUnit(unit, screenW)
-    local offset, opacity, overlayOpacity = Draw.getTransitionValues()
-    
+function Draw.drawUnitWithHorizontalOffset(unit, screenW, offset, opacity)
     local panelW = math.min(420, math.floor(screenW * 0.35))
-    local panelX = screenW - panelW - Config.PANEL_OFFSET_RIGHT
-    local panelY = Config.PANEL_HEIGHT_OFFSET + offset  -- Apply vertical offset from transition
+    local panelX = screenW - panelW - Config.PANEL_OFFSET_RIGHT + offset  -- Apply horizontal offset
+    local panelY = Config.PANEL_HEIGHT_OFFSET
     local padding = Config.PANEL_PADDING
 
     Draw.drawAvatar(unit, panelX, panelY, padding, opacity)
@@ -178,6 +206,30 @@ function Draw.drawUnit(unit, screenW)
     Draw.drawStats(unit, panelX, padding, nameY, statsY, opacity)
 end
 
+function Draw.drawUnit(unit, screenW)
+    if State.transitionType == "horizontal" then
+        local offset, opacity, overlayOpacity = Draw.getHorizontalTransitionValues()
+        Draw.drawUnitWithHorizontalOffset(unit, screenW, offset, opacity)
+    else
+        local offset, opacity, overlayOpacity = Draw.getTransitionValues()
+        
+        local panelW = math.min(420, math.floor(screenW * 0.35))
+        local panelX = screenW - panelW - Config.PANEL_OFFSET_RIGHT
+        local panelY = Config.PANEL_HEIGHT_OFFSET + offset  -- Apply vertical offset from transition
+        local padding = Config.PANEL_PADDING
+
+        Draw.drawAvatar(unit, panelX, panelY, padding, opacity)
+
+        local nameY = panelY + padding + Config.NAME_Y_OFFSET
+        Draw.drawNameAndType(unit, panelX, panelY, padding, nameY, opacity)
+        Draw.drawHPAndLevel(unit, panelX, padding, nameY, opacity)
+        Draw.drawAnimation(unit, panelX, padding, nameY, opacity)
+
+        local statsY = nameY + Config.STATS_Y_BASE_OFFSET
+        Draw.drawStats(unit, panelX, padding, nameY, statsY, opacity)
+    end
+end
+
 function Draw.draw()
     if not State.visible then return end
 
@@ -186,31 +238,71 @@ function Draw.draw()
 
     Draw.drawBackground(screenW, screenH)
     Draw.drawBackButton(screenW, screenH)
-    Draw.drawHeader(screenW)
-
-    if State.isTransitioning then
-        -- Draw both the outgoing and incoming units during transition
-        local prevUnit = State.units[State.previousIndex]
-        local currentUnit = State.units[State.index]
+    
+    local transitionType = State.transitionType or "vertical"
+    
+    if transitionType == "horizontal" then
+        local offset, opacity, overlayOpacity = Draw.getHorizontalTransitionValues()
+        Draw.drawHeader(screenW, -offset, opacity, true)  -- Negate offset so header moves opposite to units
         
-        -- Draw incoming unit coming from the opposite direction
-        if currentUnit then
-            local incomingOffset = -(Config.TRANSITION_SLIDE_DISTANCE * State.transitionDirection) + 
-                                   (State.transitionProgress * Config.TRANSITION_SLIDE_DISTANCE * State.transitionDirection)
-            local incomingOpacity = math.abs(State.transitionProgress * 2 - 1) * 0.6 + 0.4  -- Fades from 0.4 to 1
+        if State.isTransitioning then
+            -- Get units based on current and previous view
+            local prevUnits = State.currentView == "enemy" and State.playerUnits or State.enemyUnits
+            local currentUnits = State.getCurrentUnits()
+            local prevUnit = prevUnits[State.previousIndex]
+            local currentUnit = currentUnits[State.index]
             
-            Draw.drawUnitWithOffset(currentUnit, screenW, incomingOffset, incomingOpacity)
-        end
-        
-        -- Draw outgoing unit
-        if prevUnit then
-            Draw.drawUnit(prevUnit, screenW)
+            -- Draw outgoing unit (moves away)
+            if prevUnit then
+                local outgoingOffset = -State.transitionProgress * Config.TRANSITION_SLIDE_DISTANCE * State.transitionDirection
+                local outgoingOpacity = math.abs(State.transitionProgress * 2 - 1) * 0.6 + 0.4
+                Draw.drawUnitWithHorizontalOffset(prevUnit, screenW, outgoingOffset, outgoingOpacity)
+            end
+            
+            -- Draw incoming unit (moves in from opposite direction)
+            if currentUnit then
+                local incomingOffset = (1 - State.transitionProgress) * Config.TRANSITION_SLIDE_DISTANCE * State.transitionDirection
+                local incomingOpacity = math.abs(State.transitionProgress * 2 - 1) * 0.6 + 0.4
+                
+                Draw.drawUnitWithHorizontalOffset(currentUnit, screenW, incomingOffset, incomingOpacity)
+            end
+        else
+            -- Normal draw when not transitioning
+            local unit = State.getCurrentUnits()[State.index]
+            if unit then
+                Draw.drawUnitWithHorizontalOffset(unit, screenW, 0, 1)
+            end
         end
     else
-        -- Normal draw when not transitioning
-        local unit = State.units[State.index]
-        if unit then
-            Draw.drawUnit(unit, screenW)
+        -- Vertical transition (cycling through units)
+        local offset, opacity, overlayOpacity = Draw.getTransitionValues()
+        Draw.drawHeader(screenW, offset, opacity)
+
+        if State.isTransitioning then
+            -- Draw both the outgoing and incoming units during transition
+            local units = State.getCurrentUnits()
+            local prevUnit = units[State.previousIndex]
+            local currentUnit = units[State.index]
+            
+            -- Draw incoming unit coming from the opposite direction
+            if currentUnit then
+                local incomingOffset = -(Config.TRANSITION_SLIDE_DISTANCE * State.transitionDirection) + 
+                                       (State.transitionProgress * Config.TRANSITION_SLIDE_DISTANCE * State.transitionDirection)
+                local incomingOpacity = math.abs(State.transitionProgress * 2 - 1) * 0.6 + 0.4  -- Fades from 0.4 to 1
+                
+                Draw.drawUnitWithOffset(currentUnit, screenW, incomingOffset, incomingOpacity)
+            end
+            
+            -- Draw outgoing unit
+            if prevUnit then
+                Draw.drawUnit(prevUnit, screenW)
+            end
+        else
+            -- Normal draw when not transitioning
+            local unit = State.getCurrentUnits()[State.index]
+            if unit then
+                Draw.drawUnit(unit, screenW)
+            end
         end
     end
 

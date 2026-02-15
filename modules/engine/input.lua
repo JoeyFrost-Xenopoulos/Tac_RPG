@@ -36,11 +36,17 @@ function Input.keypressed(key)
         if key == "backspace" then
             UnitStats.hide()
             return
-        elseif key == "down" or key == "right" then
+        elseif key == "down" then
             UnitStats.nextUnit()
             return
-        elseif key == "up" or key == "left" then
+        elseif key == "up" then
             UnitStats.previousUnit()
+            return
+        elseif key == "right" then
+            UnitStats.switchToEnemyView()
+            return
+        elseif key == "left" then
+            UnitStats.switchToPlayerView()
             return
         end
         -- Block all other input while UnitStats is visible

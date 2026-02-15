@@ -28,8 +28,39 @@ function Attack.getEnemiesInRange(unit)
 end
 
 function Attack.performAttack(attacker, target)
-    local damage = attacker.attackDamage or 5
+    local CombatSystem = require("modules.combat.combat_system")
+    
+    -- Check if the attack hits
+    if not CombatSystem.doesHit(attacker, target) then
+        return 0  -- Miss!
+    end
+    
+    -- Determine if it's a critical hit
+    local isCritical = CombatSystem.isCritical(attacker, target)
+    
+    -- Calculate damage
+    local damage = CombatSystem.calculateTotalDamage(attacker, target, isCritical)
+    
+    -- Apply damage
     target.health = math.max(0, target.health - damage)
+    
+    -- Check for double attack
+    if CombatSystem.canDoubleAttack(attacker, target) then
+        -- Attacker gets a second attack
+        if CombatSystem.doesHit(attacker, target) then
+            local isCritical2 = CombatSystem.isCritical(attacker, target)
+            local damage2 = CombatSystem.calculateTotalDamage(attacker, target, isCritical2)
+            target.health = math.max(0, target.health - damage2)
+            damage = damage + damage2
+        end
+    elseif CombatSystem.canBeDoubleAttacked(attacker, target) then
+        -- Defender gets a counter-attack
+        if CombatSystem.doesHit(target, attacker) then
+            local counterDamage = CombatSystem.calculateTotalDamage(target, attacker, false)
+            attacker.health = math.max(0, attacker.health - counterDamage)
+        end
+    end
+    
     return damage
 end
 

@@ -1,4 +1,5 @@
 - add in names in battle frame
+
 - add in combat system
     - damage calcs
     - atk, def, dodge, luk
@@ -14,6 +15,8 @@
     - after each combat the characters lvl up
 
 - For each specific stat, add a text when you click on it that describes what it does
+
+- re-do the options menu
 
 --- Specifics about combat system ---
 Str: Damage with weapons. Damage = Str + Weapon Mt.

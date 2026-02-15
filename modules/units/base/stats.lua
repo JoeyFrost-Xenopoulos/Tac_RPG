@@ -25,6 +25,17 @@ function Stats.init(self, config)
     self.weapon = config.weapon or "sword"
     self.weapons = config.weapons
 
+    -- Combat stats
+    self.strength = config.strength or 10
+    self.magic = config.magic or 5
+    self.skill = config.skill or 10
+    self.speed = config.speed or 10
+    self.luck = config.luck or 0
+    self.defense = config.defense or 5
+    self.resistance = config.resistance or 3
+    self.constitution = config.constitution or 10
+    self.aid = config.aid or 0
+
     self.avatar = config.avatar
     self.uiVariant = config.uiVariant
     self.uiAnchor = config.uiAnchor
