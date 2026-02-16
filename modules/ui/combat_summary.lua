@@ -15,6 +15,8 @@ CombatSummary.font = nil
 CombatSummary.hpFont = nil
 CombatSummary.critFont = nil
 CombatSummary.smallFont = nil
+CombatSummary.weaponIcons = {}
+CombatSummary.weaponIconScale = 0.8
 
 function CombatSummary.load()
     CombatSummary.menuImage = love.graphics.newImage("assets/ui/menu/combat_summary_menu.png")
@@ -27,6 +29,8 @@ function CombatSummary.load()
     CombatSummary.critLabelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 40)
     CombatSummary.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 18)
     CombatSummary.instructionFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 24)
+    CombatSummary.weaponIcons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
+    CombatSummary.weaponIcons.sword:setFilter("nearest", "nearest")
 end
 
 function CombatSummary.show(attacker, defender)
@@ -73,9 +77,6 @@ function CombatSummary.draw()
     local attackerCrit = CombatSystem.calculateCritChance(attacker)
     local defenderCrit = CombatSystem.calculateCritChance(defender)
     
-    local attackerWeapon = CombatSystem.getWeapon(attacker.weapon)
-    local defenderWeapon = CombatSystem.getWeapon(defender.weapon)
-    
     -- Draw text information
     local centerX = menuX + menuW / 2
     local textY = menuY + 60
@@ -95,12 +96,34 @@ function CombatSummary.draw()
     love.graphics.setColor(1, 1, 1, 1)
     local attackerName = attacker.name or "Player"
     local attackerNameWidth = CombatSummary.nameFont:getWidth(attackerName)
-    love.graphics.print(attackerName, centerX - attackerNameWidth + attackerNameOffsetX, textY + attackerNameOffsetY)
+    local attackerNameX = centerX - attackerNameWidth + attackerNameOffsetX
+    local attackerNameY = textY + attackerNameOffsetY
+    love.graphics.print(attackerName, attackerNameX, attackerNameY)
     
     -- Defender name (right side, red)
     love.graphics.setColor(1, 1, 1, 1)
     local defenderName = defender.name or "Enemy"
-    love.graphics.print(defenderName, centerX + defenderNameOffsetX, textY + defenderNameOffsetY)
+    local defenderNameX = centerX + defenderNameOffsetX
+    local defenderNameY = textY + defenderNameOffsetY
+    love.graphics.print(defenderName, defenderNameX, defenderNameY)
+
+    local attackerIcon = CombatSummary.weaponIcons[attacker.weapon] or CombatSummary.weaponIcons.sword
+    local defenderIcon = CombatSummary.weaponIcons[defender.weapon] or CombatSummary.weaponIcons.sword
+    if attackerIcon or defenderIcon then
+        local iconScale = CombatSummary.weaponIconScale
+        local defenderNameWidth = CombatSummary.nameFont:getWidth(defenderName)
+
+        love.graphics.setColor(1, 1, 1, 1)
+        if attackerIcon then
+            local iconW = attackerIcon:getWidth()
+            local attackerIconX = attackerNameX - 30 - iconW * iconScale
+            love.graphics.draw(attackerIcon, attackerIconX, attackerNameY - 10, 0, iconScale, iconScale)
+        end
+        if defenderIcon then
+            local defenderIconX = defenderNameX + defenderNameWidth + 30
+            love.graphics.draw(defenderIcon, defenderIconX, defenderNameY - 10, 0, iconScale, iconScale)
+        end
+    end
     
     textY = textY + lineHeight + sectionGap
     
