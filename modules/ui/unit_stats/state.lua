@@ -13,6 +13,10 @@ State.index = 1
 State.animTimer = 0
 State.animFrame = 1
 
+-- Arrow pendulum animation
+State.arrowAnimTimer = 0
+State.arrowAnimOffset = 0
+
 -- Transition state
 State.isTransitioning = false
 State.transitionProgress = 0  -- 0 to 1
@@ -116,6 +120,11 @@ function State.update(dt)
             State.isTransitioning = false
         end
     end
+    
+    -- Update arrow pendulum animation
+    State.arrowAnimTimer = State.arrowAnimTimer + dt
+    -- Use sine wave for smooth ease in/out pendulum motion
+    State.arrowAnimOffset = Config.ARROW_ANIM_AMPLITUDE * math.sin(State.arrowAnimTimer * Config.ARROW_ANIM_SPEED * math.pi * 2)
     
     local units = State.getCurrentUnits()
     local unit = units[State.index]

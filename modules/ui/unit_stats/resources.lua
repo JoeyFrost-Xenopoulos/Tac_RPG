@@ -12,6 +12,9 @@ Resources.levelFont = nil
 Resources.statsFont = nil
 Resources.headerFont = nil
 Resources.background = nil
+Resources.barBase = nil
+Resources.barFill = nil
+Resources.arrowImage = nil
 
 function Resources.load()
     Resources.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", Config.MAIN_FONT_SIZE)
@@ -21,6 +24,9 @@ function Resources.load()
     Resources.statsFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", Config.STATS_FONT_SIZE)
     Resources.headerFont = love.graphics.newFont("assets/ui/font/Star_Crush_Font.otf", Config.HEADER_FONT_SIZE)
     Resources.background = love.graphics.newImage("assets/ui/menu/stats_menu.png")
+    Resources.barBase = love.graphics.newImage("assets/ui/bars/BigBar_Base.png")
+    Resources.barFill = love.graphics.newImage("assets/ui/bars/BigBar_Fill_Stats.png")
+    Resources.arrowImage = love.graphics.newImage("assets/ui/arrows/up_down.png")
 end
 
 return Resources

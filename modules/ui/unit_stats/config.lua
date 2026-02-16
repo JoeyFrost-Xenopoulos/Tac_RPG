@@ -39,10 +39,25 @@ Config.STATS_VALUE_X_OFFSET = 0
 Config.STATS_COLUMN_GAP = 240
 Config.STATS_Y_DRAW_OFFSET = -250
 
+-- Stats bar display
+Config.STATS_BAR_WIDTH = 160
+Config.STATS_BAR_HEIGHT = 32
+Config.STATS_BAR_X_OFFSET = -50
+Config.STATS_BAR_Y_OFFSET = 35
+
 -- Header and UI
 Config.HEADER_X_OFFSET = 180
 Config.HEADER_Y = 30
 Config.BACK_TEXT_Y_OFFSET = 40
+Config.ARROW_SIZE = 80
+Config.ARROW_LEFT_X_OFFSET = 270
+Config.ARROW_LEFT_Y_OFFSET = -35
+Config.ARROW_RIGHT_X_OFFSET = -350
+Config.ARROW_RIGHT_Y_OFFSET = -10
+
+-- Arrow pendulum animation
+Config.ARROW_ANIM_AMPLITUDE = 12  -- How far arrows move up and down in pixels
+Config.ARROW_ANIM_SPEED = 0.8  -- Speed of the pendulum motion (cycles per second)
 
 -- Font sizes
 Config.MAIN_FONT_SIZE = 46

@@ -4,6 +4,12 @@
 local Config = require("modules.ui.unit_stats.config")
 local Resources = require("modules.ui.unit_stats.resources")
 local State = require("modules.ui.unit_stats.state")
+local AvatarDraw = require("modules.ui.unit_stats.avatar_draw")
+local NameTypeDraw = require("modules.ui.unit_stats.name_type_draw")
+local HPLevelDraw = require("modules.ui.unit_stats.hp_level_draw")
+local AnimationDraw = require("modules.ui.unit_stats.animation_draw")
+local StatsDraw = require("modules.ui.unit_stats.stats_draw")
+local HeaderArrowsDraw = require("modules.ui.unit_stats.header_arrows_draw")
 
 local Draw = {}
 
@@ -24,7 +30,7 @@ local function computeTransitionValues(transitionType)
 
     -- Calculate offset and opacity for the slide/fade effect
     local offset = easeProgress * Config.TRANSITION_SLIDE_DISTANCE * direction
-    local opacity = 1 - math.abs(easeProgress * 2 - 1) * 0.6  -- Fades to 0.4 at midpoint
+    local opacity = 1 - math.abs(easeProgress * 2 - 1) * 0.6
 
     -- Black overlay fades in and out (peaks at midpoint)
     local overlayOpacity = math.abs(easeProgress * 2 - 1) * 0.5  -- Peaks at 0.5 opacity
@@ -42,15 +48,15 @@ local function getPanelLayout(screenW, offsetX, offsetY)
 end
 
 local function drawUnitPanel(unit, panelX, panelY, padding, opacity)
-    Draw.drawAvatar(unit, panelX, panelY, padding, opacity)
+    AvatarDraw.draw(unit, panelX, panelY, padding, opacity)
 
     local nameY = panelY + padding + Config.NAME_Y_OFFSET
-    Draw.drawNameAndType(unit, panelX, panelY, padding, nameY, opacity)
-    Draw.drawHPAndLevel(unit, panelX, padding, nameY, opacity)
-    Draw.drawAnimation(unit, panelX, padding, nameY, opacity)
+    NameTypeDraw.draw(unit, panelX, panelY, padding, nameY, opacity)
+    HPLevelDraw.draw(unit, panelX, padding, nameY, opacity)
+    AnimationDraw.draw(unit, panelX, padding, nameY, opacity)
 
     local statsY = nameY + Config.STATS_Y_BASE_OFFSET
-    Draw.drawStats(unit, panelX, padding, nameY, statsY, opacity)
+    StatsDraw.draw(unit, panelX, padding, nameY, statsY, opacity)
 end
 
 function Draw.getTransitionValues()
@@ -105,84 +111,23 @@ function Draw.drawHeader(screenW, offset, opacity, isHorizontal)
 end
 
 function Draw.drawAvatar(unit, panelX, panelY, padding, opacity)
-    if unit.avatar then
-        local maxPortrait = Config.AVATAR_SIZE
-        local scale = math.min(maxPortrait / unit.avatar:getWidth(), maxPortrait / unit.avatar:getHeight())
-        love.graphics.setColor(1, 1, 1, opacity)
-        love.graphics.draw(unit.avatar, panelX + padding + Config.AVATAR_X_OFFSET, panelY + padding + Config.AVATAR_Y_OFFSET, 0, scale * Config.AVATAR_SCALE, scale * Config.AVATAR_SCALE)
-    end
+    AvatarDraw.draw(unit, panelX, panelY, padding, opacity)
 end
 
 function Draw.drawNameAndType(unit, panelX, panelY, padding, nameY, opacity)
-    if Resources.font then
-        love.graphics.setFont(Resources.font)
-        love.graphics.setColor(1, 1, 1, opacity)
-        love.graphics.print(unit.type or "Unknown", panelX + padding + Config.TYPE_X_OFFSET, nameY + Config.TYPE_Y_OFFSET, 0)
-        love.graphics.print(unit.name or "Unknown", panelX + padding + Config.TYPE_X_OFFSET, nameY + Config.TYPE_Y_OFFSET + Config.NAME_Y_OFFSET_FROM_TYPE, 0)
-    end
+    NameTypeDraw.draw(unit, panelX, panelY, padding, nameY, opacity)
 end
 
 function Draw.drawHPAndLevel(unit, panelX, padding, nameY, opacity)
-    if Resources.hpFont and Resources.levelFont then
-        love.graphics.setColor(1, 1, 1, opacity)
-        local hpText = string.format("HP: %d/%d", unit.health or 0, unit.maxHealth or 0)
-        love.graphics.setFont(Resources.hpFont)
-        love.graphics.print(hpText, panelX + padding + Config.HP_X_OFFSET, nameY + Config.HP_Y_OFFSET, 0)
-        love.graphics.setFont(Resources.levelFont)
-        love.graphics.print("Lvl: --", panelX + padding + Config.HP_X_OFFSET, nameY + Config.LEVEL_Y_OFFSET, 0)
-    end
+    HPLevelDraw.draw(unit, panelX, padding, nameY, opacity)
 end
 
 function Draw.drawAnimation(unit, panelX, padding, nameY, opacity)
-    if unit.animations and unit.animations.idle then
-        local anim = unit.animations.idle
-        if anim.quads and anim.quads[State.animFrame] and anim.img then
-            local quad = anim.quads[State.animFrame]
-            local animScale = 1
-            local animX = panelX + padding + Config.ANIM_X_OFFSET
-            local animY = nameY + Config.ANIM_Y_OFFSET
-            love.graphics.setColor(1, 1, 1, opacity)
-            love.graphics.draw(anim.img, quad, animX + Config.ANIM_DRAW_X_OFFSET, animY + Config.ANIM_DRAW_Y_OFFSET, 0, animScale, animScale)
-        end
-    end
+    AnimationDraw.draw(unit, panelX, padding, nameY, opacity)
 end
 
 function Draw.drawStats(unit, panelX, padding, nameY, statsY, opacity)
-    if Resources.statsFont then
-        love.graphics.setFont(Resources.statsFont)
-        love.graphics.setColor(1, 1, 1, opacity)
-        local leftColumn = {
-            { label = "Str", value = unit.strength and tostring(unit.strength) or "--" },
-            { label = "Mag", value = unit.magic and tostring(unit.magic) or "--" },
-            { label = "Skl", value = unit.skill and tostring(unit.skill) or "--" },
-            { label = "Spd", value = unit.speed and tostring(unit.speed) or "--" },
-            { label = "Con", value = unit.constitution and tostring(unit.constitution) or "--" }
-        }
-        local rightColumn = {
-            { label = "Move", value = tostring(unit.maxMoveRange or 0) },
-            { label = "Luk", value = unit.luck and tostring(unit.luck) or "--" },
-            { label = "Def", value = unit.defense and tostring(unit.defense) or "--" },
-            { label = "Res", value = unit.resistance and tostring(unit.resistance) or "--" },
-            { label = "Aid", value = "--" }
-        }
-        
-        local statsX = panelX + padding
-        
-        -- Draw left column
-        for i, stat in ipairs(leftColumn) do
-            local lineY = statsY + (i - 1) * Config.STATS_LINE_HEIGHT
-            love.graphics.print(stat.label .. ":", statsX + Config.STATS_LABEL_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
-            love.graphics.print(stat.value, statsX + Config.STATS_VALUE_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
-        end
-        
-        -- Draw right column
-        local rightX = statsX + Config.STATS_COLUMN_GAP
-        for i, stat in ipairs(rightColumn) do
-            local lineY = statsY + (i - 1) * Config.STATS_LINE_HEIGHT
-            love.graphics.print(stat.label .. ":", rightX + Config.STATS_LABEL_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
-            love.graphics.print(stat.value, rightX + Config.STATS_VALUE_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
-        end
-    end
+    StatsDraw.draw(unit, panelX, padding, nameY, statsY, opacity)
 end
 
 function Draw.drawUnitWithOffset(unit, screenW, offset, opacity)
@@ -208,6 +153,7 @@ end
 local function drawHorizontalTransition(screenW)
     local offset, opacity, overlayOpacity = Draw.getHorizontalTransitionValues()
     Draw.drawHeader(screenW, -offset, opacity, true)
+    HeaderArrowsDraw.draw(screenW, -offset, opacity, true)
 
     if State.isTransitioning then
         -- Get units based on current and previous view
@@ -243,6 +189,7 @@ local function drawVerticalTransition(screenW)
     -- Vertical transition (cycling through units)
     local offset, opacity, overlayOpacity = Draw.getTransitionValues()
     Draw.drawHeader(screenW, offset, opacity)
+    HeaderArrowsDraw.draw(screenW, offset, opacity, false)
 
     if State.isTransitioning then
         -- Draw both the outgoing and incoming units during transition
