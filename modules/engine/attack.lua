@@ -30,30 +30,33 @@ end
 function Attack.performAttack(attacker, target)
     local CombatSystem = require("modules.combat.combat_system")
     
+    local damage = 0
+    
     -- Check if the attack hits
-    if not CombatSystem.doesHit(attacker, target) then
-        return 0  -- Miss!
+    if CombatSystem.doesHit(attacker, target) then
+        -- Determine if it's a critical hit
+        local isCritical = CombatSystem.isCritical(attacker, target)
+        
+        -- Calculate damage
+        damage = CombatSystem.calculateTotalDamage(attacker, target, isCritical)
+        
+        -- Apply damage
+        target.health = math.max(0, target.health - damage)
+        
+        -- Check for double attack
+        if CombatSystem.canDoubleAttack(attacker, target) then
+            -- Attacker gets a second attack
+            if CombatSystem.doesHit(attacker, target) then
+                local isCritical2 = CombatSystem.isCritical(attacker, target)
+                local damage2 = CombatSystem.calculateTotalDamage(attacker, target, isCritical2)
+                target.health = math.max(0, target.health - damage2)
+                damage = damage + damage2
+            end
+        end
     end
     
-    -- Determine if it's a critical hit
-    local isCritical = CombatSystem.isCritical(attacker, target)
-    
-    -- Calculate damage
-    local damage = CombatSystem.calculateTotalDamage(attacker, target, isCritical)
-    
-    -- Apply damage
-    target.health = math.max(0, target.health - damage)
-    
-    -- Check for double attack
-    if CombatSystem.canDoubleAttack(attacker, target) then
-        -- Attacker gets a second attack
-        if CombatSystem.doesHit(attacker, target) then
-            local isCritical2 = CombatSystem.isCritical(attacker, target)
-            local damage2 = CombatSystem.calculateTotalDamage(attacker, target, isCritical2)
-            target.health = math.max(0, target.health - damage2)
-            damage = damage + damage2
-        end
-    elseif CombatSystem.canBeDoubleAttacked(attacker, target) then
+    -- Defender can counterattack regardless of whether the attack hit
+    if CombatSystem.canBeDoubleAttacked(attacker, target) and target.health > 0 then
         -- Defender gets a counter-attack
         if CombatSystem.doesHit(target, attacker) then
             local counterDamage = CombatSystem.calculateTotalDamage(target, attacker, false)

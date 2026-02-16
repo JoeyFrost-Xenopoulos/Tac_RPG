@@ -4,6 +4,9 @@ local Effects = {}
 function Effects.update(state, attackFrameIndex)
     if state.hitEffectActive then return end
 
+    -- Only show hit effect if the attack actually hit
+    if not state.currentAttackHit then return end
+
     local shouldTrigger = false
     if attackFrameIndex and attackFrameIndex >= 3 then
         shouldTrigger = true

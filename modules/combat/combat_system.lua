@@ -145,7 +145,7 @@ end
 -- Check if attacker hits
 function CombatSystem.doesHit(attacker, defender)
     local hitChance = CombatSystem.calculateHitChance(attacker, defender)
-    return math.random(100) <= hitChance
+    return love.math.random(100) <= hitChance
 end
 
 -- Check if it's a critical hit
@@ -154,7 +154,7 @@ function CombatSystem.isCritical(attacker, defender)
     local critAvoid = CombatSystem.calculateCritAvoid(defender)
     local adjustedCritChance = math.max(0, critChance - critAvoid)
     
-    return math.random(100) <= adjustedCritChance
+    return love.math.random(100) <= adjustedCritChance
 end
 
 -- Check if attacker can double attack

@@ -15,7 +15,7 @@ local EnemyConfig = {
     -- Combat stats
     strength = 12,
     magic = 2,
-    skill = 9,
+    skill = 1,  -- TESTING: Reduced to make them miss frequently
     speed = 9,
     luck = 2,
     defense = 6,

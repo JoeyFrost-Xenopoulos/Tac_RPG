@@ -106,7 +106,7 @@ local function playAttackSounds(attackFrameIndex)
         Battle.attackSwingPlayed = true
     end
     if attackFrameIndex == 3 and not Battle.attackHitPlayed then
-        if Battle.isLastAttackHit then
+        if Battle.currentAttackHit then
             Audio.playAttackHit()
         else
             Audio.playAttackMiss()
@@ -124,7 +124,6 @@ local function calculateHealthAnimDuration(damage, targetUnit)
 end
 
 local function applyDamageAndStartAnimation(attacker, defender, isCounterattack)
-    local Attack = require("modules.engine.attack")
     local UnitManager = require("modules.units.manager")
     local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
     local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
@@ -133,14 +132,21 @@ local function applyDamageAndStartAnimation(attacker, defender, isCounterattack)
     Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
     Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
 
-    -- Perform attack
-    local damage = Attack.performAttack(attacker, defender)
-    Battle.isLastAttackHit = damage > 0
+    -- Use pre-calculated damage (calculated in updateInitialAttack or updateCounterattack)
+    local damage = Battle.calculatedAttackDamage
+    
+    -- Apply damage to defender
+    if damage > 0 then
+        defender.health = math.max(0, defender.health - damage)
+    end
+    
     if isCounterattack then
         Battle.counterattackDamage = damage
     else
         Battle.damageAmount = damage
     end
+    
+    Battle.isLastAttackHit = damage > 0
     UnitManager.showDamage(defender, damage)
 
     -- Calculate animation duration
@@ -172,6 +178,9 @@ local function resetPhaseFlags()
     Battle.hitEffectActive = false
     Battle.hitFrameStartTime = 0
     Battle.isLastAttackHit = true
+    Battle.calculatedAttackDamage = 0
+    Battle.currentAttackHit = false
+    Battle.attackResultCalculated = false
 end
 
 local function transitionToCounterattack()
@@ -198,6 +207,29 @@ end
 -- ============================================================================
 
 local function updateInitialAttack()
+    -- Pre-calculate the attack result on first frame
+    if not Battle.attackResultCalculated and Battle.attacker and Battle.defender then
+        local CombatSystem = require("modules.combat.combat_system")
+        local damage = 0
+        
+        -- Check if attack hits
+        Battle.currentAttackHit = CombatSystem.doesHit(Battle.attacker, Battle.defender)
+        if Battle.currentAttackHit then
+            local isCritical = CombatSystem.isCritical(Battle.attacker, Battle.defender)
+            damage = CombatSystem.calculateTotalDamage(Battle.attacker, Battle.defender, isCritical)
+            
+            -- Check for double attack
+            if CombatSystem.canDoubleAttack(Battle.attacker, Battle.defender) then
+                if CombatSystem.doesHit(Battle.attacker, Battle.defender) then
+                    local isCritical2 = CombatSystem.isCritical(Battle.attacker, Battle.defender)
+                    damage = damage + CombatSystem.calculateTotalDamage(Battle.attacker, Battle.defender, isCritical2)
+                end
+            end
+        end
+        Battle.calculatedAttackDamage = damage
+        Battle.attackResultCalculated = true
+    end
+
     local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.attacker)
     Battle.attackFrameIndex = attackFrameIndex or 0
 
@@ -223,6 +255,27 @@ local function updateInitialAttack()
 end
 
 local function updateCounterattack()
+    -- Pre-calculate counterattack result on first frame
+    if not Battle.attackResultCalculated and Battle.attacker and Battle.defender then
+        local CombatSystem = require("modules.combat.combat_system")
+        local damage = 0
+        
+        -- Check if counterattack hits
+        Battle.currentAttackHit = CombatSystem.doesHit(Battle.defender, Battle.attacker)
+        if Battle.currentAttackHit then
+            damage = CombatSystem.calculateTotalDamage(Battle.defender, Battle.attacker, false)
+            
+            -- Check if defender can double attack
+            if CombatSystem.canBeDoubleAttacked(Battle.attacker, Battle.defender) and Battle.attacker.health > 0 then
+                if CombatSystem.doesHit(Battle.defender, Battle.attacker) then
+                    damage = damage + CombatSystem.calculateTotalDamage(Battle.defender, Battle.attacker, false)
+                end
+            end
+        end
+        Battle.calculatedAttackDamage = damage
+        Battle.attackResultCalculated = true
+    end
+
     local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.defender)
     Battle.attackFrameIndex = attackFrameIndex or 0
 

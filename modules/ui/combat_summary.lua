@@ -197,12 +197,12 @@ function CombatSummary.draw()
     local defenderHPWidth = hpFont:getWidth(defenderHPStr)
     
     -- Calculate HP value positions
-    local hpAttackerX = centerX + hpLabelWidth / 2 + 40
+    local hpAttackerX = centerX + hpLabelWidth / 2 + 50
     local hpAttackerRightEdge = hpAttackerX + attackerHPWidth
     local hpDefenderX = centerX - hpLabelWidth / 2 - defenderHPWidth - 15
     local hpDefenderRightEdge = hpDefenderX + defenderHPWidth
     
-    drawStat("HP", attacker.health, defender.health, CombatSummary.font, CombatSummary.hpFont, 40, -15, CombatSummary.hpLabelFont)
+    drawStat("HP", attacker.health, defender.health, CombatSummary.font, CombatSummary.hpFont, 50, -15, CombatSummary.hpLabelFont)
     
     -- Align all other stat values to the right edge of HP values
     drawStat("Mt", attackerDamage, defenderDamage, CombatSummary.font, CombatSummary.mtFont, nil, nil, CombatSummary.font, hpAttackerRightEdge - CombatSummary.mtFont:getWidth(tostring(attackerDamage)), nil, hpDefenderRightEdge - CombatSummary.mtFont:getWidth(tostring(defenderDamage)), nil)

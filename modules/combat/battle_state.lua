@@ -58,6 +58,9 @@ State.counterattackEnabled = true
 State.counterattackDamage = 0
 State.counterattackApplied = false
 State.defenderCounterAttackPlayed = false
+State.calculatedAttackDamage = 0  -- Pre-calculated damage for current attack
+State.currentAttackHit = false    -- Pre-calculated hit result for current attack
+State.attackResultCalculated = false  -- Flag to prevent recalculation
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -79,6 +82,9 @@ function State.resetTimers()
     State.counterattackEnabled = true
     State.counterattackDamage = 0
     State.counterattackApplied = false
+    State.calculatedAttackDamage = 0
+    State.currentAttackHit = false
+    State.attackResultCalculated = false
 end
 
 return State
