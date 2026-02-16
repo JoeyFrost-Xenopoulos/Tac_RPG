@@ -14,8 +14,13 @@ local function getHoveredIndex(mx, my)
     end
 
     for i = 1, #State.options do
-        local itemY = listY + (i - 1) * Config.ITEM_HEIGHT + Config.ITEM_VISUAL_OFFSET
-        if my >= itemY and my <= itemY + Config.ITEM_HOVER_HEIGHT then
+        local itemY = listY + (i - 1) * Config.ITEM_HEIGHT
+        local highlightY = itemY + Config.ITEM_VISUAL_OFFSET - 5
+        local clickMinY = highlightY
+        if i == 1 then
+            clickMinY = highlightY - 10
+        end
+        if my >= clickMinY and my <= highlightY + Config.ITEM_HOVER_HEIGHT then
             return i
         end
     end

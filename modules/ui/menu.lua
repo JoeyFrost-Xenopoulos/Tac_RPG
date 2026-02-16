@@ -167,7 +167,9 @@ function Menu.draw()
         if hovered then
             love.graphics.setColor(1, 1, 1, textAlpha)
             local bob = math.sin(Menu.cursorTime * 8) * 4
+            love.graphics.setScissor()
             love.graphics.draw(Menu.cursorImage, Menu.x + 60 + bob, optY + 15, 90)
+            love.graphics.setScissor(Menu.x, Menu.y, Menu.width, Menu.currentHeight)
         else
             love.graphics.setColor(1, 1, 1, textAlpha)
         end
