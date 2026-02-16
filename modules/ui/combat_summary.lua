@@ -19,7 +19,7 @@ CombatSummary.weaponIcons = {}
 CombatSummary.weaponIconScale = 0.8
 
 function CombatSummary.load()
-    CombatSummary.menuImage = love.graphics.newImage("assets/ui/menu/combat_summary_menu.png")
+    CombatSummary.menuImage = love.graphics.newImage("assets/ui/menu/combat_summary_menu_2.png")
     CombatSummary.nameFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
     CombatSummary.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
     CombatSummary.hpLabelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)

@@ -18,6 +18,8 @@
 
 - re-do the options menu
 
+- add the ui bars under the stat levels
+
 --- Specifics about combat system ---
 Str: Damage with weapons. Damage = Str + Weapon Mt.
 
