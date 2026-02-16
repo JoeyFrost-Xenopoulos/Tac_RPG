@@ -26,6 +26,7 @@ function CombatSummary.load()
     CombatSummary.critFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
     CombatSummary.critLabelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 40)
     CombatSummary.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 18)
+    CombatSummary.instructionFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 24)
 end
 
 function CombatSummary.show(attacker, defender)
@@ -103,23 +104,14 @@ function CombatSummary.draw()
     
     textY = textY + lineHeight + sectionGap
     
-    -- Helper function to draw text with black border
+    -- Helper function to draw text
     local function drawTextWithBorder(text, x, y, font, isValue)
         if isValue then
-            -- Draw black border
-            love.graphics.setColor(0, 0, 0, 1)
-            for dx = -2, 2 do
-                for dy = -2, 2 do
-                    if dx ~= 0 or dy ~= 0 then
-                        love.graphics.print(text, x + dx, y + dy)
-                    end
-                end
-            end
-            -- Draw light blue interior
-            love.graphics.setColor(0.5, 0.8, 1, 1)
+            -- Draw light blue text
+            love.graphics.setColor(1, 1, 1, 1)
             love.graphics.print(text, x, y)
         else
-            -- Labels without border
+            -- Draw normal text
             love.graphics.print(text, x, y)
         end
     end
@@ -157,7 +149,6 @@ function CombatSummary.draw()
         local labelOffsetX = 10
         local labelOffsetY = 10
         
-        -- Draw label in yellow
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.print(label, centerX - labelWidth / 2 + labelOffsetX, textY + labelOffsetY - 5)
         
@@ -180,13 +171,13 @@ function CombatSummary.draw()
     
     -- Instructions (centered under the menu)
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setFont(CombatSummary.smallFont)
+    love.graphics.setFont(CombatSummary.instructionFont)
     
-    local instructY = menuY + menuH + 10
+    local instructY = menuY + menuH - 10
     local instruction1 = "Left Click: Attack"
     local instruction2 = "Right Click: Cancel"
-    local inst1Width = CombatSummary.smallFont:getWidth(instruction1)
-    local inst2Width = CombatSummary.smallFont:getWidth(instruction2)
+    local inst1Width = CombatSummary.instructionFont:getWidth(instruction1)
+    local inst2Width = CombatSummary.instructionFont:getWidth(instruction2)
     
     love.graphics.print(instruction1, menuX + (menuW - inst1Width) / 2, instructY)
     love.graphics.print(instruction2, menuX + (menuW - inst2Width) / 2, instructY + 25)
