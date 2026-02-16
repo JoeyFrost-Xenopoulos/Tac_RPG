@@ -64,6 +64,7 @@ function Mouse.pressed(x, y, button)
                 local enemies = Attack.getEnemiesInRange(attacker)
                 for _, enemy in ipairs(enemies) do
                     if enemy == clickedUnit then
+                        Effects.playConfirm()
                         UnitManager.performAttack(attacker, clickedUnit)
                         return
                     end

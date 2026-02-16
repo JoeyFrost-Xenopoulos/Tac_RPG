@@ -106,7 +106,11 @@ local function playAttackSounds(attackFrameIndex)
         Battle.attackSwingPlayed = true
     end
     if attackFrameIndex == 3 and not Battle.attackHitPlayed then
-        Audio.playAttackHit()
+        if Battle.isLastAttackHit then
+            Audio.playAttackHit()
+        else
+            Audio.playAttackMiss()
+        end
         Battle.attackHitPlayed = true
     end
 end
@@ -131,6 +135,7 @@ local function applyDamageAndStartAnimation(attacker, defender, isCounterattack)
 
     -- Perform attack
     local damage = Attack.performAttack(attacker, defender)
+    Battle.isLastAttackHit = damage > 0
     if isCounterattack then
         Battle.counterattackDamage = damage
     else
@@ -166,6 +171,7 @@ local function resetPhaseFlags()
     Battle.attackHitPlayed = false
     Battle.hitEffectActive = false
     Battle.hitFrameStartTime = 0
+    Battle.isLastAttackHit = true
 end
 
 local function transitionToCounterattack()

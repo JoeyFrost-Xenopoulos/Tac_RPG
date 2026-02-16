@@ -14,6 +14,7 @@ function Sfx.load()
     Sfx.nextTurn = love.audio.newSource("assets/audio/Next_Turn.wav", "static")
     Sfx.attackSwing = love.audio.newSource("assets/audio/combat/Attack_1.wav", "static")
     Sfx.attackHit = love.audio.newSource("assets/audio/combat/Attack_Hit_1.wav", "static")
+    Sfx.attackMiss = love.audio.newSource("assets/audio/combat/Attack_Miss_1.wav", "static")
 
     Sfx.baseVolumes = {
         menuIn   = 1.0,
@@ -25,7 +26,8 @@ function Sfx.load()
         confirm  = 1.0,
         nextTurn = 1.0,
         attackSwing = 0.8,
-        attackHit = 0.8
+        attackHit = 0.8,
+        attackMiss = 0.8
     }
 
     Sfx.setSFXVolume(0.6)
@@ -42,7 +44,8 @@ function Sfx.setSFXVolume(v)
         confirm  = Sfx.confirm,
         nextTurn = Sfx.nextTurn,
         attackSwing = Sfx.attackSwing,
-        attackHit = Sfx.attackHit
+        attackHit = Sfx.attackHit,
+        attackMiss = Sfx.attackMiss
     }
 
     for name, src in pairs(sources) do
@@ -126,6 +129,13 @@ function Sfx.playAttackHit()
     if Sfx.attackHit then
         Sfx.attackHit:stop()
         Sfx.attackHit:play()
+    end
+end
+
+function Sfx.playAttackMiss()
+    if Sfx.attackMiss then
+        Sfx.attackMiss:stop()
+        Sfx.attackMiss:play()
     end
 end
 

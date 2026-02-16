@@ -1,11 +1,10 @@
 - add in names in battle frame
 
-- add in combat system
-    - damage calcs
-    - atk, def, dodge, luk
-    - weapon might for each weapon
-    - calculation for physical damage: str + weapon_might - defenders_def
-    - if crit then x2
+- add in crit noise
+    - check crit damage
+
+- add in double hits
+    - animate the second attack
 
 - fix enemy weapon name being attached to attacker weapon name
 - add in after you select a unit to attack it shows the combat info
@@ -16,11 +15,19 @@
 
 - For each specific stat, add a text when you click on it that describes what it does
 
-- re-do the options menu
-
 - add the ui bars under the stat levels
+- re-do the options menu
+- make the hits more "impactful"
+    - sending the enemies sliding back
+    - sparks fly out their backs
 
---- Specifics about combat system ---
+- make the area for clicking on an enemy unit to attack more responsive
+
+- fix current weapon system
+
+<---------------------------------------------------------------------------------------------------------->
+Specifics about combat system
+<---------------------------------------------------------------------------------------------------------->
 Str: Damage with weapons. Damage = Str + Weapon Mt.
 
 Mag: Damage with Magic. Damage = Mag + Tome Mt.

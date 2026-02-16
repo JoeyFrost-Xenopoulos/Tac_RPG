@@ -40,6 +40,7 @@ State.hitTargetY = 0
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
+State.isLastAttackHit = true
 State.playerAttackPreview = { hit = 0, damage = 0, crit = 0 }
 State.enemyAttackPreview = { hit = 0, damage = 0, crit = 0 }
 State.defenderHealthDisplay = 0
@@ -65,6 +66,7 @@ function State.resetTimers()
     State.attackFrameIndex = 0
     State.attackSwingPlayed = false
     State.attackHitPlayed = false
+    State.isLastAttackHit = true
     State.defenderCounterAttackPlayed = false
     State.transitionPhase = "none"
     State.transitionTimer = 0

@@ -35,5 +35,6 @@ Effects.playMenuIn = Sfx.playMenuIn
 Effects.playMenuOut = Sfx.playMenuOut
 Effects.playAttackSwing = Sfx.playAttackSwing
 Effects.playAttackHit = Sfx.playAttackHit
+Effects.playAttackMiss = Sfx.playAttackMiss
 
 return Effects
