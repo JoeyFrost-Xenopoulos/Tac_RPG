@@ -391,16 +391,28 @@ function UnitManager.performAttack(attacker, target)
     -- Play attack sound
     Effects.playSelect()
     
-    -- Show battle screen
-    local Battle = require("modules.combat.battle")
-    Battle.startBattle(attacker, target)
+    -- Show combat summary instead of immediately starting battle
+    local CombatSummary = require("modules.ui.combat_summary")
+    CombatSummary.show(attacker, target)
     
     -- Store the attacker and target for the battle to process
     UnitManager.battleAttacker = attacker
     UnitManager.battleTarget = target
     
-    -- Deselect unit (will end turn once battle completes)
-    UnitManager.deselectAll()
+    -- Change state to combat summary
+    UnitManager.state = "combatSummary"
+end
+
+function UnitManager.returnToAttackSelection()
+    -- Return to attack selection state
+    local attacker = UnitManager.battleAttacker or UnitManager.selectedUnit
+    if attacker then
+        UnitManager.selectedUnit = attacker
+        attacker:setSelected(true)
+        UnitManager.performAttackPrompt()
+    else
+        UnitManager.deselectAll()
+    end
 end
 
 function UnitManager.showDamage(target, damage)

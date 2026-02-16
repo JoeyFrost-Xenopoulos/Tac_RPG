@@ -10,6 +10,7 @@ local Options = require("modules.ui.options")
 local UnitStats = require("modules.ui.unit_stats")
 local Attack = require("modules.engine.attack")
 local WeaponSelect = require("modules.ui.weapon_selector")
+local CombatSummary = require("modules.ui.combat_summary")
 
 function Mouse.pressed(x, y, button)
     if Options.visible then
@@ -29,6 +30,12 @@ function Mouse.pressed(x, y, button)
         elseif button == 2 then
             WeaponSelect.cancel()
         end
+        return
+    end
+    
+    -- Handle combat summary clicks
+    if CombatSummary.isVisible() then
+        CombatSummary.clicked(button)
         return
     end
     

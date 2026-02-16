@@ -18,6 +18,8 @@
 
 - re-do the options menu
 
+- fix cursor visual bug with attack, wait, cancel menu
+
 --- Specifics about combat system ---
 Str: Damage with weapons. Damage = Str + Weapon Mt.
 

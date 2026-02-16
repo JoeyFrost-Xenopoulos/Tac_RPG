@@ -207,7 +207,7 @@ end
 
 local function drawHorizontalTransition(screenW)
     local offset, opacity, overlayOpacity = Draw.getHorizontalTransitionValues()
-    Draw.drawHeader(screenW, -offset, opacity, true)  -- Negate offset so header moves opposite to units
+    Draw.drawHeader(screenW, -offset, opacity, true)
 
     if State.isTransitioning then
         -- Get units based on current and previous view
