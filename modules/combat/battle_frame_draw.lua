@@ -47,9 +47,9 @@ function FrameDraw.drawAttackPreview(state, frameX, frameY, frameW)
 
     -- Player preview (right)
     love.graphics.printf(string.format("Hit: %d%%", playerPreview.hit or 0), 
-        rightPreviewX - 112, previewTopY + PREVIEW_CONFIG.offsetY, PREVIEW_CONFIG.width, "right")
+        rightPreviewX - 100, previewTopY + PREVIEW_CONFIG.offsetY, PREVIEW_CONFIG.width, "right")
     love.graphics.printf(string.format("Dmg: %d", playerPreview.damage or 0), 
-        rightPreviewX - 118, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight, PREVIEW_CONFIG.width, "right")
+        rightPreviewX - 110, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight, PREVIEW_CONFIG.width, "right")
     love.graphics.printf(string.format("Crit: %d%%", playerPreview.crit or 0), 
         rightPreviewX - 100, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight * 2, PREVIEW_CONFIG.width, "right")
 end

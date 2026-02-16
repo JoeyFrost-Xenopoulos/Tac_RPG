@@ -100,7 +100,8 @@ function Cursor.update()
         if Cursor.selectTimer <= 0
             and not Menu.visible
             and not Options.visible
-            and UnitManager.state ~= "selectingAttack" then
+            and UnitManager.state ~= "selectingAttack"
+            and UnitManager.state ~= "combatSummary" then
             Effects.playSelect()
             Cursor.selectTimer = Cursor.selectCooldown
         end
@@ -108,7 +109,7 @@ function Cursor.update()
     local tx, ty = Cursor.tileX, Cursor.tileY
     local selectedUnit = UnitManager.selectedUnit
 
-    if selectedUnit and UnitManager.state == "selectingAttack" then
+    if selectedUnit and (UnitManager.state == "selectingAttack" or UnitManager.state == "combatSummary") then
         local enemies = Attack.getEnemiesInRange(selectedUnit)
         
         -- Force cursor to snap to nearest enemy in range
@@ -124,14 +125,25 @@ function Cursor.update()
                 end
             end
             
-            if Cursor.lastSnappedEnemy ~= nearestEnemy then
-                Effects.playSelect()
-                Cursor.lastSnappedEnemy = nearestEnemy
-            end
+            -- Keep cursor on the last selected enemy during combat summary
+            if UnitManager.state == "combatSummary" then
+                -- Keep cursor locked on the target enemy
+                if UnitManager.battleTarget then
+                    Cursor.tileX = UnitManager.battleTarget.tileX
+                    Cursor.tileY = UnitManager.battleTarget.tileY
+                    Cursor.lastSnappedEnemy = UnitManager.battleTarget
+                end
+            else
+                -- Normal enemy snapping during attack selection
+                if Cursor.lastSnappedEnemy ~= nearestEnemy then
+                    Effects.playSelect()
+                    Cursor.lastSnappedEnemy = nearestEnemy
+                end
 
-            -- Snap cursor to nearest enemy
-            Cursor.tileX = nearestEnemy.tileX
-            Cursor.tileY = nearestEnemy.tileY
+                -- Snap cursor to nearest enemy
+                Cursor.tileX = nearestEnemy.tileX
+                Cursor.tileY = nearestEnemy.tileY
+            end
             Cursor.setMouse("hover")
         else
             Cursor.lastSnappedEnemy = nil
@@ -176,7 +188,7 @@ function Cursor.draw()
 
     -- Check if we're in attack selection mode for red highlight
     local UnitManager = require("modules.units.manager")
-    if UnitManager.state == "selectingAttack" then
+    if UnitManager.state == "selectingAttack" or UnitManager.state == "combatSummary" then
         love.graphics.setColor(1, 0.2, 0.2, 1)  -- Red color for attack targeting
     else
         love.graphics.setColor(1, 1, 1, 1)

@@ -34,6 +34,27 @@ function Battle.startBattle(attacker, defender)
     Battle.defenderPreviousHealth = enemyUnit and enemyUnit.health or 0
     Battle.playerPreviousHealth = playerUnit and playerUnit.health or 0
 
+    -- Calculate and set battle preview stats
+    local CombatSystem = require("modules.combat.combat_system")
+    
+    -- Player stats
+    if playerUnit and enemyUnit then
+        Battle.playerAttackPreview = {
+            hit = CombatSystem.calculateHitChance(playerUnit, enemyUnit),
+            damage = CombatSystem.calculateTotalDamage(playerUnit, enemyUnit, false),
+            crit = CombatSystem.calculateCritChance(playerUnit)
+        }
+    end
+    
+    -- Enemy stats
+    if enemyUnit and playerUnit then
+        Battle.enemyAttackPreview = {
+            hit = CombatSystem.calculateHitChance(enemyUnit, playerUnit),
+            damage = CombatSystem.calculateTotalDamage(enemyUnit, playerUnit, false),
+            crit = CombatSystem.calculateCritChance(enemyUnit)
+        }
+    end
+
     local screenW = love.graphics.getWidth()
     local screenH = love.graphics.getHeight()
 
