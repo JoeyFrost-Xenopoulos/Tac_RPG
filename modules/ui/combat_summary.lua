@@ -185,10 +185,35 @@ function CombatSummary.draw()
     
     -- Draw all stats in comparison format
     love.graphics.setColor(1, 1, 1, 1)
-    drawStat("HP", attacker.health, defender.health, CombatSummary.font, CombatSummary.hpFont, 40, -25, CombatSummary.hpLabelFont)
-    drawStat("Mt", attackerDamage, defenderDamage, CombatSummary.font, CombatSummary.mtFont)
-    drawStat("Hit", attackerHit .. "%", defenderHit .. "%", CombatSummary.font, nil, 30, -12)
-    drawStat("Crt", attackerCrit .. "%", defenderCrit .. "%", CombatSummary.font, CombatSummary.critFont, 40, -25, CombatSummary.critLabelFont, nil, nil, nil, nil)
+    
+    -- First, calculate HP value positions to use as alignment reference
+    local hpLabel = "HP"
+    local hpLabelFont = CombatSummary.hpLabelFont
+    local hpFont = CombatSummary.hpFont
+    local hpLabelWidth = hpLabelFont:getWidth(hpLabel)
+    local attackerHPStr = tostring(attacker.health)
+    local defenderHPStr = tostring(defender.health)
+    local attackerHPWidth = hpFont:getWidth(attackerHPStr)
+    local defenderHPWidth = hpFont:getWidth(defenderHPStr)
+    
+    -- Calculate HP value positions
+    local hpAttackerX = centerX + hpLabelWidth / 2 + 40
+    local hpAttackerRightEdge = hpAttackerX + attackerHPWidth
+    local hpDefenderX = centerX - hpLabelWidth / 2 - defenderHPWidth - 15
+    local hpDefenderRightEdge = hpDefenderX + defenderHPWidth
+    
+    drawStat("HP", attacker.health, defender.health, CombatSummary.font, CombatSummary.hpFont, 40, -15, CombatSummary.hpLabelFont)
+    
+    -- Align all other stat values to the right edge of HP values
+    drawStat("Mt", attackerDamage, defenderDamage, CombatSummary.font, CombatSummary.mtFont, nil, nil, CombatSummary.font, hpAttackerRightEdge - CombatSummary.mtFont:getWidth(tostring(attackerDamage)), nil, hpDefenderRightEdge - CombatSummary.mtFont:getWidth(tostring(defenderDamage)), nil)
+    
+    local attackerHitStr = attackerHit .. "%"
+    local defenderHitStr = defenderHit .. "%"
+    drawStat("Hit", attackerHitStr, defenderHitStr, CombatSummary.font, nil, nil, nil, CombatSummary.font, hpAttackerRightEdge - CombatSummary.font:getWidth(attackerHitStr), nil, hpDefenderRightEdge - CombatSummary.font:getWidth(defenderHitStr), nil)
+    
+    local attackerCritStr = attackerCrit .. "%"
+    local defenderCritStr = defenderCrit .. "%"
+    drawStat("Crt", attackerCritStr, defenderCritStr, CombatSummary.font, CombatSummary.critFont, nil, nil, CombatSummary.critLabelFont, hpAttackerRightEdge - CombatSummary.critFont:getWidth(attackerCritStr), nil, hpDefenderRightEdge - CombatSummary.critFont:getWidth(defenderCritStr), nil)
     
     textY = textY + sectionGap
     
