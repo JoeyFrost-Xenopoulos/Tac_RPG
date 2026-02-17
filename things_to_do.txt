@@ -7,7 +7,6 @@
     - animate the second attack
 
 - fix enemy weapon name being attached to attacker weapon name
-- add in after you select a unit to attack it shows the combat info
 
 - add in exp system
     - characters got lvl growth amounts
@@ -26,12 +25,6 @@
 - fix current weapon system
 
 - add in Miss! effect
-
-
-
-
-
-
 
 <---------------------------------------------------------------------------------------------------------->
 Specifics about combat system
