@@ -6,6 +6,7 @@ function Sfx.load()
     Sfx.menuOut  = love.audio.newSource("assets/audio/Menu_Out.wav", "static")
     Sfx.click    = love.audio.newSource("assets/audio/Click.wav", "static")
     Sfx.select   = love.audio.newSource("assets/audio/Select.wav", "static")
+    Sfx.flip     = love.audio.newSource("assets/audio/Flip.ogg", "static")
     Sfx.runGrass = love.audio.newSource("assets/audio/Running_In_Grass.wav", "static")
     Sfx.runGrass:setLooping(true)
 
@@ -22,6 +23,7 @@ function Sfx.load()
         menuOut  = 1.0,
         click    = 1.0,
         select   = 0.05,
+        flip     = 1.0,
         runGrass = 1.0,
         back     = 1.0,
         confirm  = 1.0,
@@ -41,6 +43,7 @@ function Sfx.setSFXVolume(v)
         menuOut  = Sfx.menuOut,
         click    = Sfx.click,
         select   = Sfx.select,
+        flip     = Sfx.flip,
         runGrass = Sfx.runGrass,
         back     = Sfx.back,
         confirm  = Sfx.confirm,
@@ -104,6 +107,13 @@ function Sfx.playSelect()
     if Sfx.select then
         Sfx.select:stop()
         Sfx.select:play()
+    end
+end
+
+function Sfx.playFlip()
+    if Sfx.flip then
+        Sfx.flip:stop()
+        Sfx.flip:play()
     end
 end
 

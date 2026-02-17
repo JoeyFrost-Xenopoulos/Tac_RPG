@@ -31,6 +31,7 @@ Effects.playRunGrass = Sfx.playRunGrass
 Effects.stopRunGrass = Sfx.stopRunGrass
 Effects.playClick = Sfx.playClick
 Effects.playSelect = Sfx.playSelect
+Effects.playFlip = Sfx.playFlip
 Effects.playMenuIn = Sfx.playMenuIn
 Effects.playMenuOut = Sfx.playMenuOut
 Effects.playAttackSwing = Sfx.playAttackSwing
