@@ -14,7 +14,7 @@ State.unit = nil
 
 State.font = nil
 State.smallFont = nil
-State.itemIcon = nil
+State.icons = {}
 State.cursorImage = nil
 State.menuImage = nil
 State.variants = {}

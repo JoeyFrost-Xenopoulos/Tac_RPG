@@ -114,10 +114,21 @@ local function drawItemList(hoveredIndex)
             love.graphics.setColor(1, 1, 1, 1)
         end
         
-        if State.itemIcon then
+        -- Select the appropriate icon based on item type and id
+        local icon = nil
+        if option.type == "weapon" then
+            icon = State.icons.sword
+        elseif option.id == "health_potion" then
+            icon = State.icons.health_potion
+        else
+            -- Default to health potion icon for other items (mana_potion, elixir, etc.)
+            icon = State.icons.health_potion
+        end
+        
+        if icon then
             local iconScale = 0.65
-            local iconY = itemY + (Config.ITEM_HEIGHT - State.itemIcon:getHeight() * iconScale) / 2 + Config.ICON_Y_OFFSET
-            love.graphics.draw(State.itemIcon, listX + 10, iconY, 0, iconScale, iconScale)
+            local iconY = itemY + (Config.ITEM_HEIGHT - icon:getHeight() * iconScale) / 2 + Config.ICON_Y_OFFSET
+            love.graphics.draw(icon, listX + 10, iconY, 0, iconScale, iconScale)
         end
 
         if isHovered and State.cursorImage then

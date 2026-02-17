@@ -27,6 +27,9 @@
 - add in Miss! effect
 
 - add in the health potion system
+    - fixup the health pot icon
+- add in new sword icons
+- refactor manager.lua
 
 <---------------------------------------------------------------------------------------------------------->
 Specifics about combat system

@@ -7,9 +7,14 @@ local Draw = require("modules.ui.item_selector.draw")
 function ItemSelector.load()
     State.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 38)
     State.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 30)
-    -- Use sword icon as placeholder for items (can be replaced with a dedicated item icon later)
-    State.itemIcon = love.graphics.newImage("assets/ui/icons/sword.png")
-    State.itemIcon:setFilter("nearest", "nearest")
+    
+    -- Load different icons for different item types
+    State.icons = {}
+    State.icons.health_potion = love.graphics.newImage("assets/ui/icons/health_pot.png")
+    State.icons.health_potion:setFilter("nearest", "nearest")
+    State.icons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
+    State.icons.sword:setFilter("nearest", "nearest")
+    
     State.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
 
     State.menuImage = love.graphics.newImage("assets/ui/menu/menu.png")
