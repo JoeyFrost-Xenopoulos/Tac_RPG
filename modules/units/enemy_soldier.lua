@@ -12,6 +12,8 @@ local EnemyConfig = {
     attackRange = 1,
     attackDamage = 20,
     weapon = "sword",
+    weapons = { "sword", "sword_test" },
+    items = {},
     -- Combat stats
     strength = 12,
     magic = 2,
@@ -65,6 +67,8 @@ local EnemyConfig2 = {
     attackRange = 1,
     attackDamage = 20,
     weapon = "sword",
+    weapons = { "sword", "sword_test" },
+    items = {},
     -- Combat stats
     strength = 13,
     magic = 2,

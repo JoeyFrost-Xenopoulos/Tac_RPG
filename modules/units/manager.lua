@@ -391,10 +391,23 @@ function UnitManager.showItemSelector()
 
     local ItemSelector = require("modules.ui.item_selector")
     ItemSelector.show(unit, function(option)
-        -- Item selected - implement item usage here
-        print("Used item: " .. (option.name or option.id))
-        -- For now, just go back to the wait menu
-        UnitManager.returnToWaitMenuFromItemSelector(unit)
+        if option.type == "weapon" then
+            -- Equip the weapon
+            unit.weapon = option.id
+            Effects.playConfirm()
+            -- Reopen the item selector to show the new order
+            UnitManager.showItemSelector()
+        elseif option.usable then
+            -- Use the item
+            -- TODO: Implement actual item usage
+            Effects.playConfirm()
+            -- Return to wait menu after using item
+            UnitManager.returnToWaitMenuFromItemSelector(unit)
+        else
+            -- Item not usable, show sound and stay in menu
+            Effects.backPlay()
+            UnitManager.showItemSelector()
+        end
     end, function()
         -- Cancelled - return to wait menu
         UnitManager.returnToWaitMenuFromItemSelector(unit)

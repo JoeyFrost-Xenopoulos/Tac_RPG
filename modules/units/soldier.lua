@@ -12,6 +12,8 @@ local SoldierConfig = {
     attackRange = 1,
     attackDamage = 20,
     weapon = "sword",
+    weapons = { "sword", "sword_test" },
+    items = { "health_potion", "mana_potion" },
     -- Combat stats
     strength = 15,
     magic = 3,
@@ -65,6 +67,8 @@ local Soldier2Config = {
     attackRange = 1,
     attackDamage = 20,
     weapon = "sword",
+    weapons = { "sword", "sword_test" },
+    items = { "health_potion" },
     -- Combat stats
     strength = 14,
     magic = 5,

@@ -123,7 +123,10 @@ local function drawWeaponItems(hoveredIndex)
         if State.font then
             love.graphics.setFont(State.font)
         end
-        love.graphics.print(option.name or "Unknown", listX + 70, itemY + Config.TEXT_Y_OFFSET)
+        
+        local weaponText = option.name or "Unknown"
+        
+        love.graphics.print(weaponText, listX + 70, itemY + Config.TEXT_Y_OFFSET)
     end
 end
 

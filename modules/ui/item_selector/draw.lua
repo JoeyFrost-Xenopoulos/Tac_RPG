@@ -107,7 +107,13 @@ local function drawItemList(hoveredIndex)
             love.graphics.rectangle("fill", listX, itemY + Config.ITEM_VISUAL_OFFSET - 5, listW, Config.ITEM_HOVER_HEIGHT, 6, 6)
         end
 
-        love.graphics.setColor(1, 1, 1, 1)
+        -- Grey out unusable items (icon and cursor)
+        if option.usable == false then
+            love.graphics.setColor(0.5, 0.5, 0.5, 1)
+        else
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+        
         if State.itemIcon then
             local iconScale = 0.65
             local iconY = itemY + (Config.ITEM_HEIGHT - State.itemIcon:getHeight() * iconScale) / 2 + Config.ICON_Y_OFFSET
@@ -123,7 +129,17 @@ local function drawItemList(hoveredIndex)
         if State.font then
             love.graphics.setFont(State.font)
         end
-        love.graphics.print(option.name or "Unknown", listX + 70, itemY + Config.TEXT_Y_OFFSET)
+        
+        local itemText = option.name or "Unknown"
+        
+        -- Grey out unusable items
+        if option.usable == false then
+            love.graphics.setColor(0.5, 0.5, 0.5, 1)
+        else
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+        
+        love.graphics.print(itemText, listX + 70, itemY + Config.TEXT_Y_OFFSET)
     end
 end
 

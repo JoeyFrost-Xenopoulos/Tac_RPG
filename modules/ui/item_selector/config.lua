@@ -24,9 +24,13 @@ Config.RIGHT_PANEL_GAP = 12
 Config.RIGHT_PANEL_PADDING = 16
 
 Config.ITEM_NAMES = {
+    -- Items
     health_potion = "Health Potion",
     mana_potion = "Mana Potion",
     elixir = "Elixir",
+    -- Weapons (matching weapon selector)
+    sword = "Heavy Sword",
+    sword_test = "Practice Blade",
 }
 
 return Config

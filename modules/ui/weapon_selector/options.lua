@@ -46,6 +46,20 @@ function Options.buildOptions(unit)
         table.insert(options, { id = "sword_test", name = prettifyWeaponName("sword_test") })
     end
 
+    -- Sort so equipped weapon is first
+    if unit and unit.weapon then
+        table.sort(options, function(a, b)
+            local aEquipped = a.id == unit.weapon
+            local bEquipped = b.id == unit.weapon
+            if aEquipped and not bEquipped then
+                return true
+            elseif bEquipped and not aEquipped then
+                return false
+            end
+            return false -- Keep original order for non-equipped items
+        end)
+    end
+
     return options
 end
 
