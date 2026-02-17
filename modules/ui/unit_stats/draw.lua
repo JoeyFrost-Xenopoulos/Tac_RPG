@@ -68,12 +68,13 @@ function Draw.getHorizontalTransitionValues()
 end
 
 function Draw.drawBackground(screenW, screenH)
-    if Resources.background then
-        local imgW, imgH = Resources.background:getDimensions()
+    local background = State.currentView == "player" and Resources.backgroundPlayer or Resources.backgroundEnemy
+    if background then
+        local imgW, imgH = background:getDimensions()
         local scaleX = screenW / imgW
         local scaleY = screenH / imgH
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(Resources.background, 0, 0, 0, scaleX, scaleY)
+        love.graphics.draw(background, 0, 0, 0, scaleX, scaleY)
     else
         love.graphics.setColor(0.1, 0.2, 0.8, 1)
         love.graphics.rectangle("fill", 0, 0, screenW, screenH)
