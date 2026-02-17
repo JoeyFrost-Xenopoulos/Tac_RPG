@@ -65,13 +65,14 @@ end
 function Cursor.update()
     local Menu = require("modules.ui.menu")
     local WeaponSelect = require("modules.ui.weapon_selector")
+    local ItemSelector = require("modules.ui.item_selector")
     local UnitStats = require("modules.ui.unit_stats")
     local Options = require("modules.ui.options")
     
     local mx, my = love.mouse.getPosition()
     
     -- Reset cursor if any overlay menu is visible
-    if Menu.isHovered(mx, my) or WeaponSelect.visible or UnitStats.visible or Options.visible then
+    if Menu.isHovered(mx, my) or WeaponSelect.visible or ItemSelector.visible or UnitStats.visible or Options.visible then
         Cursor.setMouse("default")
         return
     end

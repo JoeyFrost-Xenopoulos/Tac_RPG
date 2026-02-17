@@ -71,6 +71,10 @@ function UnitManager.update(dt)
                 Effects.playConfirm()
                 UnitManager.confirmMove()
             end })
+            table.insert(menuOptions, { text = "Item", callback = function()
+                Effects.playConfirm()
+                UnitManager.showItemSelector()
+            end })
             table.insert(menuOptions, { text = "Cancel", callback = function()
                 Effects.playConfirm()
                 UnitManager.cancelMove()
@@ -192,6 +196,10 @@ function UnitManager.showWaitMenu()
     table.insert(menuOptions, { text = "Wait", callback = function()
         Effects.playConfirm()
         UnitManager.confirmMove()
+    end })
+    table.insert(menuOptions, { text = "Item", callback = function()
+        Effects.playConfirm()
+        UnitManager.showItemSelector()
     end })
     table.insert(menuOptions, { text = "Cancel", callback = function()
         Effects.playConfirm()
@@ -372,6 +380,37 @@ function UnitManager.showWeaponSelect(unit)
     end, function()
         UnitManager.returnToWaitMenuFromWeaponSelect(unit)
     end)
+end
+
+function UnitManager.showItemSelector()
+    local unit = UnitManager.selectedUnit
+    if not unit then return end
+
+    UnitManager.state = "selectingItem"
+    Menu.hide(true)
+
+    local ItemSelector = require("modules.ui.item_selector")
+    ItemSelector.show(unit, function(option)
+        -- Item selected - implement item usage here
+        print("Used item: " .. (option.name or option.id))
+        -- For now, just go back to the wait menu
+        UnitManager.returnToWaitMenuFromItemSelector(unit)
+    end, function()
+        -- Cancelled - return to wait menu
+        UnitManager.returnToWaitMenuFromItemSelector(unit)
+    end)
+end
+
+function UnitManager.returnToWaitMenuFromItemSelector(unit)
+    local resolvedUnit = unit or UnitManager.selectedUnit
+    if not resolvedUnit then return end
+
+    if UnitManager.selectedUnit ~= resolvedUnit then
+        UnitManager.selectedUnit = resolvedUnit
+        resolvedUnit:setSelected(true)
+    end
+
+    UnitManager.showWaitMenu()
 end
 
 function UnitManager.beginAttackTargeting(unit)
