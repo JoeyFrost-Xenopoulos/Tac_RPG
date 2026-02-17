@@ -28,6 +28,9 @@
 
 - add in the health potion system
     - fixup the health pot icon
+
+- fix scaling and power level
+
 - add in new sword icons
 - refactor manager.lua
 
