@@ -14,6 +14,7 @@
     - after each combat the characters lvl up
 
 - For each specific stat, add a text when you click on it that describes what it does
+- Add player/enemy specific colours for each stat menu
 
 - re-do the options menu
 - make the hits more "impactful"
