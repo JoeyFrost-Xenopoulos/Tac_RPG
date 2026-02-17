@@ -32,7 +32,8 @@
 - fix scaling and power level
 
 - add in new sword icons
-- refactor manager.lua
+
+- instead of drawing the green square over the unit, can we draw a blue square under the unit?
 
 <---------------------------------------------------------------------------------------------------------->
 Specifics about combat system

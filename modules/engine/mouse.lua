@@ -108,8 +108,7 @@ function Mouse.pressed(x, y, button)
             if UnitManager.state == "idle" then
                 if not clickedUnit.isPlayer then
                     Effects.playClick()
-                    UnitManager.deselectAll()
-                    MovementRange.show(clickedUnit)
+                    UnitManager.select(clickedUnit)
                     return
                 end
 
