@@ -15,6 +15,7 @@ function Sfx.load()
     Sfx.attackSwing = love.audio.newSource("assets/audio/combat/Attack_1.wav", "static")
     Sfx.attackHit = love.audio.newSource("assets/audio/combat/Attack_Hit_1.wav", "static")
     Sfx.attackMiss = love.audio.newSource("assets/audio/combat/Attack_Miss_1.wav", "static")
+    Sfx.deathBell = love.audio.newSource("assets/audio/combat/Death_Bell.wav", "static")
 
     Sfx.baseVolumes = {
         menuIn   = 1.0,
@@ -27,7 +28,8 @@ function Sfx.load()
         nextTurn = 1.0,
         attackSwing = 0.8,
         attackHit = 0.8,
-        attackMiss = 0.8
+        attackMiss = 0.8,
+        deathBell = 0.9
     }
 
     Sfx.setSFXVolume(0.6)
@@ -45,7 +47,8 @@ function Sfx.setSFXVolume(v)
         nextTurn = Sfx.nextTurn,
         attackSwing = Sfx.attackSwing,
         attackHit = Sfx.attackHit,
-        attackMiss = Sfx.attackMiss
+        attackMiss = Sfx.attackMiss,
+        deathBell = Sfx.deathBell
     }
 
     for name, src in pairs(sources) do
@@ -136,6 +139,13 @@ function Sfx.playAttackMiss()
     if Sfx.attackMiss then
         Sfx.attackMiss:stop()
         Sfx.attackMiss:play()
+    end
+end
+
+function Sfx.playDeathBell()
+    if Sfx.deathBell then
+        Sfx.deathBell:stop()
+        Sfx.deathBell:play()
     end
 end
 

@@ -18,6 +18,10 @@ UnitManager.selectedUnit = nil
 UnitManager.state = "idle"
 UnitManager.damageDisplays = {}
 
+local function isUnitDead(unit)
+    return unit and ((unit.health or 0) <= 0 or unit.isDead)
+end
+
 function UnitManager.add(unit)
     table.insert(UnitManager.units, unit)
 end
@@ -27,7 +31,9 @@ function UnitManager.update(dt)
     local screenH = love.graphics.getHeight()
 
     for _, unit in ipairs(UnitManager.units) do
-        unit:update(dt)
+        if not isUnitDead(unit) then
+            unit:update(dt)
+        end
     end
     
     UnitManager.updateDamageDisplays(dt)
@@ -270,7 +276,29 @@ end
 function UnitManager.draw()
     table.sort(UnitManager.units, function(a, b) return a.tileY < b.tileY end)    
     for _, unit in ipairs(UnitManager.units) do
-        unit:draw()
+        if not isUnitDead(unit) then
+            unit:draw()
+        end
+    end
+end
+
+function UnitManager.removeDeadUnits()
+    if UnitManager.selectedUnit and isUnitDead(UnitManager.selectedUnit) then
+        UnitManager.deselectAll()
+    end
+
+    for i = #UnitManager.units, 1, -1 do
+        local unit = UnitManager.units[i]
+        if isUnitDead(unit) then
+            table.remove(UnitManager.units, i)
+        end
+    end
+
+    if UnitManager.battleAttacker and isUnitDead(UnitManager.battleAttacker) then
+        UnitManager.battleAttacker = nil
+    end
+    if UnitManager.battleTarget and isUnitDead(UnitManager.battleTarget) then
+        UnitManager.battleTarget = nil
     end
 end
 

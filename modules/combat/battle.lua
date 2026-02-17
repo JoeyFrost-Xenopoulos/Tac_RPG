@@ -89,6 +89,9 @@ function Battle.endBattle()
     Battle.attacker = nil
     Battle.defender = nil
     Battle.resetTimers()
+
+    local UnitManager = require("modules.units.manager")
+    UnitManager.removeDeadUnits()
     
     -- Return to main theme
     local Audio = require("modules.audio.sound_effects")
@@ -125,6 +128,7 @@ end
 
 local function applyDamageAndStartAnimation(attacker, defender, isCounterattack)
     local UnitManager = require("modules.units.manager")
+    local Audio = require("modules.audio.sound_effects")
     local playerUnit = Helpers.getPlayerUnit(Battle.attacker, Battle.defender)
     local enemyUnit = Helpers.getEnemyUnit(Battle.attacker, Battle.defender)
 
@@ -136,8 +140,14 @@ local function applyDamageAndStartAnimation(attacker, defender, isCounterattack)
     local damage = Battle.calculatedAttackDamage
     
     -- Apply damage to defender
+    local previousHealth = defender.health
     if damage > 0 then
         defender.health = math.max(0, defender.health - damage)
+    end
+
+    if previousHealth > 0 and defender.health == 0 then
+        defender.isDead = true
+        Audio.playDeathBell()
     end
     
     if isCounterattack then
