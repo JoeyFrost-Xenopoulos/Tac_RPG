@@ -3,7 +3,7 @@ local UnitFactory = require("modules.units.unit_factory")
 local SoldierConfig = {
     name = "Ingram",
     type = "Soldier",
-    avatar = love.graphics.newImage("assets/ui/avatars/Avatars_01.png"),
+    avatar = love.graphics.newImage("assets/units/soldier/avatars/Avatars_01.png"),
     uiVariant = 1,
     isPlayer = true,
     maxMoveRange = 4,
@@ -26,7 +26,7 @@ local SoldierConfig = {
     aid = 0,
     animations = {
         idle = {
-            img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Idle.png"),
+            img = love.graphics.newImage("assets/units/soldier/base/Warrior_Idle.png"),
             frames = {
                 {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                 {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -36,7 +36,7 @@ local SoldierConfig = {
             speed = 0.10
         },
         walk = {
-            img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Run.png"),
+            img = love.graphics.newImage("assets/units/soldier/base/Warrior_Run.png"),
             frames = {
                 {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                 {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -45,7 +45,7 @@ local SoldierConfig = {
             speed = 0.10
         },
         attack = {
-            img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Attack1.png"),
+            img = love.graphics.newImage("assets/units/soldier/base/Warrior_Attack1.png"),
             frames = {
                 {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                 {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192}
@@ -58,7 +58,7 @@ local SoldierConfig = {
 local Soldier2Config = {
     name = "Helena",
     type = "Soldier",
-    avatar = love.graphics.newImage("assets/ui/avatars/Avatars_01.png"),
+    avatar = love.graphics.newImage("assets/units/soldier/avatars/Avatars_01.png"),
     uiVariant = 1,
     isPlayer = true,
     maxMoveRange = 4,
@@ -81,7 +81,7 @@ local Soldier2Config = {
     aid = 0,
     animations = {
         idle = {
-            img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Idle.png"),
+            img = love.graphics.newImage("assets/units/soldier/base/Warrior_Idle.png"),
             frames = {
                 {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                 {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -91,7 +91,7 @@ local Soldier2Config = {
             speed = 0.10
         },
         walk = {
-            img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Run.png"),
+            img = love.graphics.newImage("assets/units/soldier/base/Warrior_Run.png"),
             frames = {
                 {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                 {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -100,7 +100,7 @@ local Soldier2Config = {
             speed = 0.08
         },
         attack = {
-            img = love.graphics.newImage("assets/units/Player/Soldier/Warrior_Attack1.png"),
+            img = love.graphics.newImage("assets/units/soldier/base/Warrior_Attack1.png"),
             frames = {
                 {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                 {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192}

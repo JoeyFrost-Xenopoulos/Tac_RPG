@@ -5,7 +5,7 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath)
     return {
         name = "James",
         type = "Soldier",
-        avatar = Utils.applyColourSwaps("assets/ui/avatars/Harpoon_Fish.png", colourSwapPath),
+        avatar = Utils.applyColourSwaps("assets/units/harpoon_fish/avatars/Harpoon_Fish.png", colourSwapPath),
         uiVariant = isPlayer and 1 or 2,
         isPlayer = isPlayer,
         maxMoveRange = 4,
@@ -26,7 +26,7 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath)
         aid = 0,
         animations = {
             idle = {
-                img = love.graphics.newImage("assets/units/Enemy/HarpoonFish/HarpoonFish_Idle.png"),
+                img = love.graphics.newImage("assets/units/harpoon_fish/base/HarpoonFish_Idle.png"),
                 frames = {
                     {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                     {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -36,7 +36,7 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath)
                 speed = 0.10
             },
             walk = {
-                img = love.graphics.newImage("assets/units/Enemy/HarpoonFish/HarpoonFish_Run.png"),
+                img = love.graphics.newImage("assets/units/harpoon_fish/base/HarpoonFish_Run.png"),
                 frames = {
                     {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                     {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -45,7 +45,7 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath)
                 speed = 0.08
             },
             attack = {
-                img = love.graphics.newImage("assets/units/Enemy/HarpoonFish/HarpoonFish_Throw.png"),
+                img = love.graphics.newImage("assets/units/harpoon_fish/base/HarpoonFish_Throw.png"),
                 frames = {
                     {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                     {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -59,7 +59,7 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath)
 end
 
 -- Enemy variant
-local HarpoonFishEnemy = createHarpoonFishConfig(false, "colour.enemy_pack_to_enemy")
+local HarpoonFishEnemy = createHarpoonFishConfig(false, "assets.units.harpoon_fish.palettes.enemy_pack_to_enemy")
 HarpoonFishEnemy.unit = UnitFactory.create(HarpoonFishEnemy)
 
 function HarpoonFishEnemy.update(dt) HarpoonFishEnemy.unit:update(dt) end
@@ -71,7 +71,7 @@ function HarpoonFishEnemy.isHovered(mx, my) return HarpoonFishEnemy.unit:isHover
 function HarpoonFishEnemy.isClicked(mx, my) return HarpoonFishEnemy.unit:isClicked(mx, my) end
 
 -- Player variant
-local HarpoonFishPlayer = createHarpoonFishConfig(true, "colour.enemy_pack_to_player")
+local HarpoonFishPlayer = createHarpoonFishConfig(true, "assets.units.harpoon_fish.palettes.enemy_pack_to_player")
 HarpoonFishPlayer.unit = UnitFactory.create(HarpoonFishPlayer)
 
 function HarpoonFishPlayer.update(dt) HarpoonFishPlayer.unit:update(dt) end
