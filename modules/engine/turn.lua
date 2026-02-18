@@ -5,6 +5,7 @@ TurnManager.currentTurn = "player"
 TurnManager.currentUnitIndex = 0
 TurnManager.unitsThatHaveMoved = {}
 TurnManager.enemyTurnState = "idle"
+TurnManager.enemyAttackTarget = nil  -- Track the target of the current enemy attacker
 local TurnAI = require("modules.engine.turn_ai")
 local TurnOverlay = require("modules.ui.turn_overlay")
 local Attack = require("modules.engine.attack")
@@ -69,6 +70,7 @@ function TurnManager.startTurn()
     if TurnManager.currentTurn == "player" then
         TurnOverlay.show("Player Turn", true)
         TurnManager.enemyTurnState = "idle"
+        TurnManager.enemyAttackTarget = nil  -- Clear attack target when player turn starts
     else
         TurnOverlay.show("Enemy Turn", false)
         TurnManager.enemyTurnState = "moving"
@@ -126,6 +128,7 @@ function TurnManager.updateEnemyTurn(dt)
         end
         TurnManager.enemyBattleInProgress = false
         TurnManager.enemyCurrentUnit = nil
+        TurnManager.enemyAttackTarget = nil  -- Clear attack target after battle
         TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
         return
     end
@@ -139,6 +142,7 @@ function TurnManager.updateEnemyTurn(dt)
             if not currentUnit.hasMoveOrderQueued then
                 local targetUnit = TurnAI.findNearestEnemyUnit(currentUnit)
                 if targetUnit then
+                    TurnManager.enemyAttackTarget = targetUnit  -- Store the attack target
                     moveEnemyToward(currentUnit, targetUnit)
                 end
                 currentUnit.hasMoveOrderQueued = true
@@ -189,8 +193,7 @@ end
 
 function TurnManager.endTurn()
     local UnitManager = require("modules.units.manager")
-    UnitManager.deselectAll()
-    
+    UnitManager.deselectAll()    TurnManager.enemyAttackTarget = nil  -- Clear attack target when turn ends    
     if TurnManager.currentTurn == "player" then
         TurnManager.currentTurn = "enemy"
         TurnManager.startTurn()

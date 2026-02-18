@@ -23,6 +23,7 @@ UnitStats = require("modules.ui.unit_stats")
 CombatSummary = require("modules.ui.combat_summary")
 Battle = require("modules.combat.battle")
 CameraManager = require("modules.engine.camera_manager")
+AttackIndicator = require("modules.ui.attack_indicator")
 
 -- Music
 Effects = require("modules.audio.sound_effects")
@@ -109,6 +110,7 @@ function love.draw()
     Map.drawTrees()
     Map.drawLayersAboveSoldier()
     Cursor.draw()
+    AttackIndicator.draw()
     Clouds.draw()
     Leaf.draw()
     
