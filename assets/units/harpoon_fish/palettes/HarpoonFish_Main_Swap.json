@@ -1,0 +1,108 @@
+{
+  "name": "Edit Preset",
+  "created": "2026-02-18T20:11:06.922Z",
+  "version": 4,
+  "edits": [
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 40,
+          "g": 144,
+          "b": 146,
+          "hex": "#289092"
+        },
+        "to": {
+          "r": 231,
+          "g": 97,
+          "b": 97,
+          "hex": "#e76161"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 25,
+          "g": 93,
+          "b": 107,
+          "hex": "#195d6b"
+        },
+        "to": {
+          "r": 146,
+          "g": 65,
+          "b": 89,
+          "hex": "#924159"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 64,
+          "g": 172,
+          "b": 146,
+          "hex": "#40ac92"
+        },
+        "to": {
+          "r": 255,
+          "g": 82,
+          "b": 82,
+          "hex": "#ff5252"
+        },
+        "hasSelection": false
+      }
+    }
+  ],
+  "swaps": [
+    {
+      "from": {
+        "r": 40,
+        "g": 144,
+        "b": 146,
+        "hex": "#289092"
+      },
+      "to": {
+        "r": 231,
+        "g": 97,
+        "b": 97,
+        "hex": "#e76161"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 25,
+        "g": 93,
+        "b": 107,
+        "hex": "#195d6b"
+      },
+      "to": {
+        "r": 146,
+        "g": 65,
+        "b": 89,
+        "hex": "#924159"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 64,
+        "g": 172,
+        "b": 146,
+        "hex": "#40ac92"
+      },
+      "to": {
+        "r": 255,
+        "g": 82,
+        "b": 82,
+        "hex": "#ff5252"
+      },
+      "hasSelection": false
+    }
+  ]
+}
