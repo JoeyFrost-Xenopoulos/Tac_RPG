@@ -72,7 +72,7 @@ function Draw.draw(state)
                 Effects.drawBreak(state, attackerStaticX, platformY + 160)
             end
             if state.attacker and state.missEffectActive then
-                Effects.drawMiss(state, attackerStaticX, platformY + 160)
+                Effects.drawMiss(state, attackerStaticX, platformY + 160, state.defender)
             end
         else
             -- During initial attack: attacker animates, defender is static
@@ -84,7 +84,7 @@ function Draw.draw(state)
                 Effects.drawBreak(state, defenderStaticX, platformY + 160)
             end
             if state.defender and state.missEffectActive then
-                Effects.drawMiss(state, defenderStaticX, platformY + 160)
+                Effects.drawMiss(state, defenderStaticX, platformY + 160, state.attacker)
             end
 
             if state.attacker then

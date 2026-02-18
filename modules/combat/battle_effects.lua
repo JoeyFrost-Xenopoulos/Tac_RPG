@@ -81,8 +81,16 @@ function Effects.updateMiss(state, attackFrameIndex)
     end
 end
 
-function Effects.drawMiss(state, targetX, targetY)
-    if not state.missEffectImage or not state.missEffectActive then return end
+function Effects.drawMiss(state, targetX, targetY, missSourceUnit)
+    if not state.missEffectActive then return end
+
+    local missImage = state.missEffectImage
+    if missSourceUnit and missSourceUnit.isPlayer and state.missEffectPlayerImage then
+        missImage = state.missEffectPlayerImage
+    elseif missSourceUnit and missSourceUnit.isPlayer == false and state.missEffectEnemyImage then
+        missImage = state.missEffectEnemyImage
+    end
+    if not missImage then return end
 
     local timeSinceMiss = state.battleTimer - state.missFrameStartTime
     if timeSinceMiss > state.missAnimDuration then return end
@@ -97,11 +105,11 @@ function Effects.drawMiss(state, targetX, targetY)
     if frameIndex >= frameCount then return end
 
     local frameX = frameIndex * frameWidth
-    local quad = love.graphics.newQuad(frameX, 0, frameWidth, frameHeight, state.missEffectImage:getDimensions())
+    local quad = love.graphics.newQuad(frameX, 0, frameWidth, frameHeight, missImage:getDimensions())
 
     local offsetX = frameWidth / 2
     local offsetY = frameHeight / 2
-    love.graphics.draw(state.missEffectImage, quad, targetX, targetY, 0, 2, 2, offsetX, offsetY)
+    love.graphics.draw(missImage, quad, targetX, targetY, 0, 2, 2, offsetX, offsetY)
 end
 
 return Effects

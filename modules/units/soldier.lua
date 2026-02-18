@@ -72,7 +72,7 @@ local Soldier2Config = {
     -- Combat stats
     strength = 14,
     magic = 5,
-    skill = 13,
+    skill = 1,
     speed = 12,
     luck = 7,
     defense = 7,
