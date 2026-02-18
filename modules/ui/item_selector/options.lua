@@ -16,6 +16,7 @@ end
 function Options.buildOptions(unit)
     local options = {}
     local seen = {}
+    local order = 0
 
     -- Add weapons first
     if unit and type(unit.weapons) == "table" then
@@ -29,10 +30,12 @@ function Options.buildOptions(unit)
                 id = weapon
             end
             if id and not seen[id] then
+                order = order + 1
                 table.insert(options, { 
                     id = id, 
                     name = name or prettifyItemName(id),
-                    type = "weapon"
+                    type = "weapon",
+                    order = order
                 })
                 seen[id] = true
             end
@@ -51,11 +54,13 @@ function Options.buildOptions(unit)
                 id = item
             end
             if id and not seen[id] then
+                order = order + 1
                 table.insert(options, { 
                     id = id, 
                     name = name or prettifyItemName(id),
                     type = "item",
-                    usable = false  -- Items not yet implemented
+                    usable = false,  -- Items not yet implemented
+                    order = order
                 })
                 seen[id] = true
             end
@@ -64,9 +69,12 @@ function Options.buildOptions(unit)
 
     -- If no items, add some default items for testing (respecting max 5)
     if #options == 0 then
-        table.insert(options, { id = "health_potion", name = prettifyItemName("health_potion"), type = "item", usable = false })
-        table.insert(options, { id = "mana_potion", name = prettifyItemName("mana_potion"), type = "item", usable = false })
-        table.insert(options, { id = "elixir", name = prettifyItemName("elixir"), type = "item", usable = false })
+        order = order + 1
+        table.insert(options, { id = "health_potion", name = prettifyItemName("health_potion"), type = "item", usable = false, order = order })
+        order = order + 1
+        table.insert(options, { id = "mana_potion", name = prettifyItemName("mana_potion"), type = "item", usable = false, order = order })
+        order = order + 1
+        table.insert(options, { id = "elixir", name = prettifyItemName("elixir"), type = "item", usable = false, order = order })
     end
     
     -- Enforce max items (weapons don't count toward item limit)
@@ -85,19 +93,20 @@ function Options.buildOptions(unit)
         end
     end
     
-    -- Sort so equipped weapon is first
-    if unit and unit.weapon then
-        table.sort(filteredOptions, function(a, b)
-            local aEquipped = a.type == "weapon" and a.id == unit.weapon
-            local bEquipped = b.type == "weapon" and b.id == unit.weapon
-            if aEquipped and not bEquipped then
-                return true
-            elseif bEquipped and not aEquipped then
-                return false
-            end
-            return false -- Keep original order for non-equipped items
-        end)
-    end
+    -- Sort: equipped weapon first, then other weapons, then items; preserve original order within groups.
+    table.sort(filteredOptions, function(a, b)
+        local aEquipped = unit and unit.weapon and a.type == "weapon" and a.id == unit.weapon
+        local bEquipped = unit and unit.weapon and b.type == "weapon" and b.id == unit.weapon
+        if aEquipped ~= bEquipped then
+            return aEquipped
+        end
+        local aRank = a.type == "weapon" and 0 or 1
+        local bRank = b.type == "weapon" and 0 or 1
+        if aRank ~= bRank then
+            return aRank < bRank
+        end
+        return (a.order or 0) < (b.order or 0)
+    end)
 
     return filteredOptions
 end

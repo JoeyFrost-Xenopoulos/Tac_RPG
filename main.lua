@@ -61,13 +61,11 @@ function love.load()
     UnitManager.add(Soldier.unit2)
     UnitManager.add(Enemy_Soldier.unit)
     UnitManager.add(Enemy_Soldier.unit2)
-    UnitManager.add(Harpoon_Fish.player.unit)
 
     Soldier.setPosition(3, 3)
     Soldier.setPosition2(5, 2)
     Enemy_Soldier.setPosition(9, 2)
     Enemy_Soldier.setPosition2(8, 3)
-    Harpoon_Fish.player.setPosition(4, 3)
     
     TurnManager.startTurn()
 end
