@@ -23,8 +23,14 @@
 - make the area for clicking on an enemy unit to attack more responsive
 
 - fix current weapon system
+    - add in attack amounts
+    - add in weapon triangle
+    - make it so weapons have different looks visually
 
-- add in Miss! effect
+- add in archers
+- add in mages
+- add in enemies
+    - change the colours of each of these based on a colour palette (https://pixelpaletteswap.com/)
 
 - add in the health potion system
     - fixup the health pot icon
@@ -32,6 +38,8 @@
 - fix scaling and power level
 
 - add in new sword icons
+
+- fix side by side draw bug
 
 - instead of drawing the green square over the unit, can we draw a blue square under the unit?
 
