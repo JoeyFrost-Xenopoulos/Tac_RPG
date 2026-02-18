@@ -104,7 +104,7 @@ function Draw.draw(state)
         love.graphics.draw(state.battleFrameImage, frameX, frameY - 60)
 
         FrameDraw.drawAttackPreview(state, frameX, frameY, frameW)
-        FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, state.swordIconImage, state.weaponFont)
+        FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, state.weaponIcons, state.weaponFont)
     end
 
     UiDraw.drawBigBar(state, screenW, screenH)

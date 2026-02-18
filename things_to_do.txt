@@ -45,6 +45,10 @@ Useful websites
 
 - Make the spawning in useable for multiple maps somehow
 
+- Create a weapons table for item lookup
+
+- add in the double platforms for ranged attacks with no counter attack
+
 <---------------------------------------------------------------------------------------------------------->
 Specifics about combat system
 <---------------------------------------------------------------------------------------------------------->

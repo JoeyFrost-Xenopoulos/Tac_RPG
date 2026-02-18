@@ -31,6 +31,8 @@ function CombatSummary.load()
     CombatSummary.instructionFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 24)
     CombatSummary.weaponIcons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
     CombatSummary.weaponIcons.sword:setFilter("nearest", "nearest")
+    CombatSummary.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
+    CombatSummary.weaponIcons.harpoon:setFilter("nearest", "nearest")
 end
 
 function CombatSummary.show(attacker, defender)

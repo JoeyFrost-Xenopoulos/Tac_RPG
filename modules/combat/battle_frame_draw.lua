@@ -56,38 +56,42 @@ function FrameDraw.drawAttackPreview(state, frameX, frameY, frameW)
         rightPreviewX - 100, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight * 2, PREVIEW_CONFIG.width, "right")
 end
 
-function FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, swordIconImage, weaponFont)
-    if not swordIconImage or not weaponFont then return end
-
-    local swordW, swordH = swordIconImage:getDimensions()
+function FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, weaponIcons, weaponFont)
+    if not weaponIcons or not weaponFont then return end
 
     love.graphics.setFont(weaponFont)
     love.graphics.setColor(1, 1, 1, 1)
 
     -- Attacker weapon (left side)
     if state.attacker then
+        local weaponType = state.attacker.weapon or "sword"
+        local weaponIcon = weaponIcons[weaponType] or weaponIcons.sword
+        local iconW, iconH = weaponIcon:getDimensions()
+        
         local attackerSwordX = frameX + WEAPON_CONFIG.attackerX
         local attackerSwordY = frameY + WEAPON_CONFIG.iconY
-        love.graphics.draw(swordIconImage, attackerSwordX, attackerSwordY, 0, 
+        love.graphics.draw(weaponIcon, attackerSwordX, attackerSwordY, 0, 
             WEAPON_CONFIG.iconScale, WEAPON_CONFIG.iconScale)
         
-        local weaponType = state.attacker.weapon or "sword"
         local weaponName = WEAPON_NAMES[weaponType] or "Unknown"
-        love.graphics.print(weaponName, attackerSwordX + swordW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset, 
+        love.graphics.print(weaponName, attackerSwordX + iconW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset, 
             attackerSwordY + 10
         )
     end
 
     -- Defender weapon (right side)
     if state.defender then
+        local weaponType = state.defender.weapon or "sword"
+        local weaponIcon = weaponIcons[weaponType] or weaponIcons.sword
+        local iconW, iconH = weaponIcon:getDimensions()
+        
         local defenderSwordX = frameX + frameW + WEAPON_CONFIG.defenderX
         local defenderSwordY = frameY + WEAPON_CONFIG.iconY
-        love.graphics.draw(swordIconImage, defenderSwordX - 60, defenderSwordY, 0, 
+        love.graphics.draw(weaponIcon, defenderSwordX - 60, defenderSwordY, 0, 
             WEAPON_CONFIG.iconScale, WEAPON_CONFIG.iconScale)
         
-        local weaponType = state.defender.weapon or "sword"
         local weaponName = WEAPON_NAMES[weaponType] or "Unknown"
-        love.graphics.print(weaponName, defenderSwordX + swordW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset - 60, 
+        love.graphics.print(weaponName, defenderSwordX + iconW * WEAPON_CONFIG.iconScale + WEAPON_CONFIG.textOffset - 60, 
             defenderSwordY + 10)
     end
 end

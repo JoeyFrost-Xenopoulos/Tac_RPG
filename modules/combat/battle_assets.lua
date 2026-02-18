@@ -19,8 +19,13 @@ function Assets.load(state)
     state.pixelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
     state.weaponFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
     state.previewFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 30)
-    state.swordIconImage = love.graphics.newImage("assets/ui/icons/sword.png")
-    state.swordIconImage:setFilter("nearest", "nearest")
+    
+    -- Load weapon icons
+    state.weaponIcons = {}
+    state.weaponIcons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
+    state.weaponIcons.sword:setFilter("nearest", "nearest")
+    state.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
+    state.weaponIcons.harpoon:setFilter("nearest", "nearest")
 end
 
 return Assets

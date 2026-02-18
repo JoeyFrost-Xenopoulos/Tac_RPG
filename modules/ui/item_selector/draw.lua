@@ -117,7 +117,8 @@ local function drawItemList(hoveredIndex)
         -- Select the appropriate icon based on item type and id
         local icon = nil
         if option.type == "weapon" then
-            icon = State.icons.sword
+            -- Choose icon based on weapon id
+            icon = State.icons[option.id] or State.icons.sword
         elseif option.id == "health_potion" then
             icon = State.icons.health_potion
         else

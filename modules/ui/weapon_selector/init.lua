@@ -7,8 +7,13 @@ local Draw = require("modules.ui.weapon_selector.draw")
 function WeaponSelector.load()
     State.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 38)
     State.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 30)
-    State.swordIcon = love.graphics.newImage("assets/ui/icons/sword.png")
-    State.swordIcon:setFilter("nearest", "nearest")
+    
+    -- Load weapon icons
+    State.weaponIcons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
+    State.weaponIcons.sword:setFilter("nearest", "nearest")
+    State.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
+    State.weaponIcons.harpoon:setFilter("nearest", "nearest")
+    
     State.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
 
     State.menuImage = love.graphics.newImage("assets/ui/menu/menu.png")

@@ -115,10 +115,12 @@ local function drawWeaponItems(hoveredIndex)
             love.graphics.setColor(1, 1, 1, 1)
         end
         
-        if State.swordIcon then
+        -- Select the appropriate icon based on weapon type
+        local icon = State.weaponIcons[option.id] or State.weaponIcons.sword
+        if icon then
             local iconScale = 0.65
-            local iconY = itemY + (Config.ITEM_HEIGHT - State.swordIcon:getHeight() * iconScale) / 2 + Config.ICON_Y_OFFSET
-            love.graphics.draw(State.swordIcon, listX + 10, iconY, 0, iconScale, iconScale)
+            local iconY = itemY + (Config.ITEM_HEIGHT - icon:getHeight() * iconScale) / 2 + Config.ICON_Y_OFFSET
+            love.graphics.draw(icon, listX + 10, iconY, 0, iconScale, iconScale)
         end
 
         if isHovered and not isDisabled and State.cursorImage then

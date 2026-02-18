@@ -14,6 +14,8 @@ function ItemSelector.load()
     State.icons.health_potion:setFilter("nearest", "nearest")
     State.icons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
     State.icons.sword:setFilter("nearest", "nearest")
+    State.icons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
+    State.icons.harpoon:setFilter("nearest", "nearest")
     
     State.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
 
