@@ -28,6 +28,10 @@ function Resources.load()
     Resources.backgroundEnemy = love.graphics.newImage("assets/ui/menu/stats_menu_enemy.png")
     Resources.barBase = love.graphics.newImage("assets/ui/bars/BigBar_Base.png")
     Resources.barFill = love.graphics.newImage("assets/ui/bars/BigBar_Fill_Stats.png")
+    Resources.barBase:setFilter("nearest", "nearest")
+    Resources.barFill:setFilter("nearest", "nearest")
+    Resources.barBase:setWrap("clamp", "clamp")
+    Resources.barFill:setWrap("clamp", "clamp")
     Resources.arrowImage = love.graphics.newImage("assets/ui/arrows/up_down.png")
 end
 

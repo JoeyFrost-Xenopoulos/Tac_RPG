@@ -37,6 +37,11 @@ State.defenderHitX = 0
 State.defenderHitY = 0
 State.hitTargetX = 0
 State.hitTargetY = 0
+State.missEffectImage = nil
+State.missEffectActive = false
+State.missEffectStartTime = 0
+State.missFrameStartTime = 0
+State.missAnimDuration = 1.2
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
@@ -85,6 +90,8 @@ function State.resetTimers()
     State.calculatedAttackDamage = 0
     State.currentAttackHit = false
     State.attackResultCalculated = false
+    State.missEffectActive = false
+    State.missFrameStartTime = 0
 end
 
 return State

@@ -32,15 +32,14 @@ function Draw.draw(self)
         end
     end
 
+    if self.selected and not self.isMoving then
+        love.graphics.setColor(0.2, 0.4, 1.0, 0.4)
+        love.graphics.rectangle("fill", (self.tileX-1)*self.tileSize, (self.tileY-1)*self.tileSize, self.tileSize, self.tileSize)
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+
     love.graphics.draw(anim.img, quad, px, py, 0, sX, self.scaleY, offsetX, offsetY)
     love.graphics.setColor(1, 1, 1, 1)
-
-    if self.selected and not self.isMoving then
-        local color = self.isPlayer and {0,1,0,0.3} or {1,0,0,0.3}
-        love.graphics.setColor(unpack(color))
-        love.graphics.rectangle("fill", (self.tileX-1)*self.tileSize, (self.tileY-1)*self.tileSize, self.tileSize, self.tileSize)
-        love.graphics.setColor(1,1,1,1)
-    end
 end
 
 return Draw

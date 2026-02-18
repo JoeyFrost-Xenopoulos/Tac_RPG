@@ -2,6 +2,7 @@
 -- State management for unit stats screen
 
 local Config = require("modules.ui.unit_stats.config")
+local Effects = require("modules.audio.sound_effects")
 
 local State = {}
 
@@ -100,6 +101,7 @@ function State.startVerticalTransition(direction)
     State.isTransitioning = true
     State.transitionProgress = 0
     State.transitionDirection = direction
+    Effects.playFlip()
 end
 
 function State.startHorizontalTransition(direction)
@@ -107,6 +109,7 @@ function State.startHorizontalTransition(direction)
     State.isTransitioning = true
     State.transitionProgress = 0
     State.transitionDirection = direction
+    Effects.playFlip()
 end
 
 function State.update(dt)

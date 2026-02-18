@@ -31,6 +31,7 @@ local RIGHT_X = 256
 local MID_TARGET_W = BAR_W - LEFT_W - RIGHT_W
 local MID_DRAW_X = LEFT_W
 local RIGHT_DRAW_X = LEFT_W + MID_TARGET_W
+local SEAM_OVERLAP = 1
 
 local function drawBarBase(image, x, y, scale, alpha)
     local imgW, imgH = image:getDimensions()
@@ -44,7 +45,7 @@ local function drawBarBase(image, x, y, scale, alpha)
     local rightQuad = love.graphics.newQuad(RIGHT_X, 0, RIGHT_W, BAR_H, imgW, imgH)
     love.graphics.draw(image, leftQuad, 0, 0)
     love.graphics.draw(image, midQuad, MID_DRAW_X, 0, 0, MID_TARGET_W / MID_W, 1)
-    love.graphics.draw(image, rightQuad, RIGHT_DRAW_X, 0)
+    love.graphics.draw(image, rightQuad, RIGHT_DRAW_X - SEAM_OVERLAP, 0)
     love.graphics.pop()
 end
 
@@ -75,7 +76,7 @@ local function drawBarFill(image, x, y, scale, alpha, fillPercent)
     end
     if rightW > 0 then
         local rightQuad = love.graphics.newQuad(RIGHT_X, 0, rightW, BAR_H, imgW, imgH)
-        love.graphics.draw(image, rightQuad, fillStartX + RIGHT_DRAW_X, 0)
+        love.graphics.draw(image, rightQuad, fillStartX + RIGHT_DRAW_X - SEAM_OVERLAP, 0)
     end
     love.graphics.pop()
 end
