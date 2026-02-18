@@ -135,7 +135,6 @@ local function drawWeaponItems(hoveredIndex)
         
         local weaponText = option.name or "Unknown"
         if isDisabled then
-            weaponText = weaponText .. " (out of range)"
             love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
         else
             love.graphics.setColor(1, 1, 1, 1)

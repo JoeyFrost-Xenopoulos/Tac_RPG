@@ -8,9 +8,12 @@ BannerController.activeUnit = nil
 
 function BannerController.update(mx, my)
     local UnitStats = require("modules.ui.unit_stats")
+    local CombatSummary = require("modules.ui.combat_summary")
     
-    -- Don't update banner if UnitStats is visible
-    if UnitStats.visible then
+    -- Don't update banner if UnitStats or CombatSummary is visible
+    if UnitStats.visible or CombatSummary.isVisible() then
+        BannerController.activeUnit = nil
+        Banner.reset()
         return
     end
     

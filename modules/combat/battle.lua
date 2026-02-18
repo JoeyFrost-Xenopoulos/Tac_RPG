@@ -23,6 +23,29 @@ function Battle.startBattle(attacker, defender)
     Battle.visible = true
     Battle.resetTimers()
     
+    -- Calculate distance between attacker and defender
+    local CombatSystem = require("modules.combat.combat_system")
+    local distance = math.abs(attacker.tileX - defender.tileX) + math.abs(attacker.tileY - defender.tileY)
+    local defenderRange = CombatSystem.getAttackRange(defender)
+    local attackerRange = CombatSystem.getAttackRange(attacker)
+    
+    -- Disable counterattack if attacker is outside defender's range
+    if distance > defenderRange then
+        Battle.counterattackEnabled = false
+    end
+    
+    -- Skip walk animation for ranged attacks (range > 1)
+    if attackerRange > 1 then
+        Battle.runDuration = 0
+        Battle.returnDuration = 0
+        Battle.attackDuration = 1.6  -- Extended duration to accommodate projectile flight
+    else
+        -- Reset to default values for melee attacks
+        Battle.runDuration = 0.8
+        Battle.returnDuration = 0.8
+        Battle.attackDuration = 0.7
+    end
+    
     -- Start battle music transition
     local Audio = require("modules.audio.sound_effects")
     Audio.transitionToBattleTheme()
@@ -102,19 +125,34 @@ end
 -- ATTACK SEQUENCE HELPERS
 -- ============================================================================
 
-local function playAttackSounds(attackFrameIndex)
+local function playAttackSounds(attackFrameIndex, attacker, projectileHit)
     local Audio = require("modules.audio.sound_effects")
-    if attackFrameIndex == 2 and not Battle.attackSwingPlayed then
-        Audio.playAttackSwing()
-        Battle.attackSwingPlayed = true
-    end
-    if attackFrameIndex == 3 and not Battle.attackHitPlayed then
-        if Battle.currentAttackHit then
-            Audio.playAttackHit()
-        else
-            Audio.playAttackMiss()
+    local Projectile = require("modules.combat.battle_projectile")
+    
+    -- For ranged attacks, play sounds based on projectile hit
+    if attacker and Projectile.needsProjectile(attacker) then
+        if projectileHit then
+            if Battle.currentAttackHit then
+                Audio.playAttackHit()
+            else
+                Audio.playAttackMiss()
+            end
+            Battle.attackHitPlayed = true
         end
-        Battle.attackHitPlayed = true
+    else
+        -- For melee attacks, use frame-based timing
+        if attackFrameIndex == 2 and not Battle.attackSwingPlayed then
+            Audio.playAttackSwing()
+            Battle.attackSwingPlayed = true
+        end
+        if attackFrameIndex == 3 and not Battle.attackHitPlayed then
+            if Battle.currentAttackHit then
+                Audio.playAttackHit()
+            else
+                Audio.playAttackMiss()
+            end
+            Battle.attackHitPlayed = true
+        end
     end
 end
 
@@ -191,6 +229,8 @@ local function resetPhaseFlags()
     Battle.calculatedAttackDamage = 0
     Battle.currentAttackHit = false
     Battle.attackResultCalculated = false
+    Battle.projectileSpawned = false  -- Reset projectile flag for counterattacks
+    Battle.projectileFrame4Time = 0  -- Reset frame 4 time for counterattacks
 end
 
 local function transitionToCounterattack()
@@ -199,6 +239,22 @@ local function transitionToCounterattack()
         Battle.battleTimer = 0
         resetPhaseFlags()
         Battle.counterattackApplied = false
+        
+        -- Set animation durations for counterattack based on defender's weapon range
+        local CombatSystem = require("modules.combat.combat_system")
+        local defenderRange = CombatSystem.getAttackRange(Battle.defender)
+        
+        -- Skip walk animation for ranged counterattacks
+        if defenderRange > 1 then
+            Battle.runDuration = 0
+            Battle.returnDuration = 0
+            Battle.attackDuration = 1.6  -- Extended duration to accommodate projectile flight
+        else
+            -- Reset to default values for melee counterattacks
+            Battle.runDuration = 0.8
+            Battle.returnDuration = 0.8
+            Battle.attackDuration = 0.7
+        end
     else
         Battle.battlePhase = "done"
     end
@@ -247,10 +303,29 @@ local function updateInitialAttack()
 
     local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.attacker)
     Battle.attackFrameIndex = attackFrameIndex or 0
+    
+    -- Handle projectile spawning on frame 4 for ranged attacks with delay
+    local Projectile = require("modules.combat.battle_projectile")
+    if Projectile.needsProjectile(Battle.attacker) and not Battle.projectileSpawned then
+        if attackFrameIndex == 4 and Battle.projectileFrame4Time == 0 then
+            -- Mark when we reached frame 4
+            Battle.projectileFrame4Time = Battle.battleTimer
+        end
+        
+        if Battle.projectileFrame4Time > 0 and (Battle.battleTimer - Battle.projectileFrame4Time) >= Battle.projectileSpawnDelay then
+            local screenW = love.graphics.getWidth()
+            local platformW = Battle.platformImage and Battle.platformImage:getDimensions() or 0
+            local platformY = Battle.platformY or 0
+            Projectile.spawn(Battle, Battle.attacker, Battle.defender, screenW, platformW, platformY)
+        end
+    end
+    
+    -- Update projectile and check if it hit
+    local projectileHit = Projectile.update(Battle)
 
-    playAttackSounds(attackFrameIndex)
-    Effects.update(Battle, attackFrameIndex)
-    Effects.updateMiss(Battle, attackFrameIndex)
+    playAttackSounds(attackFrameIndex, Battle.attacker, projectileHit)
+    Effects.update(Battle, attackFrameIndex, Battle.attacker, projectileHit)
+    Effects.updateMiss(Battle, attackFrameIndex, Battle.attacker, projectileHit)
 
     -- Apply damage when animation completes
     local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
@@ -299,10 +374,29 @@ local function updateCounterattack()
 
     local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.defender)
     Battle.attackFrameIndex = attackFrameIndex or 0
+    
+    -- Handle projectile spawning on frame 4 for ranged counterattacks with delay
+    local Projectile = require("modules.combat.battle_projectile")
+    if Projectile.needsProjectile(Battle.defender) and not Battle.projectileSpawned then
+        if attackFrameIndex == 4 and Battle.projectileFrame4Time == 0 then
+            -- Mark when we reached frame 4
+            Battle.projectileFrame4Time = Battle.battleTimer
+        end
+        
+        if Battle.projectileFrame4Time > 0 and (Battle.battleTimer - Battle.projectileFrame4Time) >= Battle.projectileSpawnDelay then
+            local screenW = love.graphics.getWidth()
+            local platformW = Battle.platformImage and Battle.platformImage:getDimensions() or 0
+            local platformY = Battle.platformY or 0
+            Projectile.spawn(Battle, Battle.defender, Battle.attacker, screenW, platformW, platformY)
+        end
+    end
+    
+    -- Update projectile and check if it hit
+    local projectileHit = Projectile.update(Battle)
 
-    playAttackSounds(attackFrameIndex)
-    Effects.update(Battle, attackFrameIndex)
-    Effects.updateMiss(Battle, attackFrameIndex)
+    playAttackSounds(attackFrameIndex, Battle.defender, projectileHit)
+    Effects.update(Battle, attackFrameIndex, Battle.defender, projectileHit)
+    Effects.updateMiss(Battle, attackFrameIndex, Battle.defender, projectileHit)
 
     -- Apply counterattack damage when animation completes
     local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)

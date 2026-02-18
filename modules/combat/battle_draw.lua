@@ -5,6 +5,7 @@ local TransitionDraw = require("modules.combat.battle_transition_draw")
 local UiDraw = require("modules.combat.battle_ui_draw")
 local Helpers = require("modules.combat.battle_helpers")
 local FrameDraw = require("modules.combat.battle_frame_draw")
+local Projectile = require("modules.combat.battle_projectile")
 
 local Draw = {}
 
@@ -69,7 +70,7 @@ function Draw.draw(state)
 
             -- Hit effect should be on the attacker during counterattack
             if state.attacker and state.hitEffectActive then
-                Effects.drawBreak(state, attackerStaticX, platformY + 160)
+                Effects.drawBreak(state, attackerStaticX, platformY + 160, state.defender)
             end
             if state.attacker and state.missEffectActive then
                 Effects.drawMiss(state, attackerStaticX, platformY + 160, state.defender)
@@ -81,7 +82,7 @@ function Draw.draw(state)
             end
 
             if state.defender and state.hitEffectActive then
-                Effects.drawBreak(state, defenderStaticX, platformY + 160)
+                Effects.drawBreak(state, defenderStaticX, platformY + 160, state.attacker)
             end
             if state.defender and state.missEffectActive then
                 Effects.drawMiss(state, defenderStaticX, platformY + 160, state.attacker)
@@ -108,6 +109,9 @@ function Draw.draw(state)
     end
 
     UiDraw.drawBigBar(state, screenW, screenH)
+    
+    -- Draw projectile on top of units
+    Projectile.draw(state)
 
     Effects.drawFlash(state, screenW, screenH)
 

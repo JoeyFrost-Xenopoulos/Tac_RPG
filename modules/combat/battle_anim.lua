@@ -31,7 +31,12 @@ function Anim.getAttackFrameIndex(state, unit)
     end
 
     local frameIndex = math.floor(attackTime / speed) + 1
-    local maxFrames = math.min(4, #anim.quads)
+    -- Allow ranged units to play through all frames, melee units capped at 4
+    local CombatSystem = require("modules.combat.combat_system")
+    local maxFrames = #anim.quads
+    if unit and CombatSystem.getAttackRange(unit) <= 1 then
+        maxFrames = math.min(4, #anim.quads)
+    end
     if frameIndex < 1 then frameIndex = 1 end
     if frameIndex > maxFrames then frameIndex = maxFrames end
 
@@ -67,6 +72,11 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW)
         startX = screenW / 2 - platformW * 0.3
     end
 
+    -- For ranged attacks (runDuration == 0), stay at starting position
+    if runDuration == 0 then
+        return startX
+    end
+
     local endX
     if animatingUnit.isPlayer then
         endX = screenW / 2 - platformW * 0.25 + 70
@@ -74,7 +84,7 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW)
         endX = screenW / 2 + platformW * 0.25 - 70
     end
 
-    if runDuration > 0 and time <= runDuration then
+    if time <= runDuration then
         local runProgress = clamp(time / runDuration, 0, 1)
         return startX + (endX - startX) * runProgress
     end

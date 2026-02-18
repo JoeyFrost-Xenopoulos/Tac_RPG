@@ -6,6 +6,8 @@ function Assets.load(state)
     state.platformImage:setFilter("nearest", "nearest")
     state.hitEffectImage = love.graphics.newImage("assets/combat/hit_effect/break01.png")
     state.hitEffectImage:setFilter("nearest", "nearest")
+    state.harpoonHitEffectImage = love.graphics.newImage("assets/combat/hit_effect/harpoon_hit.png")
+    state.harpoonHitEffectImage:setFilter("nearest", "nearest")
     state.missEffectPlayerImage = love.graphics.newImage("assets/combat/miss_player.png")
     state.missEffectPlayerImage:setFilter("nearest", "nearest")
     state.missEffectEnemyImage = love.graphics.newImage("assets/combat/miss_enemy.png")
@@ -26,6 +28,11 @@ function Assets.load(state)
     state.weaponIcons.sword:setFilter("nearest", "nearest")
     state.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
     state.weaponIcons.harpoon:setFilter("nearest", "nearest")
+    
+    -- Load projectile images
+    state.projectileImages = {}
+    state.projectileImages.harpoon = love.graphics.newImage("assets/units/harpoon_fish/base/Harpoon.png")
+    state.projectileImages.harpoon:setFilter("nearest", "nearest")
 end
 
 return Assets

@@ -68,6 +68,17 @@ State.defenderCounterAttackPlayed = false
 State.calculatedAttackDamage = 0  -- Pre-calculated damage for current attack
 State.currentAttackHit = false    -- Pre-calculated hit result for current attack
 State.attackResultCalculated = false  -- Flag to prevent recalculation
+State.projectileActive = false
+State.projectileStartTime = 0
+State.projectileSpawned = false
+State.projectileFrame4Time = 0
+State.projectileSpawnDelay = 0.15
+State.projectileStartX = 0
+State.projectileStartY = 0
+State.projectileTargetX = 0
+State.projectileTargetY = 0
+State.projectileDuration = 0.25  -- Time for projectile to travel
+State.projectileImage = nil
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -94,6 +105,10 @@ function State.resetTimers()
     State.attackResultCalculated = false
     State.missEffectActive = false
     State.missFrameStartTime = 0
+    State.projectileActive = false
+    State.projectileStartTime = 0
+    State.projectileSpawned = false
+    State.projectileFrame4Time = 0
 end
 
 return State
