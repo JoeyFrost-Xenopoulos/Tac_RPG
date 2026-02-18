@@ -5,6 +5,8 @@ local FrameDraw = {}
 
 local WEAPON_NAMES = {
     sword = "Heavy Sword",
+    sword_test = "Practice Blade",
+    harpoon = "Harpoon",
 }
 
 local PREVIEW_CONFIG = {

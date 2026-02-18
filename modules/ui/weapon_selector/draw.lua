@@ -101,20 +101,27 @@ local function drawWeaponItems(hoveredIndex)
     for i, option in ipairs(State.options) do
         local itemY = listY + (i - 1) * Config.ITEM_HEIGHT
         local isHovered = hoveredIndex == i
+        local isDisabled = option.inRange == false
 
-        if isHovered then
+        if isHovered and not isDisabled then
             love.graphics.setColor(1, 1, 1, 0.12)
             love.graphics.rectangle("fill", listX, itemY + Config.ITEM_VISUAL_OFFSET - 5, listW, Config.ITEM_HOVER_HEIGHT, 6, 6)
         end
 
-        love.graphics.setColor(1, 1, 1, 1)
+        -- Use grey color if weapon is out of range
+        if isDisabled then
+            love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
+        else
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+        
         if State.swordIcon then
             local iconScale = 0.65
             local iconY = itemY + (Config.ITEM_HEIGHT - State.swordIcon:getHeight() * iconScale) / 2 + Config.ICON_Y_OFFSET
             love.graphics.draw(State.swordIcon, listX + 10, iconY, 0, iconScale, iconScale)
         end
 
-        if isHovered and State.cursorImage then
+        if isHovered and not isDisabled and State.cursorImage then
             local bob = math.sin(State.cursorTime * Config.CURSOR_BOB_SPEED) * Config.CURSOR_BOB_AMOUNT
             local cursorY = itemY + (Config.ITEM_HEIGHT - State.cursorImage:getHeight()) / 2
             love.graphics.draw(State.cursorImage, listX + bob + 22, cursorY + Config.CURSOR_Y_OFFSET, 90)
@@ -125,6 +132,12 @@ local function drawWeaponItems(hoveredIndex)
         end
         
         local weaponText = option.name or "Unknown"
+        if isDisabled then
+            weaponText = weaponText .. " (out of range)"
+            love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
+        else
+            love.graphics.setColor(1, 1, 1, 1)
+        end
         
         love.graphics.print(weaponText, listX + 70, itemY + Config.TEXT_Y_OFFSET)
     end

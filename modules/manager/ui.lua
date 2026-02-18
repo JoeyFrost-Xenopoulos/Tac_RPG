@@ -6,6 +6,7 @@ local function attach(UnitManager)
     local Attack = require("modules.engine.attack")
     local Options = require("modules.ui.options")
     local WeaponSelect = require("modules.ui.weapon_selector")
+    local MovementRange = require("modules.engine.movement_range")
 
     function UnitManager.showWaitMenu()
         local unit = UnitManager.selectedUnit
@@ -54,9 +55,17 @@ local function attach(UnitManager)
         local resolvedUnit = unit or UnitManager.selectedUnit
         if not resolvedUnit then return end
 
+        -- Check if the unit has moved
+        local hasMoved = (resolvedUnit.tileX ~= resolvedUnit.prevX) or (resolvedUnit.tileY ~= resolvedUnit.prevY)
+
         if UnitManager.selectedUnit ~= resolvedUnit then
             UnitManager.selectedUnit = resolvedUnit
-            resolvedUnit:setSelected(true)
+            if hasMoved then
+                -- Only show attack range if unit has moved
+                MovementRange.showAttackRange(resolvedUnit)
+            else
+                resolvedUnit:setSelected(true)
+            end
         end
 
         UnitManager.state = "menu"
@@ -157,9 +166,26 @@ local function attach(UnitManager)
         local resolvedUnit = unit or UnitManager.selectedUnit
         if not resolvedUnit then return end
 
+        -- Check if the unit has moved
+        local hasMoved = (resolvedUnit.tileX ~= resolvedUnit.prevX) or (resolvedUnit.tileY ~= resolvedUnit.prevY)
+
         if UnitManager.selectedUnit ~= resolvedUnit then
             UnitManager.selectedUnit = resolvedUnit
-            resolvedUnit:setSelected(true)
+            if hasMoved then
+                -- Only show attack range if unit has moved
+                MovementRange.showAttackRange(resolvedUnit)
+            else
+                resolvedUnit:setSelected(true)
+            end
+        else
+            -- Unit is already selected but we need to refresh the ranges after weapon change
+            if hasMoved then
+                -- Only show attack range if unit has moved
+                MovementRange.showAttackRange(resolvedUnit)
+            else
+                resolvedUnit:setSelected(false)
+                resolvedUnit:setSelected(true)
+            end
         end
 
         UnitManager.showWaitMenu()

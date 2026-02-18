@@ -3,7 +3,8 @@ local Attack = {}
 
 local function getEnemiesInRange(attacker)
     local UnitManager = require("modules.units.manager")
-    local attackRange = attacker.attackRange or 1
+    local CombatSystem = require("modules.combat.combat_system")
+    local attackRange = CombatSystem.getAttackRange(attacker)
     local enemies = {}
     
     for _, unit in ipairs(UnitManager.units) do

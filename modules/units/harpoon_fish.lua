@@ -19,9 +19,10 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath)
         maxMoveRange = 4,
         maxHealth = 120,
         health = 120,
-        attackRange = 1,
         attackDamage = 5,
-        weapon = "sword",
+        weapon = "harpoon",
+        weapons = { "harpoon", "sword_test" },
+        items = { "health_potion" },
         -- Combat stats
         strength = 11,
         magic = 8,

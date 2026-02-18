@@ -3,15 +3,34 @@
 
 local CombatSystem = {}
 
--- Weapon definitions with might values
+-- Weapon definitions with might values and range
 local weapons = {
     sword = {
-        name = "Sword",
+        name = "Heavy Sword",
         type = "physical",
         might = 5,
         hitRate = 90,
         critical = 0,
         weight = 5,
+        range = 1,
+    },
+    sword_test = {
+        name = "Practice Sword",
+        type = "physical",
+        might = 3,
+        hitRate = 95,
+        critical = 0,
+        weight = 3,
+        range = 1,
+    },
+    harpoon = {
+        name = "Harpoon",
+        type = "physical",
+        might = 6,
+        hitRate = 80,
+        critical = 5,
+        weight = 7,
+        range = 2,
     },
     iron_sword = {
         name = "Iron Sword",
@@ -20,6 +39,7 @@ local weapons = {
         hitRate = 85,
         critical = 5,
         weight = 6,
+        range = 1,
     },
     steel_sword = {
         name = "Steel Sword",
@@ -28,6 +48,7 @@ local weapons = {
         hitRate = 75,
         critical = 5,
         weight = 10,
+        range = 1,
     },
     fire = {
         name = "Fire",
@@ -36,6 +57,7 @@ local weapons = {
         hitRate = 100,
         critical = 0,
         weight = 3,
+        range = 1,
     },
     thunder = {
         name = "Thunder",
@@ -44,6 +66,7 @@ local weapons = {
         hitRate = 80,
         critical = 10,
         weight = 4,
+        range = 1,
     },
 }
 
@@ -53,6 +76,13 @@ end
 
 function CombatSystem.getAllWeapons()
     return weapons
+end
+
+-- Get the attack range for a unit based on their equipped weapon
+function CombatSystem.getAttackRange(unit)
+    if not unit then return 1 end
+    local weapon = CombatSystem.getWeapon(unit.weapon)
+    return weapon.range or 1
 end
 
 -- Calculate physical/weapon damage

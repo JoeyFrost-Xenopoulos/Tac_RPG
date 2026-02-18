@@ -26,6 +26,7 @@ Config.RIGHT_PANEL_PADDING = 16
 Config.WEAPON_NAMES = {
     sword = "Heavy Sword",
     sword_test = "Practice Blade",
+    harpoon = "Harpoon",
 }
 
 return Config

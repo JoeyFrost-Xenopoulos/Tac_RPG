@@ -14,8 +14,9 @@ function MovementRange.show(unit)
     Grid.clearHighlights()
     MovementRange.reachable = {}
 
+    local CombatSystem = require("modules.combat.combat_system")
     local maxMove = unit.maxMoveRange
-    local attackRange = unit.attackRange or 1
+    local attackRange = CombatSystem.getAttackRange(unit)
     local startX, startY = unit.tileX, unit.tileY
     local visited = {}
     local moveQueue = {}
@@ -86,7 +87,8 @@ end
 
 function MovementRange.showAttackRange(unit)
     Grid.clearHighlights()
-    local attackRange = unit.attackRange or 1
+    local CombatSystem = require("modules.combat.combat_system")
+    local attackRange = CombatSystem.getAttackRange(unit)
     local x, y = unit.tileX, unit.tileY
 
     for dx = -attackRange, attackRange do

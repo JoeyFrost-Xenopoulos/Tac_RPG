@@ -28,22 +28,29 @@ function Options.buildOptions(unit)
                 id = weapon
             end
             if id and not seen[id] then
-                table.insert(options, { id = id, name = name or prettifyWeaponName(id) })
+                local option = { id = id, name = name or prettifyWeaponName(id) }
+                -- Check if weapon is in range
+                option.inRange = Options.isWeaponInRange(unit, id)
+                table.insert(options, option)
                 seen[id] = true
             end
         end
     end
 
     if #options == 0 and unit and unit.weapon then
-        table.insert(options, { id = unit.weapon, name = prettifyWeaponName(unit.weapon) })
+        local option = { id = unit.weapon, name = prettifyWeaponName(unit.weapon) }
+        option.inRange = Options.isWeaponInRange(unit, unit.weapon)
+        table.insert(options, option)
     end
 
     if #options == 0 then
-        table.insert(options, { id = "unarmed", name = "Unarmed" })
+        table.insert(options, { id = "unarmed", name = "Unarmed", inRange = true })
     end
 
     if #options == 1 then
-        table.insert(options, { id = "sword_test", name = prettifyWeaponName("sword_test") })
+        local option = { id = "sword_test", name = prettifyWeaponName("sword_test") }
+        option.inRange = Options.isWeaponInRange(unit, "sword_test")
+        table.insert(options, option)
     end
 
     -- Sort so equipped weapon is first
@@ -61,6 +68,22 @@ function Options.buildOptions(unit)
     end
 
     return options
+end
+
+function Options.isWeaponInRange(unit, weaponId)
+    if not unit then return false end
+    local Attack = require("modules.engine.attack")
+    
+    -- Temporarily check with this weapon
+    local originalWeapon = unit.weapon
+    unit.weapon = weaponId
+    
+    local enemies = Attack.getEnemiesInRange(unit)
+    
+    -- Restore original weapon
+    unit.weapon = originalWeapon
+    
+    return #enemies > 0
 end
 
 return Options

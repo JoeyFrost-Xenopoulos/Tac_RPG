@@ -40,6 +40,14 @@ function Input.clicked(mx, my)
     local hoveredIndex = getHoveredIndex(mx, my)
     if hoveredIndex then
         local option = State.options[hoveredIndex]
+        
+        -- Don't allow selecting weapons that are out of range
+        if option.inRange == false then
+            local Effects = require("modules.audio.sound_effects")
+            Effects.backPlay()
+            return true
+        end
+        
         local onSelect = State.onSelect
         local Effects = require("modules.audio.sound_effects")
         Effects.playConfirm()

@@ -31,6 +31,13 @@ function Grid.clearHighlights()
 end
 
 function Grid.draw()
+    -- Don't draw highlights if item selector or weapon selector is visible
+    local ItemSelector = require("modules.ui.item_selector")
+    local WeaponSelector = require("modules.ui.weapon_selector")
+    if ItemSelector.isVisible() or WeaponSelector.isVisible() then
+        return
+    end
+    
     love.graphics.push()
     love.graphics.scale(Grid.scaleX, Grid.scaleY)
 

@@ -1,3 +1,6 @@
+Useful websites
+    - https://pixelpaletteswap.com/
+
 - add in names in battle frame
 
 - add in crit noise
@@ -30,7 +33,6 @@
 - add in archers
 - add in mages
 - add in enemies
-    - change the colours of each of these based on a colour palette (https://pixelpaletteswap.com/)
 
 - add in the health potion system
     - fixup the health pot icon
@@ -41,7 +43,7 @@
 
 - fix side by side draw bug
 
-- instead of drawing the green square over the unit, can we draw a blue square under the unit?
+- Make the spawning in useable for multiple maps somehow
 
 <---------------------------------------------------------------------------------------------------------->
 Specifics about combat system
