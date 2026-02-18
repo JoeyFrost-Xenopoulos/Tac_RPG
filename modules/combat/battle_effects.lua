@@ -58,4 +58,50 @@ function Effects.drawFlash(state, screenW, screenH)
     end
 end
 
+function Effects.updateMiss(state, attackFrameIndex)
+    if state.missEffectActive then return end
+
+    -- Only show miss effect if the attack missed
+    if state.currentAttackHit then return end
+
+    local shouldTrigger = false
+    if attackFrameIndex and attackFrameIndex >= 3 then
+        shouldTrigger = true
+    else
+        local missEffectTriggerTime = state.runDuration + 0.2
+        if state.battleTimer >= missEffectTriggerTime then
+            shouldTrigger = true
+        end
+    end
+
+    if shouldTrigger then
+        state.missEffectActive = true
+        state.missEffectStartTime = state.battleTimer
+        state.missFrameStartTime = state.battleTimer
+    end
+end
+
+function Effects.drawMiss(state, targetX, targetY)
+    if not state.missEffectImage or not state.missEffectActive then return end
+
+    local timeSinceMiss = state.battleTimer - state.missFrameStartTime
+    if timeSinceMiss > state.missAnimDuration then return end
+
+    local frameWidth = 100
+    local frameHeight = 100
+    local frameCount = 16
+    local frameDuration = 0.075
+    local animSpeed = state.missAnimDuration / frameCount
+
+    local frameIndex = math.floor(timeSinceMiss / animSpeed)
+    if frameIndex >= frameCount then return end
+
+    local frameX = frameIndex * frameWidth
+    local quad = love.graphics.newQuad(frameX, 0, frameWidth, frameHeight, state.missEffectImage:getDimensions())
+
+    local offsetX = frameWidth / 2
+    local offsetY = frameHeight / 2
+    love.graphics.draw(state.missEffectImage, quad, targetX, targetY, 0, 2, 2, offsetX, offsetY)
+end
+
 return Effects

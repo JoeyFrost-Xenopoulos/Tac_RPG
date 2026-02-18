@@ -219,6 +219,11 @@ end
 local function updateInitialAttack()
     -- Pre-calculate the attack result on first frame
     if not Battle.attackResultCalculated and Battle.attacker and Battle.defender then
+        -- Reset effect states for this attack phase
+        Battle.hitEffectActive = false
+        Battle.missEffectActive = false
+        Battle.hitFrameStartTime = 0
+        Battle.missFrameStartTime = 0
         local CombatSystem = require("modules.combat.combat_system")
         local damage = 0
         
@@ -245,6 +250,7 @@ local function updateInitialAttack()
 
     playAttackSounds(attackFrameIndex)
     Effects.update(Battle, attackFrameIndex)
+    Effects.updateMiss(Battle, attackFrameIndex)
 
     -- Apply damage when animation completes
     local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
@@ -267,6 +273,11 @@ end
 local function updateCounterattack()
     -- Pre-calculate counterattack result on first frame
     if not Battle.attackResultCalculated and Battle.attacker and Battle.defender then
+        -- Reset effect states for this new attack phase
+        Battle.hitEffectActive = false
+        Battle.missEffectActive = false
+        Battle.hitFrameStartTime = 0
+        Battle.missFrameStartTime = 0
         local CombatSystem = require("modules.combat.combat_system")
         local damage = 0
         
@@ -291,6 +302,7 @@ local function updateCounterattack()
 
     playAttackSounds(attackFrameIndex)
     Effects.update(Battle, attackFrameIndex)
+    Effects.updateMiss(Battle, attackFrameIndex)
 
     -- Apply counterattack damage when animation completes
     local totalDuration = Battle.runDuration + Battle.attackDuration + (Battle.returnDuration or 0)
