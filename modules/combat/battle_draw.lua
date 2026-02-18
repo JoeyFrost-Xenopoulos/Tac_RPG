@@ -101,14 +101,20 @@ function Draw.draw(state)
         local frameW, frameH = state.battleFrameImage:getDimensions()
         local frameX = (screenW - frameW) / 2
         local frameY = (screenH - frameH) / 2
+        
+        -- Apply overlay shake offset
+        local shakeX, shakeY = Effects.getOverlayShake(state)
+        
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(state.battleFrameImage, frameX, frameY - 60)
+        love.graphics.draw(state.battleFrameImage, frameX + shakeX, frameY + shakeY - 60)
 
-        FrameDraw.drawAttackPreview(state, frameX, frameY, frameW)
-        FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, state.weaponIcons, state.weaponFont)
+        FrameDraw.drawAttackPreview(state, frameX + shakeX, frameY + shakeY, frameW)
+        FrameDraw.drawWeaponInfo(state, frameX + shakeX, frameY + shakeY, frameW, state.weaponIcons, state.weaponFont)
     end
 
-    UiDraw.drawBigBar(state, screenW, screenH)
+    -- Apply overlay shake offset to big bar
+    local shakeX, shakeY = Effects.getOverlayShake(state)
+    UiDraw.drawBigBar(state, screenW, screenH, nil, shakeX, shakeY)
     
     -- Draw projectile on top of units
     Projectile.draw(state)

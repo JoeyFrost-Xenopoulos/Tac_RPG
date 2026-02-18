@@ -92,11 +92,14 @@ local function drawBarFill(image, x, y, scale, alpha, mirror, fillPercent)
     love.graphics.pop()
 end
 
-function UiDraw.drawBigBar(state, screenW, screenH, progress)
+function UiDraw.drawBigBar(state, screenW, screenH, progress, shakeX, shakeY)
     if not state.bigBarBaseImage or not state.bigBarFillImage then return end
 
     local playerUnit = Helpers.getPlayerUnit(state.attacker, state.defender)
     local enemyUnit = Helpers.getEnemyUnit(state.attacker, state.defender)
+
+    shakeX = shakeX or 0
+    shakeY = shakeY or 0
 
     local scale = 1
     local alpha = 1
@@ -110,10 +113,10 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress)
         offsetY = (1 - progress) * 30
     end
 
-    local baseY = screenH - BAR_H * scale - BAR_BOTTOM_MARGIN + BAR_CENTER_OFFSET + offsetY
+    local baseY = screenH - BAR_H * scale - BAR_BOTTOM_MARGIN + BAR_CENTER_OFFSET + offsetY + shakeY
 
     if enemyUnit then
-        local leftX = BAR_MARGIN + offsetX - 10
+        local leftX = BAR_MARGIN + offsetX - 10 + shakeX
         local enemyDisplayHealth = state.defenderHealthDisplay or enemyUnit.health
         local fillPercent = enemyUnit.maxHealth and enemyUnit.maxHealth > 0
             and Helpers.clamp(enemyDisplayHealth / enemyUnit.maxHealth, 0, 1) or 1
@@ -131,7 +134,7 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress)
     end
 
     if playerUnit then
-        local rightX = screenW - BAR_W * scale - (BAR_MARGIN + 10) - offsetX - 60
+        local rightX = screenW - BAR_W * scale - (BAR_MARGIN + 10) - offsetX - 60 + shakeX
         local playerDisplayHealth = state.playerHealthDisplay or playerUnit.health
         local fillPercent = playerUnit.maxHealth and playerUnit.maxHealth > 0
             and Helpers.clamp(playerDisplayHealth / playerUnit.maxHealth, 0, 1) or 1

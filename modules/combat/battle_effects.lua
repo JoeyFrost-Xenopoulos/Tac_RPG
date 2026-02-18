@@ -1,6 +1,42 @@
 -- modules/combat/battle_effects.lua
 local Effects = {}
 
+function Effects.getOverlayShake(state)
+    if not state.overlayShakeActive then return 0, 0 end
+    
+    local timeSinceStart = state.battleTimer - state.overlayShakeStartTime
+    if timeSinceStart > state.overlayShakeDuration then
+        state.overlayShakeActive = false
+        return 0, 0
+    end
+    
+    -- Create a bouncy shake pattern: up -> down -> up
+    local progress = timeSinceStart / state.overlayShakeDuration
+    local shakeY
+    
+    if progress < 0.15 then
+        -- Snap up: 0 to -intensity
+        shakeY = -state.overlayShakeIntensity * (progress / 0.15)
+    elseif progress < 0.65 then
+        -- Drop down: -intensity to +intensity (exaggerated)
+        local dropProgress = (progress - 0.15) / 0.5
+        shakeY = -state.overlayShakeIntensity + (state.overlayShakeIntensity * 2.2) * dropProgress
+    else
+        -- Bounce back up: +intensity to 0
+        local bounceProgress = (progress - 0.65) / 0.35
+        shakeY = state.overlayShakeIntensity * (1 - bounceProgress)
+    end
+    
+    local shakeX = math.sin(timeSinceStart * 25) * state.overlayShakeIntensity * 0.2
+    
+    return shakeX, shakeY
+end
+
+function Effects.startOverlayShake(state)
+    state.overlayShakeActive = true
+    state.overlayShakeStartTime = state.battleTimer
+end
+
 function Effects.update(state, attackFrameIndex, attacker, projectileHit)
     if state.hitEffectActive then return end
 
@@ -32,6 +68,7 @@ function Effects.update(state, attackFrameIndex, attacker, projectileHit)
         state.hitEffectActive = true
         state.hitEffectStartTime = state.battleTimer
         state.hitFrameStartTime = state.battleTimer
+        Effects.startOverlayShake(state)
     end
 end
 

@@ -35,6 +35,10 @@ State.breakAnimDuration = 0.7
 State.hitFrameStartTime = 0
 State.defenderHitX = 0
 State.defenderHitY = 0
+State.overlayShakeActive = false
+State.overlayShakeStartTime = 0
+State.overlayShakeDuration = 0.3
+State.overlayShakeIntensity = 35
 State.hitTargetX = 0
 State.hitTargetY = 0
 State.missEffectImage = nil
@@ -109,6 +113,8 @@ function State.resetTimers()
     State.projectileStartTime = 0
     State.projectileSpawned = false
     State.projectileFrame4Time = 0
+    State.overlayShakeActive = false
+    State.overlayShakeStartTime = 0
 end
 
 return State
