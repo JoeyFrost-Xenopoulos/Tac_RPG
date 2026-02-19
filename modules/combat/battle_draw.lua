@@ -109,7 +109,7 @@ function Draw.draw(state)
             end
 
             if state.defender then
-                local defenderX = Anim.getAttackerDisplayPosition(state, screenW, platformW)
+                local defenderX = Anim.getAttackerDisplayPosition(state, screenW, platformW, state.defender)
                 local defenderAnim = Helpers.getAttackAnimName(state)
                 Draw.drawUnit(state, state.defender, defenderX, platformY - 60, defenderFacingX, false, defenderAnim)
             end
@@ -135,7 +135,7 @@ function Draw.draw(state)
             end
 
             if state.attacker then
-                local attackerX = Anim.getAttackerDisplayPosition(state, screenW, platformW)
+                local attackerX = Anim.getAttackerDisplayPosition(state, screenW, platformW, state.attacker)
                 local attackerFacingX = state.attacker.isPlayer and -1 or 1
                 local attackAnim = Helpers.getAttackAnimName(state)
                 Draw.drawUnit(state, state.attacker, attackerX, platformY - 60, attackerFacingX, false, attackAnim)
