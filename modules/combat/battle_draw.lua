@@ -8,6 +8,49 @@ local FrameDraw = require("modules.combat.battle_frame_draw")
 local Projectile = require("modules.combat.battle_projectile")
 
 local Draw = {}
+local whiteSpriteShader
+
+local function getWhiteSpriteShader()
+    if whiteSpriteShader then return whiteSpriteShader end
+
+    whiteSpriteShader = love.graphics.newShader([[
+        vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+            vec4 tex = Texel(texture, texture_coords);
+            return vec4(1.0, 1.0, 1.0, tex.a * color.a);
+        }
+    ]])
+
+    return whiteSpriteShader
+end
+
+local function getDeathAnimVisual(state, unit)
+    if not state.deathAnimActive then return true, 1 end
+    if not state.deathAnimUnit or unit ~= state.deathAnimUnit then return true, 1 end
+
+    local elapsed = state.battleTimer - (state.deathAnimStartTime or 0)
+    if elapsed < 0 then
+        return true, 1
+    end
+
+    local blinkDuration = state.deathAnimBlinkDuration or 0.22
+    local fadeDuration = state.deathAnimFadeDuration or 0.75
+    local blinkCount = state.deathAnimBlinkCount or 2
+
+    if elapsed < blinkDuration then
+        local toggleCount = math.max(1, blinkCount * 2)
+        local blinkProgress = elapsed / blinkDuration
+        local blinkSlice = math.floor(blinkProgress * toggleCount)
+        return blinkSlice % 2 == 0, 1
+    end
+
+    local fadeElapsed = elapsed - blinkDuration
+    if fadeElapsed < fadeDuration then
+        local alpha = 1 - (fadeElapsed / fadeDuration)
+        return true, math.max(0, math.min(1, alpha))
+    end
+
+    return false, 0
+end
 
 function Draw.draw(state)
     if not state.visible then return end
@@ -48,7 +91,10 @@ function Draw.draw(state)
         end
 
         -- Determine which unit is animating and which is static
-        if state.battlePhase == "counterattack" then
+        local useCounterattackLayout = state.battlePhase == "counterattack"
+            or (state.battlePhase == "death_anim" and state.deathAnimUnit and state.deathAnimUnit == state.attacker)
+
+        if useCounterattackLayout then
             -- During counterattack: defender animates, attacker is static
             local attackerStaticX
             if state.attacker.isPlayer then
@@ -59,7 +105,7 @@ function Draw.draw(state)
             local attackerFacingX = state.attacker.isPlayer and -1 or 1
             
             if state.attacker then
-                Draw.drawUnit(state, state.attacker, attackerStaticX, platformY - 60, attackerFacingX, false, "idle")
+                Draw.drawUnit(state, state.attacker, attackerStaticX, platformY - 60, attackerFacingX, false, "idle", true)
             end
 
             if state.defender then
@@ -126,6 +172,9 @@ end
 function Draw.drawUnit(state, unit, x, y, facingX, isAttacking, animNameOverride, applyHitEffect, scaleMultiplier)
     if not unit or not unit.animations then return end
 
+    local isVisible, alpha = getDeathAnimVisual(state, unit)
+    if not isVisible then return end
+
     local animName = animNameOverride or (isAttacking and "attack" or "idle")
     local quad
     if animName == "attack" then
@@ -143,7 +192,23 @@ function Draw.drawUnit(state, unit, x, y, facingX, isAttacking, animNameOverride
     local sX = unit.scaleX * facingX * scaleMultiplier
     local sY = unit.scaleY * scaleMultiplier
 
+    local shouldWhiteFlash = false
+    if applyHitEffect and state.hitEffectActive and state.hitEffectStartTime then
+        local spriteFlashLeadTime = 0.025
+        local timeSinceHit = state.battleTimer - (state.hitEffectStartTime - spriteFlashLeadTime)
+        local spriteFlashDuration = (state.hitEffectDuration or 0.12) * 0.55
+        shouldWhiteFlash = timeSinceHit >= 0 and timeSinceHit < spriteFlashDuration
+    end
+
+    if shouldWhiteFlash then
+        love.graphics.setShader(getWhiteSpriteShader())
+    end
+
+    love.graphics.setColor(1, 1, 1, alpha)
     love.graphics.draw(unit.animations[animName].img, quad, x, y + 280, 0, sX * 2, sY * 2, offsetX, offsetY)
+    if shouldWhiteFlash then
+        love.graphics.setShader()
+    end
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setBlendMode("alpha")
 end

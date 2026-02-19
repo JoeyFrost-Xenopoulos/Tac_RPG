@@ -121,10 +121,21 @@ function Effects.drawFlash(state, screenW, screenH)
     if not state.hitEffectActive then return end
 
     local timeSinceHit = state.battleTimer - state.hitEffectStartTime
-    if timeSinceHit < state.hitEffectDuration then
-        local alpha = 1.0 - (timeSinceHit / state.hitEffectDuration)
-        love.graphics.setColor(1, 1, 1, alpha * 0.6)
+    local flashDuration = (state.hitEffectDuration or 0.12) * 0.45
+    if timeSinceHit < flashDuration then
+        local alpha = 1.0 - (timeSinceHit / flashDuration)
+        local baseAlpha = math.min(1, alpha * 0.95)
+        local additiveAlpha = math.min(1, alpha * 0.65)
+
+        love.graphics.setBlendMode("alpha")
+        love.graphics.setColor(1, 1, 1, baseAlpha)
         love.graphics.rectangle("fill", 0, 0, screenW, screenH)
+
+        love.graphics.setBlendMode("add")
+        love.graphics.setColor(1, 1, 1, additiveAlpha)
+        love.graphics.rectangle("fill", 0, 0, screenW, screenH)
+
+        love.graphics.setBlendMode("alpha")
         love.graphics.setColor(1, 1, 1, 1)
     end
 end
