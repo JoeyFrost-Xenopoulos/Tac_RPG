@@ -51,6 +51,7 @@ State.missAnimDuration = 1.2
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
+State.currentAttackIsCritical = false
 State.isLastAttackHit = true
 State.playerAttackPreview = { hit = 0, damage = 0, crit = 0 }
 State.enemyAttackPreview = { hit = 0, damage = 0, crit = 0 }

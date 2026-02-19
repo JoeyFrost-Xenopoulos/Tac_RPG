@@ -16,6 +16,7 @@ function Sfx.load()
     Sfx.attackSwing = love.audio.newSource("assets/audio/combat/Attack_1.wav", "static")
     Sfx.attackHit = love.audio.newSource("assets/audio/combat/Attack_Hit_1.wav", "static")
     Sfx.attackMiss = love.audio.newSource("assets/audio/combat/Attack_Miss_1.wav", "static")
+    Sfx.criticalHit = love.audio.newSource("assets/audio/combat/Critical_Hit_1.wav", "static")
     Sfx.deathBell = love.audio.newSource("assets/audio/combat/Death_Bell.wav", "static")
 
     Sfx.baseVolumes = {
@@ -31,6 +32,7 @@ function Sfx.load()
         attackSwing = 0.8,
         attackHit = 0.8,
         attackMiss = 0.8,
+        criticalHit = 0.8,
         deathBell = 0.9
     }
 
@@ -51,6 +53,7 @@ function Sfx.setSFXVolume(v)
         attackSwing = Sfx.attackSwing,
         attackHit = Sfx.attackHit,
         attackMiss = Sfx.attackMiss,
+        criticalHit = Sfx.criticalHit,
         deathBell = Sfx.deathBell
     }
 
@@ -149,6 +152,13 @@ function Sfx.playAttackMiss()
     if Sfx.attackMiss then
         Sfx.attackMiss:stop()
         Sfx.attackMiss:play()
+    end
+end
+
+function Sfx.playAttackCritical()
+    if Sfx.criticalHit then
+        Sfx.criticalHit:stop()
+        Sfx.criticalHit:play()
     end
 end
 

@@ -133,7 +133,11 @@ local function playAttackSounds(attackFrameIndex, attacker, projectileHit)
     if attacker and Projectile.needsProjectile(attacker) then
         if projectileHit then
             if Battle.currentAttackHit then
-                Audio.playAttackHit()
+                if Battle.currentAttackIsCritical then
+                    Audio.playAttackCritical()
+                else
+                    Audio.playAttackHit()
+                end
             else
                 Audio.playAttackMiss()
             end
@@ -147,7 +151,11 @@ local function playAttackSounds(attackFrameIndex, attacker, projectileHit)
         end
         if attackFrameIndex == 3 and not Battle.attackHitPlayed then
             if Battle.currentAttackHit then
-                Audio.playAttackHit()
+                if Battle.currentAttackIsCritical then
+                    Audio.playAttackCritical()
+                else
+                    Audio.playAttackHit()
+                end
             else
                 Audio.playAttackMiss()
             end
@@ -285,8 +293,10 @@ local function updateInitialAttack()
         
         -- Check if attack hits
         Battle.currentAttackHit = CombatSystem.doesHit(Battle.attacker, Battle.defender)
+        Battle.currentAttackIsCritical = false
         if Battle.currentAttackHit then
             local isCritical = CombatSystem.isCritical(Battle.attacker, Battle.defender)
+            Battle.currentAttackIsCritical = isCritical
             damage = CombatSystem.calculateTotalDamage(Battle.attacker, Battle.defender, isCritical)
             
             -- Check for double attack
@@ -358,8 +368,11 @@ local function updateCounterattack()
         
         -- Check if counterattack hits
         Battle.currentAttackHit = CombatSystem.doesHit(Battle.defender, Battle.attacker)
+        Battle.currentAttackIsCritical = false
         if Battle.currentAttackHit then
-            damage = CombatSystem.calculateTotalDamage(Battle.defender, Battle.attacker, false)
+            local isCritical = CombatSystem.isCritical(Battle.defender, Battle.attacker)
+            Battle.currentAttackIsCritical = isCritical
+            damage = CombatSystem.calculateTotalDamage(Battle.defender, Battle.attacker, isCritical)
             
             -- Check if defender can double attack
             if CombatSystem.canBeDoubleAttacked(Battle.attacker, Battle.defender) and Battle.attacker.health > 0 then
