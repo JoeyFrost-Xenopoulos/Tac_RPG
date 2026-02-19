@@ -7,6 +7,10 @@ Grid.width = 15
 Grid.height = 15
 Grid.scaleX = 1
 Grid.scaleY = 1
+Grid.waveSpeed = 10
+Grid.waveWidth = 2.2
+Grid.waveIntensity = 0.45
+Grid.highlightInset = 2
 
 Grid.highlights = {}
 
@@ -43,13 +47,30 @@ function Grid.draw()
 
     local w = Grid.width * Grid.tileSize
     local h = Grid.height * Grid.tileSize
+    local time = love.timer.getTime()
+    local diagonalCount = Grid.width + Grid.height
+    local waveTravel = diagonalCount + Grid.waveWidth * 2
+    local wavePosition = (time * Grid.waveSpeed) % waveTravel - Grid.waveWidth
 
     for _, tile in ipairs(Grid.highlights) do
         local col = tile.x - 1
         local row = tile.y - 1
+        local drawX = col * Grid.tileSize + Grid.highlightInset
+        local drawY = row * Grid.tileSize + Grid.highlightInset
+        local drawSize = math.max(1, Grid.tileSize - Grid.highlightInset * 2)
         local c = tile.color
-        love.graphics.setColor(c[1], c[2], c[3], c[4])
-        love.graphics.rectangle("fill", col*Grid.tileSize, row*Grid.tileSize, Grid.tileSize, Grid.tileSize)
+        local baseA = c[4] or 0.5
+        love.graphics.setColor(c[1], c[2], c[3], baseA)
+        love.graphics.rectangle("fill", drawX, drawY, drawSize, drawSize)
+
+        local diagonal = col + row
+        local distanceFromWave = math.abs(diagonal - wavePosition)
+        if distanceFromWave < Grid.waveWidth then
+            local waveFactor = 1 - (distanceFromWave / Grid.waveWidth)
+            local lightAlpha = waveFactor * Grid.waveIntensity * baseA
+            love.graphics.setColor(1, 1, 1, lightAlpha)
+            love.graphics.rectangle("fill", drawX, drawY, drawSize, drawSize)
+        end
     end
 
     love.graphics.setColor(1,1,1,1)
