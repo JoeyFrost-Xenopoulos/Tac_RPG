@@ -74,6 +74,7 @@ local function attach(UnitManager)
         if attacker then
             UnitManager.selectedUnit = attacker
             attacker:setSelected(true)
+            MovementRange.showAttackRange(attacker)
             UnitManager.performAttackPrompt()
         else
             UnitManager.deselectAll()
