@@ -18,6 +18,7 @@ function Sfx.load()
     Sfx.attackMiss = love.audio.newSource("assets/audio/combat/Attack_Miss_1.wav", "static")
     Sfx.criticalHit = love.audio.newSource("assets/audio/combat/Critical_Hit_1.wav", "static")
     Sfx.deathBell = love.audio.newSource("assets/audio/combat/Death_Bell.wav", "static")
+    Sfx.bowArrow = love.audio.newSource("assets/audio/combat/bow_arrow.mp3", "static")
 
     Sfx.baseVolumes = {
         menuIn   = 1.0,
@@ -33,7 +34,8 @@ function Sfx.load()
         attackHit = 0.8,
         attackMiss = 0.8,
         criticalHit = 0.8,
-        deathBell = 0.9
+        deathBell = 0.9,
+        bowArrow = 0.85
     }
 
     Sfx.setSFXVolume(0.6)
@@ -54,7 +56,8 @@ function Sfx.setSFXVolume(v)
         attackHit = Sfx.attackHit,
         attackMiss = Sfx.attackMiss,
         criticalHit = Sfx.criticalHit,
-        deathBell = Sfx.deathBell
+        deathBell = Sfx.deathBell,
+        bowArrow = Sfx.bowArrow
     }
 
     for name, src in pairs(sources) do
@@ -166,6 +169,13 @@ function Sfx.playDeathBell()
     if Sfx.deathBell then
         Sfx.deathBell:stop()
         Sfx.deathBell:play()
+    end
+end
+
+function Sfx.playBowArrow()
+    if Sfx.bowArrow then
+        Sfx.bowArrow:stop()
+        Sfx.bowArrow:play()
     end
 end
 

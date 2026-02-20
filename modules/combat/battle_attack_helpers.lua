@@ -6,6 +6,11 @@ local Helpers = {}
 function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, projectileHit)
     local Audio = require("modules.audio.sound_effects")
     local Projectile = require("modules.combat.battle_projectile")
+
+    if attacker and attacker.weapon == "bow" and attackFrameIndex == 1 and not battleState.attackBowPlayed then
+        Audio.playBowArrow()
+        battleState.attackBowPlayed = true
+    end
     
     -- For ranged attacks, play sounds based on projectile hit
     if attacker and Projectile.needsProjectile(attacker) then
@@ -113,6 +118,7 @@ end
 function Helpers.resetPhaseFlags(battleState)
     battleState.attackSwingPlayed = false
     battleState.attackHitPlayed = false
+    battleState.attackBowPlayed = false
     battleState.hitEffectActive = false
     battleState.hitFrameStartTime = 0
     battleState.isLastAttackHit = true

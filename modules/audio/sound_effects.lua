@@ -39,5 +39,6 @@ Effects.playAttackHit = Sfx.playAttackHit
 Effects.playAttackMiss = Sfx.playAttackMiss
 Effects.playAttackCritical = Sfx.playAttackCritical
 Effects.playDeathBell = Sfx.playDeathBell
+Effects.playBowArrow = Sfx.playBowArrow
 
 return Effects

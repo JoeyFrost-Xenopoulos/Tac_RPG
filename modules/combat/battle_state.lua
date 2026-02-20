@@ -51,6 +51,7 @@ State.missAnimDuration = 1.2
 State.attackFrameIndex = 0
 State.attackSwingPlayed = false
 State.attackHitPlayed = false
+State.attackBowPlayed = false
 State.currentAttackIsCritical = false
 State.isLastAttackHit = true
 State.playerAttackPreview = { hit = 0, damage = 0, crit = 0 }
@@ -104,6 +105,7 @@ function State.resetTimers()
     State.attackFrameIndex = 0
     State.attackSwingPlayed = false
     State.attackHitPlayed = false
+    State.attackBowPlayed = false
     State.isLastAttackHit = true
     State.defenderCounterAttackPlayed = false
     State.transitionPhase = "none"
