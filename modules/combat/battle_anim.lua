@@ -53,16 +53,23 @@ function Anim.getAttackFrame(state, unit)
     return anim.quads[frameIndex]
 end
 
-function Anim.getAttackerDisplayPosition(state, screenW, platformW)
+function Anim.getAttackerDisplayPosition(state, screenW, platformW, animatingUnitOverride)
     local runDuration = state.runDuration or 0
     local attackDuration = state.attackDuration or 0
     local returnDuration = state.returnDuration or 0
     local time = state.battleTimer
 
     -- Determine which unit is currently animating
-    local animatingUnit = state.attacker
-    if state.battlePhase == "counterattack" then
-        animatingUnit = state.defender
+    local animatingUnit = animatingUnitOverride
+    if not animatingUnit then
+        animatingUnit = state.attacker
+        if state.battlePhase == "counterattack" then
+            animatingUnit = state.defender
+        end
+    end
+
+    if not animatingUnit then
+        return screenW / 2
     end
 
     local startX

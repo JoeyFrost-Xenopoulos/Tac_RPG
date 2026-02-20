@@ -84,6 +84,12 @@ State.projectileTargetX = 0
 State.projectileTargetY = 0
 State.projectileDuration = 0.25  -- Time for projectile to travel
 State.projectileImage = nil
+State.deathAnimActive = false
+State.deathAnimUnit = nil
+State.deathAnimStartTime = 0
+State.deathAnimBlinkDuration = 0.22
+State.deathAnimFadeDuration = 0.75
+State.deathAnimBlinkCount = 2
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -116,6 +122,9 @@ function State.resetTimers()
     State.projectileFrame4Time = 0
     State.overlayShakeActive = false
     State.overlayShakeStartTime = 0
+    State.deathAnimActive = false
+    State.deathAnimUnit = nil
+    State.deathAnimStartTime = 0
 end
 
 return State

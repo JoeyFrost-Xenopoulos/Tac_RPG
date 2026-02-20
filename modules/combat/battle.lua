@@ -276,6 +276,36 @@ local function finalizeDamageAnimation()
     Battle.playerHealthDisplay = playerUnit and playerUnit.health or 0
 end
 
+local function startDeathAnimationIfNeeded(targetUnit)
+    if Battle.deathAnimActive then return true end
+    if not targetUnit or not targetUnit.isDead then return false end
+    if targetUnit.isPlayer then return false end
+
+    local breakEndTime = Battle.hitFrameStartTime + (Battle.breakAnimDuration or 0)
+    local startDelay = 0
+    if Battle.hitFrameStartTime and Battle.hitFrameStartTime > 0 then
+        startDelay = math.max(0, breakEndTime - Battle.battleTimer)
+    end
+
+    Battle.deathAnimActive = true
+    Battle.deathAnimUnit = targetUnit
+    Battle.deathAnimStartTime = Battle.battleTimer + startDelay
+    return true
+end
+
+local function updateDeathAnimation()
+    if not Battle.deathAnimActive then
+        Battle.battlePhase = "done"
+        return
+    end
+
+    local totalDeathDuration = Battle.deathAnimBlinkDuration + Battle.deathAnimFadeDuration
+    local elapsed = Battle.battleTimer - Battle.deathAnimStartTime
+    if elapsed >= totalDeathDuration then
+        Battle.battlePhase = "done"
+    end
+end
+
 -- ============================================================================
 -- PHASE HANDLERS
 -- ============================================================================
@@ -350,7 +380,11 @@ local function updateInitialAttack()
     if Battle.damageApplied and Battle.isHealthAnimating then
         if updateHealthAnimation() then
             finalizeDamageAnimation()
-            transitionToCounterattack()
+            if startDeathAnimationIfNeeded(Battle.defender) then
+                Battle.battlePhase = "death_anim"
+            else
+                transitionToCounterattack()
+            end
         end
     end
 end
@@ -424,7 +458,11 @@ local function updateCounterattack()
     if Battle.counterattackApplied and Battle.isHealthAnimating then
         if updateHealthAnimation() then
             finalizeDamageAnimation()
-            Battle.battlePhase = "done"
+            if startDeathAnimationIfNeeded(Battle.attacker) then
+                Battle.battlePhase = "death_anim"
+            else
+                Battle.battlePhase = "done"
+            end
         end
     end
 end
@@ -462,6 +500,8 @@ function Battle.update(dt)
         updateInitialAttack()
     elseif Battle.battlePhase == "counterattack" then
         updateCounterattack()
+    elseif Battle.battlePhase == "death_anim" then
+        updateDeathAnimation()
     elseif Battle.battlePhase == "done" then
         updateDone()
     end
