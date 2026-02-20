@@ -32,6 +32,15 @@ local weapons = {
         weight = 7,
         range = 2,
     },
+    bow = {
+        name = "Bow",
+        type = "physical",
+        might = 4,
+        hitRate = 85,
+        critical = 10,
+        weight = 4,
+        range = 2,
+    },
     iron_sword = {
         name = "Iron Sword",
         type = "physical",

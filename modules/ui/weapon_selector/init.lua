@@ -13,6 +13,8 @@ function WeaponSelector.load()
     State.weaponIcons.sword:setFilter("nearest", "nearest")
     State.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
     State.weaponIcons.harpoon:setFilter("nearest", "nearest")
+    State.weaponIcons.bow = love.graphics.newImage("assets/ui/icons/bow.png")
+    State.weaponIcons.bow:setFilter("nearest", "nearest")
     
     State.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
 

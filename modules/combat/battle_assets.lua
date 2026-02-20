@@ -30,6 +30,8 @@ function Assets.load(state)
     state.weaponIcons.sword:setFilter("nearest", "nearest")
     state.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
     state.weaponIcons.harpoon:setFilter("nearest", "nearest")
+    state.weaponIcons.bow = love.graphics.newImage("assets/ui/icons/bow.png")
+    state.weaponIcons.bow:setFilter("nearest", "nearest")
     
     -- Load projectile images
     state.projectileImages = {}
