@@ -344,19 +344,24 @@ local function updateInitialAttack()
     local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.attacker)
     Battle.attackFrameIndex = attackFrameIndex or 0
     
-    -- Handle projectile spawning on frame 4 for ranged attacks with delay
+    -- Handle projectile spawning for ranged attacks
     local Projectile = require("modules.combat.battle_projectile")
     if Projectile.needsProjectile(Battle.attacker) and not Battle.projectileSpawned then
-        if attackFrameIndex == 4 and Battle.projectileFrame4Time == 0 then
-            -- Mark when we reached frame 4
+        local spawnFrame = Projectile.getSpawnFrame(Battle.attacker.weapon)
+        
+        if attackFrameIndex == spawnFrame and Battle.projectileFrame4Time == 0 then
+            -- Mark when we reached the spawn frame
             Battle.projectileFrame4Time = Battle.battleTimer
         end
         
-        if Battle.projectileFrame4Time > 0 and (Battle.battleTimer - Battle.projectileFrame4Time) >= Battle.projectileSpawnDelay then
-            local screenW = love.graphics.getWidth()
-            local platformW = Battle.platformImage and Battle.platformImage:getDimensions() or 0
-            local platformY = Battle.platformY or 0
-            Projectile.spawn(Battle, Battle.attacker, Battle.defender, screenW, platformW, platformY)
+        if Battle.projectileFrame4Time > 0 then
+            local spawnDelay = Projectile.getSpawnDelay(Battle.attacker.weapon)
+            if (Battle.battleTimer - Battle.projectileFrame4Time) >= spawnDelay then
+                local screenW = love.graphics.getWidth()
+                local platformW = Battle.platformImage and Battle.platformImage:getDimensions() or 0
+                local platformY = Battle.platformY or 0
+                Projectile.spawn(Battle, Battle.attacker, Battle.defender, screenW, platformW, platformY)
+            end
         end
     end
     
@@ -422,19 +427,24 @@ local function updateCounterattack()
     local attackFrameIndex = Anim.getAttackFrameIndex(Battle, Battle.defender)
     Battle.attackFrameIndex = attackFrameIndex or 0
     
-    -- Handle projectile spawning on frame 4 for ranged counterattacks with delay
+    -- Handle projectile spawning for ranged counterattacks
     local Projectile = require("modules.combat.battle_projectile")
     if Projectile.needsProjectile(Battle.defender) and not Battle.projectileSpawned then
-        if attackFrameIndex == 4 and Battle.projectileFrame4Time == 0 then
-            -- Mark when we reached frame 4
+        local spawnFrame = Projectile.getSpawnFrame(Battle.defender.weapon)
+        
+        if attackFrameIndex == spawnFrame and Battle.projectileFrame4Time == 0 then
+            -- Mark when we reached the spawn frame
             Battle.projectileFrame4Time = Battle.battleTimer
         end
         
-        if Battle.projectileFrame4Time > 0 and (Battle.battleTimer - Battle.projectileFrame4Time) >= Battle.projectileSpawnDelay then
-            local screenW = love.graphics.getWidth()
-            local platformW = Battle.platformImage and Battle.platformImage:getDimensions() or 0
-            local platformY = Battle.platformY or 0
-            Projectile.spawn(Battle, Battle.defender, Battle.attacker, screenW, platformW, platformY)
+        if Battle.projectileFrame4Time > 0 then
+            local spawnDelay = Projectile.getSpawnDelay(Battle.defender.weapon)
+            if (Battle.battleTimer - Battle.projectileFrame4Time) >= spawnDelay then
+                local screenW = love.graphics.getWidth()
+                local platformW = Battle.platformImage and Battle.platformImage:getDimensions() or 0
+                local platformY = Battle.platformY or 0
+                Projectile.spawn(Battle, Battle.defender, Battle.attacker, screenW, platformW, platformY)
+            end
         end
     end
     

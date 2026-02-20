@@ -37,6 +37,8 @@ function Assets.load(state)
     state.projectileImages = {}
     state.projectileImages.harpoon = love.graphics.newImage("assets/units/harpoon_fish/base/Harpoon.png")
     state.projectileImages.harpoon:setFilter("nearest", "nearest")
+    state.projectileImages.bow = love.graphics.newImage("assets/units/archer/base/Arrow.png")
+    state.projectileImages.bow:setFilter("nearest", "nearest")
 end
 
 return Assets

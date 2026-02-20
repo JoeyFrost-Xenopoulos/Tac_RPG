@@ -130,8 +130,8 @@ function Effects.update(state, attackFrameIndex, attacker, projectileHit)
         state.hitFrameStartTime = state.battleTimer - 0.1  -- Start 0.1 seconds earlier
         Effects.startOverlayShake(state)
         
-        -- Trigger slide-back for harpoon and sword attacks (start earlier)
-        if attacker and (attacker.weapon == "harpoon" or attacker.weapon == "sword") then
+        -- Trigger slide-back for harpoon, sword, and bow attacks (start earlier)
+        if attacker and (attacker.weapon == "harpoon" or attacker.weapon == "sword" or attacker.weapon == "bow") then
             -- Determine who is being hit
             local target
             if state.battlePhase == "counterattack" then
@@ -172,6 +172,13 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
         rows = 2
         frameWidth = 128
         frameHeight = 64
+    elseif weaponType == "bow" then
+        effectImage = state.meleeHitEffectImage  -- Arrows use melee hit effect
+        frameCount = 10
+        cols = 5
+        rows = 2
+        frameWidth = 128
+        frameHeight = 64
     else
         effectImage = state.hitEffectImage
         frameCount = 11
@@ -203,7 +210,7 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
     local scaleX, scaleY = 4, 4
     local drawX = targetX
     
-    if weaponType == "harpoon" or weaponType == "sword" then
+    if weaponType == "harpoon" or weaponType == "sword" or weaponType == "bow" then
         scaleX = 3.2  -- 0.8 * 4 = scaled down
         scaleY = 3.2
         
