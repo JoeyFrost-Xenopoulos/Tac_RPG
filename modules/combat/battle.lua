@@ -318,6 +318,9 @@ local function updateInitialAttack()
         Battle.missEffectActive = false
         Battle.hitFrameStartTime = 0
         Battle.missFrameStartTime = 0
+        Battle.slideBackActive = false
+        Battle.slideBackTarget = nil
+        Battle.slideBackStartTime = 0
         local CombatSystem = require("modules.combat.combat_system")
         local damage = 0
         
@@ -402,6 +405,9 @@ local function updateCounterattack()
         Battle.missEffectActive = false
         Battle.hitFrameStartTime = 0
         Battle.missFrameStartTime = 0
+        Battle.slideBackActive = false
+        Battle.slideBackTarget = nil
+        Battle.slideBackStartTime = 0
         local CombatSystem = require("modules.combat.combat_system")
         local damage = 0
         

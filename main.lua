@@ -67,7 +67,7 @@ function love.load()
     UnitManager.add(Harpoon_Fish.enemy.unit)
 
     Archer.player.setPosition(3, 3)
-    Archer.enemy.setPosition(8, 3)
+    Archer.enemy.setPosition(6, 2)
     Soldier.setPosition2(5, 2)
     Enemy_Soldier.setPosition(9, 2)
     Harpoon_Fish.player.setPosition(5, 7)
