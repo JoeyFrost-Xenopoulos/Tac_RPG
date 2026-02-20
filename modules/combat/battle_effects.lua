@@ -57,13 +57,13 @@ function Effects.getSlideBackOffset(state)
     local offset = 0
     if timeSinceStart < state.slideBackDuration then
         -- Slide back phase: ease out
-        local progress = timeSinceStart / state.slideBackDuration
+        local progress = math.max(0, timeSinceStart / state.slideBackDuration)
         local easeOut = 1 - math.pow(1 - progress, 3)  -- Cubic ease out
         offset = state.slideBackDistance * easeOut
     else
         -- Return phase: ease in-out
         local returnTime = timeSinceStart - state.slideBackDuration
-        local progress = returnTime / state.slideReturnDuration
+        local progress = math.max(0, returnTime / state.slideReturnDuration)
         local easeInOut = progress < 0.5 
             and 4 * progress * progress * progress 
             or 1 - math.pow(-2 * progress + 2, 3) / 2
@@ -126,12 +126,12 @@ function Effects.update(state, attackFrameIndex, attacker, projectileHit)
 
     if shouldTrigger then
         state.hitEffectActive = true
-        state.hitEffectStartTime = state.battleTimer
-        state.hitFrameStartTime = state.battleTimer
+        state.hitEffectStartTime = state.battleTimer - 0.1  -- Start 0.1 seconds earlier
+        state.hitFrameStartTime = state.battleTimer - 0.1  -- Start 0.1 seconds earlier
         Effects.startOverlayShake(state)
         
-        -- Trigger slide-back for harpoon attacks
-        if attacker and attacker.weapon == "harpoon" then
+        -- Trigger slide-back for harpoon and sword attacks (start earlier)
+        if attacker and (attacker.weapon == "harpoon" or attacker.weapon == "sword") then
             -- Determine who is being hit
             local target
             if state.battlePhase == "counterattack" then
@@ -139,6 +139,8 @@ function Effects.update(state, attackFrameIndex, attacker, projectileHit)
             else
                 target = state.defender  -- Defender is being hit during initial attack
             end
+            -- Start slide-back earlier to sync with hit effect
+            state.slideBackStartTime = state.battleTimer - 0.1
             Effects.startSlideBack(state, target)
         end
     end
@@ -150,24 +152,28 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
     local timeSinceHit = state.battleTimer - state.hitFrameStartTime
     if timeSinceHit > state.breakAnimDuration then return end
 
-    -- Check if this is a harpoon attack
-    local isHarpoon = attacker and attacker.weapon == "harpoon"
-    local effectImage = isHarpoon and state.harpoonHitEffectImage or state.hitEffectImage
-    
-    if not effectImage then return end
-
+    -- Determine which hit effect to use based on weapon
+    local weaponType = attacker and attacker.weapon or "default"
+    local effectImage
     local frameWidth, frameHeight
     local frameCount, cols, rows
     
-    if isHarpoon then
-        -- Harpoon effect: 5x2 grid = 10 frames (640x128 sprite sheet)
+    if weaponType == "harpoon" then
+        effectImage = state.harpoonHitEffectImage
+        frameCount = 10
+        cols = 5
+        rows = 2
+        frameWidth = 128
+        frameHeight = 64
+    elseif weaponType == "sword" then
+        effectImage = state.meleeHitEffectImage
         frameCount = 10
         cols = 5
         rows = 2
         frameWidth = 128
         frameHeight = 64
     else
-        -- Default break effect: 1x11 strip
+        effectImage = state.hitEffectImage
         frameCount = 11
         cols = 11
         rows = 1
@@ -175,8 +181,11 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
         frameHeight = 64
     end
     
+    if not effectImage then return end
+    
     local animSpeed = state.breakAnimDuration / frameCount
     local frameIndex = math.floor(timeSinceHit / animSpeed)
+    if frameIndex < 0 then return end
     if frameIndex >= frameCount then return end
 
     -- Calculate frame position in sprite sheet
@@ -190,11 +199,11 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
     local offsetX = frameWidth / 2
     local offsetY = frameHeight / 2
     
-    -- Adjust scale and position for harpoon effect
+    -- Adjust scale and position for special effects
     local scaleX, scaleY = 4, 4
     local drawX = targetX
     
-    if isHarpoon then
+    if weaponType == "harpoon" or weaponType == "sword" then
         scaleX = 3.2  -- 0.8 * 4 = scaled down
         scaleY = 3.2
         
@@ -214,7 +223,7 @@ function Effects.drawFlash(state, screenW, screenH)
 
     local timeSinceHit = state.battleTimer - state.hitEffectStartTime
     if timeSinceHit < state.hitEffectDuration then
-        local alpha = 1.0 - (timeSinceHit / state.hitEffectDuration)
+        local alpha = math.max(0, math.min(1, 1.0 - (timeSinceHit / state.hitEffectDuration)))
         love.graphics.setColor(1, 1, 1, alpha * 0.6)
         love.graphics.rectangle("fill", 0, 0, screenW, screenH)
         love.graphics.setColor(1, 1, 1, 1)
