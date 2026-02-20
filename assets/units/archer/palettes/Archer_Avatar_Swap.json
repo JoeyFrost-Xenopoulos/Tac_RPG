@@ -1,0 +1,339 @@
+{
+  "name": "Edit Preset",
+  "created": "2026-02-20T20:37:41.309Z",
+  "version": 4,
+  "edits": [
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 72,
+          "g": 88,
+          "b": 132,
+          "hex": "#485884"
+        },
+        "to": {
+          "r": 146,
+          "g": 65,
+          "b": 89,
+          "hex": "#924159"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 70,
+          "g": 151,
+          "b": 172,
+          "hex": "#4697ac"
+        },
+        "to": {
+          "r": 231,
+          "g": 97,
+          "b": 97,
+          "hex": "#e76161"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 156,
+          "g": 190,
+          "b": 170,
+          "hex": "#9cbeaa"
+        },
+        "to": {
+          "r": 207,
+          "g": 156,
+          "b": 113,
+          "hex": "#cf9c71"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 104,
+          "g": 140,
+          "b": 138,
+          "hex": "#688c8a"
+        },
+        "to": {
+          "r": 148,
+          "g": 116,
+          "b": 103,
+          "hex": "#947467"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 83,
+          "g": 97,
+          "b": 99,
+          "hex": "#536163"
+        },
+        "to": {
+          "r": 114,
+          "g": 88,
+          "b": 86,
+          "hex": "#725856"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 212,
+          "g": 237,
+          "b": 194,
+          "hex": "#d4edc2"
+        },
+        "to": {
+          "r": 232,
+          "g": 206,
+          "b": 145,
+          "hex": "#e8ce91"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 66,
+          "g": 80,
+          "b": 98,
+          "hex": "#425062"
+        },
+        "to": {
+          "r": 105,
+          "g": 61,
+          "b": 91,
+          "hex": "#693d5b"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 65,
+          "g": 145,
+          "b": 157,
+          "hex": "#41919d"
+        },
+        "to": {
+          "r": 190,
+          "g": 110,
+          "b": 97,
+          "hex": "#be6e61"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 72,
+          "g": 126,
+          "b": 143,
+          "hex": "#487e8f"
+        },
+        "to": {
+          "r": 168,
+          "g": 98,
+          "b": 98,
+          "hex": "#a86262"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 92,
+          "g": 179,
+          "b": 163,
+          "hex": "#5cb3a3"
+        },
+        "to": {
+          "r": 210,
+          "g": 170,
+          "b": 136,
+          "hex": "#d2aa88"
+        },
+        "hasSelection": false
+      }
+    }
+  ],
+  "swaps": [
+    {
+      "from": {
+        "r": 72,
+        "g": 88,
+        "b": 132,
+        "hex": "#485884"
+      },
+      "to": {
+        "r": 146,
+        "g": 65,
+        "b": 89,
+        "hex": "#924159"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 70,
+        "g": 151,
+        "b": 172,
+        "hex": "#4697ac"
+      },
+      "to": {
+        "r": 231,
+        "g": 97,
+        "b": 97,
+        "hex": "#e76161"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 156,
+        "g": 190,
+        "b": 170,
+        "hex": "#9cbeaa"
+      },
+      "to": {
+        "r": 207,
+        "g": 156,
+        "b": 113,
+        "hex": "#cf9c71"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 104,
+        "g": 140,
+        "b": 138,
+        "hex": "#688c8a"
+      },
+      "to": {
+        "r": 148,
+        "g": 116,
+        "b": 103,
+        "hex": "#947467"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 83,
+        "g": 97,
+        "b": 99,
+        "hex": "#536163"
+      },
+      "to": {
+        "r": 114,
+        "g": 88,
+        "b": 86,
+        "hex": "#725856"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 212,
+        "g": 237,
+        "b": 194,
+        "hex": "#d4edc2"
+      },
+      "to": {
+        "r": 232,
+        "g": 206,
+        "b": 145,
+        "hex": "#e8ce91"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 66,
+        "g": 80,
+        "b": 98,
+        "hex": "#425062"
+      },
+      "to": {
+        "r": 105,
+        "g": 61,
+        "b": 91,
+        "hex": "#693d5b"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 65,
+        "g": 145,
+        "b": 157,
+        "hex": "#41919d"
+      },
+      "to": {
+        "r": 190,
+        "g": 110,
+        "b": 97,
+        "hex": "#be6e61"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 72,
+        "g": 126,
+        "b": 143,
+        "hex": "#487e8f"
+      },
+      "to": {
+        "r": 168,
+        "g": 98,
+        "b": 98,
+        "hex": "#a86262"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 92,
+        "g": 179,
+        "b": 163,
+        "hex": "#5cb3a3"
+      },
+      "to": {
+        "r": 210,
+        "g": 170,
+        "b": 136,
+        "hex": "#d2aa88"
+      },
+      "hasSelection": false
+    }
+  ]
+}
