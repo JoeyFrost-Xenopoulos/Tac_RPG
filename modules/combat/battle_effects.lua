@@ -84,20 +84,23 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
     
     if not effectImage then return end
 
-    local frameWidth = 64
-    local frameHeight = 64
+    local frameWidth, frameHeight
     local frameCount, cols, rows
     
     if isHarpoon then
-        -- Harpoon effect: 4x4 grid = 16 frames
-        frameCount = 16
-        cols = 4
-        rows = 4
+        -- Harpoon effect: 5x2 grid = 10 frames (640x128 sprite sheet)
+        frameCount = 10
+        cols = 5
+        rows = 2
+        frameWidth = 128
+        frameHeight = 64
     else
         -- Default break effect: 1x11 strip
         frameCount = 11
         cols = 11
         rows = 1
+        frameWidth = 64
+        frameHeight = 64
     end
     
     local animSpeed = state.breakAnimDuration / frameCount
@@ -114,7 +117,24 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
 
     local offsetX = frameWidth / 2
     local offsetY = frameHeight / 2
-    love.graphics.draw(effectImage, quad, targetX, targetY, 0, 4, 4, offsetX, offsetY)
+    
+    -- Adjust scale and position for harpoon effect
+    local scaleX, scaleY = 4, 4
+    local drawX = targetX
+    
+    if isHarpoon then
+        scaleX = 3.2  -- 0.8 * 4 = scaled down
+        scaleY = 3.2
+        
+        if attacker and attacker.isPlayer then
+            scaleX = -3.2  -- Flip horizontally for player attacks
+            drawX = targetX - 100  -- Move forward (left)
+        else
+            drawX = targetX + 100  -- Move forward (right)
+        end
+    end
+    
+    love.graphics.draw(effectImage, quad, drawX, targetY, 0, scaleX, scaleY, offsetX, offsetY)
 end
 
 function Effects.drawFlash(state, screenW, screenH)
