@@ -11,6 +11,11 @@ function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, proje
         Audio.playBowArrow()
         battleState.attackBowPlayed = true
     end
+
+    if attacker and attacker.weapon == "harpoon" and attackFrameIndex == 5 and not battleState.attackHarpoonPlayed then
+        Audio.playHarpoonThrow()
+        battleState.attackHarpoonPlayed = true
+    end
     
     -- For ranged attacks, play sounds based on projectile hit
     if attacker and Projectile.needsProjectile(attacker) then
@@ -119,6 +124,7 @@ function Helpers.resetPhaseFlags(battleState)
     battleState.attackSwingPlayed = false
     battleState.attackHitPlayed = false
     battleState.attackBowPlayed = false
+    battleState.attackHarpoonPlayed = false
     battleState.hitEffectActive = false
     battleState.hitFrameStartTime = 0
     battleState.isLastAttackHit = true
