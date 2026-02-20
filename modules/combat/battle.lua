@@ -468,6 +468,11 @@ local function updateCounterattack()
 end
 
 local function updateDone()
+    -- Wait for slide-back animation to complete before ending battle
+    if Battle.slideBackActive then
+        return
+    end
+    
     local TurnManager = require("modules.engine.turn")
     TurnManager.markUnitAsMoved(Battle.attacker)
     if TurnManager.areAllUnitsMoved() then
@@ -495,6 +500,9 @@ function Battle.update(dt)
     end
 
     Battle.battleTimer = Battle.battleTimer + dt
+    
+    -- Update slide-back animation state
+    Effects.updateSlideBack(Battle)
 
     if Battle.battlePhase == "initial_attack" then
         updateInitialAttack()

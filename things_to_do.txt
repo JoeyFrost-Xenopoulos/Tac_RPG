@@ -3,9 +3,6 @@ Useful websites
 
 - add in names in battle frame
 
-- add in crit noise
-    - check crit damage
-
 - add in double hits
     - animate the second attack
 
@@ -49,25 +46,4 @@ Useful websites
 
 - add in the double platforms for ranged attacks with no counter attack
 
-<---------------------------------------------------------------------------------------------------------->
-Specifics about combat system
-<---------------------------------------------------------------------------------------------------------->
-Str: Damage with weapons. Damage = Str + Weapon Mt.
-
-Mag: Damage with Magic. Damage = Mag + Tome Mt.
-
-Skill: Chance to hit and chance to critical. Hit = [(Skill x 3 + Luck) / 2] + Weapon Hit Rate. 
-Crit = (Skill / 2) + Weapon's Critical.
-
-Spd: Chance to avoid. Avoid = (Speed x 3 + Luck) / 2. 
-Also if your Spd is 5 points higher than the enemy you will attack twice, if your Spd is 5 points lower then they will attack twice.
-
-Luck: Slightly raises Hit AND Avoid. Reduces chance of enemy critical hits. Crit Avoid = Luck
-
-Def: Lowers damage of weapon attacks. Weapon Damage Reduction = Def.
-
-Res: Lowers damage of magic attacks. Magic Damage Reduction = Res.
-
-Consitution: Constitution or physical size affects resuce
-
-Aid: If you unit has lower constituion then can be rescued
+- refactor battle.lua agian

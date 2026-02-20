@@ -90,6 +90,12 @@ State.deathAnimStartTime = 0
 State.deathAnimBlinkDuration = 0.22
 State.deathAnimFadeDuration = 0.75
 State.deathAnimBlinkCount = 2
+State.slideBackActive = false
+State.slideBackStartTime = 0
+State.slideBackTarget = nil  -- Which unit is being pushed back
+State.slideBackDistance = 100
+State.slideBackDuration = 0.45  -- Time to slide back
+State.slideReturnDuration = 1.0  -- Time to return to position
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -118,6 +124,9 @@ function State.resetTimers()
     State.missFrameStartTime = 0
     State.projectileActive = false
     State.projectileStartTime = 0
+    State.slideBackActive = false
+    State.slideBackStartTime = 0
+    State.slideBackTarget = nil
     State.projectileSpawned = false
     State.projectileFrame4Time = 0
     State.overlayShakeActive = false

@@ -37,6 +37,66 @@ function Effects.startOverlayShake(state)
     state.overlayShakeStartTime = state.battleTimer
 end
 
+function Effects.startSlideBack(state, target)
+    state.slideBackActive = true
+    state.slideBackStartTime = state.battleTimer
+    state.slideBackTarget = target
+end
+
+function Effects.getSlideBackOffset(state)
+    if not state.slideBackActive then return 0 end
+    
+    local timeSinceStart = state.battleTimer - state.slideBackStartTime
+    local totalDuration = state.slideBackDuration + state.slideReturnDuration
+    
+    if timeSinceStart > totalDuration then
+        state.slideBackActive = false
+        return 0
+    end
+    
+    local offset = 0
+    if timeSinceStart < state.slideBackDuration then
+        -- Slide back phase: ease out
+        local progress = timeSinceStart / state.slideBackDuration
+        local easeOut = 1 - math.pow(1 - progress, 3)  -- Cubic ease out
+        offset = state.slideBackDistance * easeOut
+    else
+        -- Return phase: ease in-out
+        local returnTime = timeSinceStart - state.slideBackDuration
+        local progress = returnTime / state.slideReturnDuration
+        local easeInOut = progress < 0.5 
+            and 4 * progress * progress * progress 
+            or 1 - math.pow(-2 * progress + 2, 3) / 2
+        offset = state.slideBackDistance * (1 - easeInOut)
+    end
+    
+    -- Return negative for player (slide right), positive for enemy (slide left)
+    if state.slideBackTarget and state.slideBackTarget.isPlayer then
+        return offset
+    else
+        return -offset
+    end
+end
+
+function Effects.isWalkingBack(state)
+    if not state.slideBackActive then return false end
+    
+    local timeSinceStart = state.battleTimer - state.slideBackStartTime
+    -- Return true if we're in the return phase (walking back)
+    return timeSinceStart >= state.slideBackDuration
+end
+
+function Effects.updateSlideBack(state)
+    if not state.slideBackActive then return end
+    
+    local timeSinceStart = state.battleTimer - state.slideBackStartTime
+    local totalDuration = state.slideBackDuration + state.slideReturnDuration
+    
+    if timeSinceStart > totalDuration then
+        state.slideBackActive = false
+    end
+end
+
 function Effects.update(state, attackFrameIndex, attacker, projectileHit)
     if state.hitEffectActive then return end
 
@@ -69,6 +129,18 @@ function Effects.update(state, attackFrameIndex, attacker, projectileHit)
         state.hitEffectStartTime = state.battleTimer
         state.hitFrameStartTime = state.battleTimer
         Effects.startOverlayShake(state)
+        
+        -- Trigger slide-back for harpoon attacks
+        if attacker and attacker.weapon == "harpoon" then
+            -- Determine who is being hit
+            local target
+            if state.battlePhase == "counterattack" then
+                target = state.attacker  -- Attacker is being hit during counterattack
+            else
+                target = state.defender  -- Defender is being hit during initial attack
+            end
+            Effects.startSlideBack(state, target)
+        end
     end
 end
 
@@ -128,9 +200,9 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
         
         if attacker and attacker.isPlayer then
             scaleX = -3.2  -- Flip horizontally for player attacks
-            drawX = targetX - 100  -- Move forward (left)
+            drawX = targetX - 140  -- Move forward (left)
         else
-            drawX = targetX + 100  -- Move forward (right)
+            drawX = targetX + 140  -- Move forward (right)
         end
     end
     
@@ -141,21 +213,10 @@ function Effects.drawFlash(state, screenW, screenH)
     if not state.hitEffectActive then return end
 
     local timeSinceHit = state.battleTimer - state.hitEffectStartTime
-    local flashDuration = (state.hitEffectDuration or 0.12) * 0.45
-    if timeSinceHit < flashDuration then
-        local alpha = 1.0 - (timeSinceHit / flashDuration)
-        local baseAlpha = math.min(1, alpha * 0.95)
-        local additiveAlpha = math.min(1, alpha * 0.65)
-
-        love.graphics.setBlendMode("alpha")
-        love.graphics.setColor(1, 1, 1, baseAlpha)
+    if timeSinceHit < state.hitEffectDuration then
+        local alpha = 1.0 - (timeSinceHit / state.hitEffectDuration)
+        love.graphics.setColor(1, 1, 1, alpha * 0.6)
         love.graphics.rectangle("fill", 0, 0, screenW, screenH)
-
-        love.graphics.setBlendMode("add")
-        love.graphics.setColor(1, 1, 1, additiveAlpha)
-        love.graphics.rectangle("fill", 0, 0, screenW, screenH)
-
-        love.graphics.setBlendMode("alpha")
         love.graphics.setColor(1, 1, 1, 1)
     end
 end

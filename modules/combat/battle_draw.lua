@@ -104,8 +104,18 @@ function Draw.draw(state)
             end
             local attackerFacingX = state.attacker.isPlayer and -1 or 1
             
+            -- Apply slide-back offset if attacker is the target
+            local slideOffset = 0
+            local attackerAnim = "idle"
+            if state.slideBackTarget == state.attacker then
+                slideOffset = Effects.getSlideBackOffset(state)
+                if Effects.isWalkingBack(state) then
+                    attackerAnim = "walk"
+                end
+            end
+            
             if state.attacker then
-                Draw.drawUnit(state, state.attacker, attackerStaticX, platformY - 60, attackerFacingX, false, "idle", true)
+                Draw.drawUnit(state, state.attacker, attackerStaticX + slideOffset, platformY - 60, attackerFacingX, false, attackerAnim, true)
             end
 
             if state.defender then
@@ -116,22 +126,33 @@ function Draw.draw(state)
 
             -- Hit effect should be on the attacker during counterattack
             if state.attacker and state.hitEffectActive then
-                Effects.drawBreak(state, attackerStaticX, platformY + 160, state.defender)
+                Effects.drawBreak(state, attackerStaticX + slideOffset, platformY + 160, state.defender)
             end
             if state.attacker and state.missEffectActive then
-                Effects.drawMiss(state, attackerStaticX, platformY + 160, state.defender)
+                Effects.drawMiss(state, attackerStaticX + slideOffset, platformY + 160, state.defender)
             end
         else
             -- During initial attack: attacker animates, defender is static
+            
+            -- Apply slide-back offset if defender is the target
+            local slideOffset = 0
+            local defenderAnim = nil
+            if state.slideBackTarget == state.defender then
+                slideOffset = Effects.getSlideBackOffset(state)
+                if Effects.isWalkingBack(state) then
+                    defenderAnim = "walk"
+                end
+            end
+            
             if state.defender then
-                Draw.drawUnit(state, state.defender, defenderStaticX, platformY - 60, defenderFacingX, false, nil, true)
+                Draw.drawUnit(state, state.defender, defenderStaticX + slideOffset, platformY - 60, defenderFacingX, false, defenderAnim, true)
             end
 
             if state.defender and state.hitEffectActive then
-                Effects.drawBreak(state, defenderStaticX, platformY + 160, state.attacker)
+                Effects.drawBreak(state, defenderStaticX + slideOffset, platformY + 160, state.attacker)
             end
             if state.defender and state.missEffectActive then
-                Effects.drawMiss(state, defenderStaticX, platformY + 160, state.attacker)
+                Effects.drawMiss(state, defenderStaticX + slideOffset, platformY + 160, state.attacker)
             end
 
             if state.attacker then
