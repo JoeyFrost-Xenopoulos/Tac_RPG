@@ -9,8 +9,8 @@ local function loadAnimImage(imagePath, swapPath)
     return love.graphics.newImage(imagePath)
 end
 
-local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath)
-    return {
+local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
+    local config = {
         name = "James",
         type = "Soldier",
         avatar = Utils.applyColourSwaps("assets/units/harpoon_fish/avatars/Harpoon_Fish.png", colourSwapPath),
@@ -65,6 +65,14 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath)
             }
         }
     }
+
+    if overrides then
+        for key, value in pairs(overrides) do
+            config[key] = value
+        end
+    end
+
+    return config
 end
 
 -- Enemy variant
@@ -74,7 +82,21 @@ local HarpoonFishEnemy = createHarpoonFishConfig(
         "assets.units.harpoon_fish.palettes.enemy_pack_to_enemy",
         "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap"
     },
-    "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap"
+    "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap",
+    {
+        name = "Barb",
+        maxHealth = 130,
+        health = 130,
+        attackDamage = 7,
+        strength = 13,
+        magic = 6,
+        skill = 12,
+        speed = 11,
+        luck = 2,
+        defense = 6,
+        resistance = 5,
+        constitution = 11
+    }
 )
 HarpoonFishEnemy.unit = UnitFactory.create(HarpoonFishEnemy)
 
@@ -87,7 +109,20 @@ function HarpoonFishEnemy.isHovered(mx, my) return HarpoonFishEnemy.unit:isHover
 function HarpoonFishEnemy.isClicked(mx, my) return HarpoonFishEnemy.unit:isClicked(mx, my) end
 
 -- Player variant
-local HarpoonFishPlayer = createHarpoonFishConfig(true, "assets.units.harpoon_fish.palettes.enemy_pack_to_player")
+local HarpoonFishPlayer = createHarpoonFishConfig(true, "assets.units.harpoon_fish.palettes.enemy_pack_to_player", nil, {
+    name = "James",
+    maxHealth = 120,
+    health = 120,
+    attackDamage = 5,
+    strength = 11,
+    magic = 8,
+    skill = 14,
+    speed = 16,
+    luck = 3,
+    defense = 4,
+    resistance = 6,
+    constitution = 9
+})
 HarpoonFishPlayer.unit = UnitFactory.create(HarpoonFishPlayer)
 
 function HarpoonFishPlayer.update(dt) HarpoonFishPlayer.unit:update(dt) end

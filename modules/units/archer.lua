@@ -9,8 +9,8 @@ local function loadAnimImage(imagePath, swapPath)
     return love.graphics.newImage(imagePath)
 end
 
-local function createArcherConfig(isPlayer, colourSwapPath, animSwapPath)
-    return {
+local function createArcherConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
+    local config = {
         name = "Quickley",
         type = "Archer",
         avatar = colourSwapPath and Utils.applyColourSwaps("assets/units/archer/avatars/Avatars_03.png", colourSwapPath) or love.graphics.newImage("assets/units/archer/avatars/Avatars_03.png"),
@@ -63,10 +63,31 @@ local function createArcherConfig(isPlayer, colourSwapPath, animSwapPath)
             }
         }
     }
+
+    if overrides then
+        for key, value in pairs(overrides) do
+            config[key] = value
+        end
+    end
+
+    return config
 end
 
 -- Player variant
-local ArcherPlayer = createArcherConfig(true)
+local ArcherPlayer = createArcherConfig(true, nil, nil, {
+    name = "Quickley",
+    maxHealth = 90,
+    health = 90,
+    attackDamage = 18,
+    strength = 10,
+    magic = 5,
+    skill = 16,
+    speed = 11,
+    luck = 8,
+    defense = 5,
+    resistance = 3,
+    constitution = 10
+})
 ArcherPlayer.unit = UnitFactory.create(ArcherPlayer)
 
 function ArcherPlayer.update(dt) ArcherPlayer.unit:update(dt) end
@@ -81,7 +102,21 @@ function ArcherPlayer.isClicked(mx, my) return ArcherPlayer.unit:isClicked(mx, m
 local ArcherEnemy = createArcherConfig(
     false,
     "assets.units.archer.palettes.archer_avatar_swap",
-    "assets.units.archer.palettes.archer_main_swap"
+    "assets.units.archer.palettes.archer_main_swap",
+    {
+        name = "Kestrel",
+        maxHealth = 100,
+        health = 100,
+        attackDamage = 20,
+        strength = 12,
+        magic = 4,
+        skill = 14,
+        speed = 16,
+        luck = 6,
+        defense = 7,
+        resistance = 4,
+        constitution = 11
+    }
 )
 ArcherEnemy.unit = UnitFactory.create(ArcherEnemy)
 
