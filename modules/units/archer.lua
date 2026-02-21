@@ -27,7 +27,7 @@ local function createArcherConfig(isPlayer, colourSwapPath, animSwapPath)
         strength = 10,
         magic = 5,
         skill = 16,
-        speed = 13,
+        speed = 18,
         luck = 8,
         defense = 5,
         resistance = 3,

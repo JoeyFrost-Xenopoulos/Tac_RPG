@@ -9,7 +9,11 @@ CombatSummary.visible = false
 CombatSummary.attacker = nil
 CombatSummary.defender = nil
 CombatSummary.menuImage = nil
+CombatSummary.doubleHitImage = nil
 CombatSummary.scale = 0.4
+CombatSummary.doubleHitScale = 0.6
+CombatSummary.doubleHitRadius = 6
+CombatSummary.doubleHitSpeed = 4.2
 CombatSummary.nameFont = nil
 CombatSummary.font = nil
 CombatSummary.hpFont = nil
@@ -20,6 +24,7 @@ CombatSummary.weaponIconScale = 0.8
 
 function CombatSummary.load()
     CombatSummary.menuImage = love.graphics.newImage("assets/ui/menu/combat_summary_menu_2.png")
+    CombatSummary.doubleHitImage = love.graphics.newImage("assets/combat/double_hit.png")
     CombatSummary.nameFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
     CombatSummary.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
     CombatSummary.hpLabelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
@@ -69,10 +74,20 @@ function CombatSummary.draw()
     
     -- Draw menu background
     love.graphics.draw(CombatSummary.menuImage, menuX, menuY, 0, CombatSummary.scale, CombatSummary.scale)
-    
+
     -- Calculate combat stats
     local attacker = CombatSummary.attacker
     local defender = CombatSummary.defender
+
+    -- Determine if a double hit is available
+    local defenderRange = CombatSystem.getAttackRange(defender)
+    local distance = math.abs(attacker.tileX - defender.tileX) + math.abs(attacker.tileY - defender.tileY)
+    local defenderWeapon = CombatSystem.getWeapon(defender.weapon)
+    local defenderMinRange = defenderWeapon.minRange or 1
+    local defenderCanCounter = distance <= defenderRange and distance >= defenderMinRange
+
+    local attackerDouble = CombatSystem.canDoubleAttack(attacker, defender)
+    local defenderDouble = CombatSystem.canBeDoubleAttacked(attacker, defender) and defenderCanCounter
     
     local attackerDamage = CombatSystem.calculateTotalDamage(attacker, defender, false)
     local defenderDamage = CombatSystem.calculateTotalDamage(defender, attacker, false)
@@ -233,6 +248,52 @@ function CombatSummary.draw()
     
     love.graphics.print(instruction1, menuX + (menuW - inst1Width) / 2, instructY)
     love.graphics.print(instruction2, menuX + (menuW - inst2Width) / 2, instructY + 25)
+
+    if CombatSummary.doubleHitImage and (attackerDouble or defenderDouble) then
+        local overlayScale = CombatSummary.doubleHitScale
+        local overlayW = CombatSummary.doubleHitImage:getWidth() * overlayScale
+        local overlayBaseX
+        local overlayBaseY = menuY + 130
+
+        if defenderDouble then
+            overlayBaseX = menuX + 80
+        else
+            overlayBaseX = menuX + 315
+        end
+
+        local function lerp(a, b, t)
+            return a + (b - a) * t
+        end
+
+        local phase = (love.timer.getTime() * CombatSummary.doubleHitSpeed) % 4
+        local r = CombatSummary.doubleHitRadius
+        local offsetX
+        local offsetY
+
+        if phase < 1 then
+            offsetX = lerp(-r, r, phase)
+            offsetY = -r
+        elseif phase < 2 then
+            offsetX = r
+            offsetY = lerp(-r, r, phase - 1)
+        elseif phase < 3 then
+            offsetX = lerp(r, -r, phase - 2)
+            offsetY = r
+        else
+            offsetX = -r
+            offsetY = lerp(r, -r, phase - 3)
+        end
+
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(
+            CombatSummary.doubleHitImage,
+            overlayBaseX + offsetX,
+            overlayBaseY + offsetY,
+            0,
+            overlayScale,
+            overlayScale
+        )
+    end
     
     love.graphics.setColor(1, 1, 1, 1)
 end
