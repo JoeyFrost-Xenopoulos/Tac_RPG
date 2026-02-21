@@ -3,9 +3,63 @@
 
 local PhaseManager = {}
 
+local function applyAttackDurations(battleState, unit)
+    local CombatSystem = require("modules.combat.combat_system")
+    local unitRange = CombatSystem.getAttackRange(unit)
+
+    if unitRange > 1 then
+        battleState.runDuration = 0
+        battleState.returnDuration = 0
+        battleState.attackDuration = 1.6
+    else
+        battleState.runDuration = 0.8
+        battleState.returnDuration = 0.8
+        battleState.attackDuration = 0.7
+    end
+end
+
+function PhaseManager.startFollowupAttack(battleState, isDefenderAttacking)
+    local AttackHelpers = require("modules.combat.battle_attack_helpers")
+
+    battleState.battleTimer = 0
+    battleState.damageApplied = false
+    battleState.counterattackApplied = false
+    battleState.attackResultCalculated = false
+    battleState.isHealthAnimating = false
+    battleState.healthAnimStartTime = 0
+    battleState.hitEffectActive = false
+    battleState.missEffectActive = false
+    battleState.critEffectActive = false
+    battleState.hitFrameStartTime = 0
+    battleState.missFrameStartTime = 0
+    battleState.critFrameStartTime = 0
+    battleState.projectileActive = false
+    battleState.projectileSpawned = false
+    battleState.projectileFrame4Time = 0
+    battleState.projectileStartTime = 0
+    battleState.projectileStartX = 0
+    battleState.projectileStartY = 0
+    battleState.projectileTargetX = 0
+    battleState.projectileTargetY = 0
+    battleState.slideBackActive = false
+    battleState.slideBackTarget = nil
+    battleState.slideBackStartTime = 0
+
+    AttackHelpers.resetPhaseFlags(battleState)
+
+    battleState.battlePhase = isDefenderAttacking and "counterattack" or "initial_attack"
+    if not isDefenderAttacking then
+        battleState.counterattackEnabled = false
+    end
+
+    local actingUnit = isDefenderAttacking and battleState.defender or battleState.attacker
+    if actingUnit then
+        applyAttackDurations(battleState, actingUnit)
+    end
+end
+
 function PhaseManager.transitionToCounterattack(battleState)
     if battleState.counterattackEnabled and battleState.defender and battleState.defender.health > 0 then
-        local CombatSystem = require("modules.combat.combat_system")
         local AttackHelpers = require("modules.combat.battle_attack_helpers")
         
         battleState.battlePhase = "counterattack"
@@ -14,18 +68,7 @@ function PhaseManager.transitionToCounterattack(battleState)
         battleState.counterattackApplied = false
         
         -- Set animation durations for counterattack based on defender's weapon range
-        local defenderRange = CombatSystem.getAttackRange(battleState.defender)
-        
-        -- Skip walk animation for ranged counterattacks
-        if defenderRange > 1 then
-            battleState.runDuration = 0
-            battleState.returnDuration = 0
-            battleState.attackDuration = 1.6
-        else
-            battleState.runDuration = 0.8
-            battleState.returnDuration = 0.8
-            battleState.attackDuration = 0.7
-        end
+        applyAttackDurations(battleState, battleState.defender)
     else
         battleState.battlePhase = "done"
     end
@@ -57,14 +100,6 @@ function PhaseManager.updateInitialAttack(battleState, anim, effects, projectile
             local isCritical = CombatSystem.isCritical(battleState.attacker, battleState.defender)
             battleState.currentAttackIsCritical = isCritical
             damage = CombatSystem.calculateTotalDamage(battleState.attacker, battleState.defender, isCritical)
-            
-            -- Check for double attack
-            if CombatSystem.canDoubleAttack(battleState.attacker, battleState.defender) then
-                if CombatSystem.doesHit(battleState.attacker, battleState.defender) then
-                    local isCritical2 = CombatSystem.isCritical(battleState.attacker, battleState.defender)
-                    damage = damage + CombatSystem.calculateTotalDamage(battleState.attacker, battleState.defender, isCritical2)
-                end
-            end
         end
         battleState.calculatedAttackDamage = damage
         battleState.attackResultCalculated = true
@@ -116,7 +151,20 @@ function PhaseManager.updateInitialAttack(battleState, anim, effects, projectile
             if AttackHelpers.startDeathAnimationIfNeeded(battleState, battleState.defender) then
                 battleState.battlePhase = "death_anim"
             else
-                PhaseManager.transitionToCounterattack(battleState)
+                if battleState.counterattackEnabled then
+                    PhaseManager.transitionToCounterattack(battleState)
+                else
+                    local canFollowup = battleState.followupQueued
+                        and not battleState.followupAttackerIsDefender
+                        and battleState.attacker and battleState.attacker.health > 0
+                        and battleState.defender and battleState.defender.health > 0
+                    if canFollowup then
+                        battleState.followupQueued = false
+                        PhaseManager.startFollowupAttack(battleState, false)
+                    else
+                        battleState.battlePhase = "done"
+                    end
+                end
             end
         end
     end
@@ -147,13 +195,6 @@ function PhaseManager.updateCounterattack(battleState, anim, effects, projectile
             local isCritical = CombatSystem.isCritical(battleState.defender, battleState.attacker)
             battleState.currentAttackIsCritical = isCritical
             damage = CombatSystem.calculateTotalDamage(battleState.defender, battleState.attacker, isCritical)
-            
-            -- Check if defender can double attack
-            if CombatSystem.canBeDoubleAttacked(battleState.attacker, battleState.defender) and battleState.attacker.health > 0 then
-                if CombatSystem.doesHit(battleState.defender, battleState.attacker) then
-                    damage = damage + CombatSystem.calculateTotalDamage(battleState.defender, battleState.attacker, false)
-                end
-            end
         end
         battleState.calculatedAttackDamage = damage
         battleState.attackResultCalculated = true
@@ -205,7 +246,21 @@ function PhaseManager.updateCounterattack(battleState, anim, effects, projectile
             if AttackHelpers.startDeathAnimationIfNeeded(battleState, battleState.attacker) then
                 battleState.battlePhase = "death_anim"
             else
-                battleState.battlePhase = "done"
+                if battleState.followupQueued then
+                    local attackerAlive = battleState.attacker and battleState.attacker.health > 0
+                    local defenderAlive = battleState.defender and battleState.defender.health > 0
+                    if battleState.followupAttackerIsDefender and attackerAlive and defenderAlive then
+                        battleState.followupQueued = false
+                        PhaseManager.startFollowupAttack(battleState, true)
+                    elseif (not battleState.followupAttackerIsDefender) and attackerAlive and defenderAlive then
+                        battleState.followupQueued = false
+                        PhaseManager.startFollowupAttack(battleState, false)
+                    else
+                        battleState.battlePhase = "done"
+                    end
+                else
+                    battleState.battlePhase = "done"
+                end
             end
         end
     end

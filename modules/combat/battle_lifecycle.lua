@@ -29,6 +29,19 @@ function Lifecycle.startBattle(battle, attacker, defender)
     if distance > defenderRange or distance < defenderMinRange then
         battle.counterattackEnabled = false
     end
+
+    -- Determine follow-up attack (double hit) after the initial exchange
+    local attackerDouble = CombatSystem.canDoubleAttack(attacker, defender)
+    local defenderDouble = CombatSystem.canBeDoubleAttacked(attacker, defender)
+    battle.followupQueued = false
+    battle.followupAttackerIsDefender = false
+    if defenderDouble and battle.counterattackEnabled then
+        battle.followupQueued = true
+        battle.followupAttackerIsDefender = true
+    elseif attackerDouble then
+        battle.followupQueued = true
+        battle.followupAttackerIsDefender = false
+    end
     
     -- Skip walk animation for ranged attacks (range > 1)
     if attackerRange > 1 then

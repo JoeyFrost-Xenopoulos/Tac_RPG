@@ -80,6 +80,8 @@ State.defenderCounterAttackPlayed = false
 State.calculatedAttackDamage = 0  -- Pre-calculated damage for current attack
 State.currentAttackHit = false    -- Pre-calculated hit result for current attack
 State.attackResultCalculated = false  -- Flag to prevent recalculation
+State.followupQueued = false
+State.followupAttackerIsDefender = false
 State.projectileActive = false
 State.projectileStartTime = 0
 State.projectileSpawned = false
@@ -129,6 +131,8 @@ function State.resetTimers()
     State.calculatedAttackDamage = 0
     State.currentAttackHit = false
     State.attackResultCalculated = false
+    State.followupQueued = false
+    State.followupAttackerIsDefender = false
     State.missEffectActive = false
     State.missFrameStartTime = 0
     State.critEffectActive = false
