@@ -12,8 +12,11 @@ Options.cursorTime = 0
 Options.hoveredIndex = nil
 Options.cursorImage = nil
 
-local quadW = {left = 308, mid = 152, right = 200}
-local quadH = {top = 310, mid = 308, bot = 310}
+-- Back button bounds
+Options.backButtonArea = {x = 0, y = 0, w = 0, h = 0}
+
+local quadW = {left = 448, mid = 448, right = 448}
+local quadH = {top = 448, mid = 448, bot = 448}
 
 Options.volumeLevels = {
     { label = "Off", value = 0.0 },
@@ -33,22 +36,22 @@ function Options.load()
 
     Options.variants = {
         {
-            topLeft   = love.graphics.newQuad(0,   0,   quadW.left,  quadH.top, imgW, imgH),
-            topMid    = love.graphics.newQuad(464, 0,   quadW.mid,   quadH.top, imgW, imgH),
-            topRight  = love.graphics.newQuad(774, 0,   quadW.right, quadH.top, imgW, imgH),
-            midLeft   = love.graphics.newQuad(0,   457, quadW.left,  quadH.mid, imgW, imgH),
-            midMid    = love.graphics.newQuad(464, 457, quadW.mid,   quadH.mid, imgW, imgH),
-            midRight  = love.graphics.newQuad(774, 458, quadW.right, quadH.mid, imgW, imgH),
-            botLeft   = love.graphics.newQuad(0,   768, quadW.left,  quadH.bot, imgW, imgH),
-            botMid    = love.graphics.newQuad(464, 768, quadW.mid,   quadH.bot, imgW, imgH),
-            botRight  = love.graphics.newQuad(774, 768, quadW.right, quadH.bot, imgW, imgH)
+            topLeft   = love.graphics.newQuad(0,   0,   448, 448, imgW, imgH),
+            topMid    = love.graphics.newQuad(448, 0,   448, 448, imgW, imgH),
+            topRight  = love.graphics.newQuad(896, 0,   448, 448, imgW, imgH),
+            midLeft   = love.graphics.newQuad(0,   448, 448, 448, imgW, imgH),
+            midMid    = love.graphics.newQuad(448, 448, 448, 448, imgW, imgH),
+            midRight  = love.graphics.newQuad(896, 448, 448, 448, imgW, imgH),
+            botLeft   = love.graphics.newQuad(0,   896, 448, 448, imgW, imgH),
+            botMid    = love.graphics.newQuad(448, 896, 448, 448, imgW, imgH),
+            botRight  = love.graphics.newQuad(896, 896, 448, 448, imgW, imgH)
         }
     }
 
     Options.icons = {
-        back  = love.graphics.newImage("assets/ui/icons/back.png"),
-        music = love.graphics.newImage("assets/ui/icons/music.png"),
-        sfx = love.graphics.newImage("assets/ui/icons/sfx.png")
+        back  = love.graphics.newImage("assets/ui/icons/menu/back.png"),
+        music = love.graphics.newImage("assets/ui/icons/menu/music.png"),
+        sfx = love.graphics.newImage("assets/ui/icons/menu/sfx.png")
     }
 
     Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
@@ -60,38 +63,14 @@ end
 
 function Options.clicked(mx, my)
     if not Options.visible then return false end
-    local x = (love.graphics.getWidth() - (quadW.left + quadW.mid + quadW.right) * Options.scaleX) / 2 - 45
-    local y = (love.graphics.getHeight() - (quadH.top + quadH.mid + quadH.bot) * Options.scaleY) / 2
-    local items = {
-        { name = "Back",  y = y + 175, iconY = y + 160 },
-        { name = "Music", y = y + 305, iconY = y + 290 },
-        { name = "SFX",   y = y + 430, iconY = y + 380 }
-    }
-
-    for i, item in ipairs(items) do
-        if mx > x + 100 and mx < x + 500 and my > item.y and my < item.y + 50 then
-            if item.name == "Back" then
-                Options.hide()
-                Effects.playClick()
-                return true
-            end
-
-            if item.name == "Music" then
-                Options.musicLevel = Options.musicLevel % #Options.volumeLevels + 1
-                Effects.setMusicVolume(Options.volumeLevels[Options.musicLevel].value)
-                Effects.playSelect()
-                return true
-            end
-
-            if item.name == "SFX" then
-                Options.sfxLevel = Options.sfxLevel % #Options.volumeLevels + 1
-                Effects.setSFXVolume(Options.volumeLevels[Options.sfxLevel].value)
-                Effects.playSelect()
-                return true
-            end
-        end
+    
+    -- Check if back button was clicked
+    if mx >= Options.backButtonArea.x and mx < Options.backButtonArea.x + Options.backButtonArea.w and
+       my >= Options.backButtonArea.y and my < Options.backButtonArea.y + Options.backButtonArea.h then
+        Options.hide()
+        return true
     end
-
+    
     return false
 end
 
@@ -133,93 +112,62 @@ function Options.draw()
     local screenW = love.graphics.getWidth()
     local screenH = love.graphics.getHeight()
 
+    -- Draw the background video
     local vidW, vidH = Options.video:getDimensions()
     if vidW > 0 and vidH > 0 then
         local sx = screenW / vidW
         local sy = screenH / vidH
+        love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(Options.video, 0, 0, 0, sx, sy)
     end
 
-    local totalW = (quadW.left + quadW.mid + quadW.right) * Options.scaleX
-    local totalH = (quadH.top + quadH.mid + quadH.bot) * Options.scaleY         
-    local offsetX = 45
-    local x = (screenW - totalW) / 2 - offsetX
-    local y = (screenH - totalH) / 2
-
+    -- Draw the 3x3 menu table with individual quads
     if Options.menuImage and Options.variants then
-        local v = Options.variants[1]
-        
-        local col2X = x + (quadW.left * Options.scaleX) - 1
-        local col3X = col2X + (quadW.mid * Options.scaleX) - 0
-
-        local row2Y = y + (quadH.top * Options.scaleY) - 8
-        local row3Y = row2Y + (quadH.mid * Options.scaleY) - 135
-        
         love.graphics.setColor(1, 1, 1, 1)
+        
+        local cellSize = 448 * Options.scaleX
+        local v = Options.variants[1]        
+        local offsetX = -170
+        local offsetY = -170
+        
+        -- Calculate actual displayed dimensions accounting for offsets
+        local actualW = cellSize * 3 + offsetX * 2
+        local actualH = cellSize * 3 + offsetY * 2
+        local startX = (screenW - actualW) / 2
+        local startY = (screenH - actualH) / 2
         
         -- Top row
-        love.graphics.draw(Options.menuImage, v.topLeft,   x,     y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.topMid,    col2X, y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.topRight, col3X, y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.topLeft,   startX,                    startY,                    0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.topMid,    startX + cellSize + offsetX, startY,                    0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.topRight,  startX + cellSize*2 + offsetX*2, startY,              0, Options.scaleX, Options.scaleY)
 
         -- Middle row
-        love.graphics.draw(Options.menuImage, v.midLeft,   x,     row2Y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.midMid,    col2X, row2Y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.midRight, col3X, row2Y, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.midLeft,   startX,                    startY + cellSize + offsetY, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.midMid,    startX + cellSize + offsetX, startY + cellSize + offsetY, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.midRight,  startX + cellSize*2 + offsetX*2, startY + cellSize + offsetY, 0, Options.scaleX, Options.scaleY)
 
         -- Bottom row
-        love.graphics.draw(Options.menuImage, v.botLeft,   x,     row3Y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.botMid,    col2X, row3Y, 0, Options.scaleX, Options.scaleY)
-        love.graphics.draw(Options.menuImage, v.botRight, col3X, row3Y, 0, Options.scaleX, Options.scaleY)
-    end
-
-    if Options.icons then
+        love.graphics.draw(Options.menuImage, v.botLeft,   startX,                    startY + cellSize*2 + offsetY*2, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.botMid,    startX + cellSize + offsetX, startY + cellSize*2 + offsetY*2, 0, Options.scaleX, Options.scaleY)
+        love.graphics.draw(Options.menuImage, v.botRight,  startX + cellSize*2 + offsetX*2, startY + cellSize*2 + offsetY*2, 0, Options.scaleX, Options.scaleY)
+        
+        -- Draw back icon and text in top-left cell
+        local iconSize = 64
+        local backIconX = startX + 170
+        local backIconY = startY + 170
+        local backTextX = backIconX + iconSize + 16
+        local backTextY = backIconY + (iconSize - 48) / 2
+        
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(Options.icons.back, x + 160, y + 160, 0, 1, 1)
-        love.graphics.draw(Options.icons.music, x + 160, y + 290, 0, 1, 1)
-        love.graphics.draw(Options.icons.sfx, x + 120, y + 380, 0, 0.16, 0.16)
-
-        if Options.font then
-            love.graphics.setFont(Options.font)
-            
-            local textOffsetX = 140
-            local items = {
-                { name = "Back",  y = y + 175, iconY = y + 160 },
-                { name = "Music", y = y + 305, iconY = y + 290 },
-                { name = "SFX",   y = y + 430, iconY = y + 380 }
-            }
-
-            local mx, my = love.mouse.getPosition()
-            local currentHover = nil
-            local rightX = x + totalW - 125
-
-            for i, item in ipairs(items) do
-                local isHovered = mx > x + 100 and mx < x + totalW
-                    and my > item.y and my < item.y + 50
-                    -- HIGHLIGHT
-                    if isHovered then
-                        love.graphics.setColor(1, 1, 1, 0.12)
-                        love.graphics.rectangle("fill",x + 100,item.y - (80 - 40) / 2,totalW - 140,80,8, 8)
-                    end
-
-                    love.graphics.setColor(1, 1, 1, 1)
-
-                    -- Cursor
-                    if isHovered then
-                        local bob = math.sin(Options.cursorTime * 8) * 4
-                        love.graphics.draw(Options.cursorImage, x + 220 + bob, item.y - 5, 90, 2, 2)
-                    end
-
-                    -- Text
-                    love.graphics.print(item.name, x + 140 + textOffsetX, item.y)
-                if item.name == "Music" then
-                    love.graphics.print(Options.volumeLevels[Options.musicLevel].label, rightX, item.y)
-                elseif item.name == "SFX" then
-                    love.graphics.print(Options.volumeLevels[Options.sfxLevel].label, rightX, item.y)
-                end
-            end
-
-        end
+        love.graphics.draw(Options.icons.back, backIconX, backIconY, 0, 1, 1)
+        love.graphics.setFont(Options.font)
+        love.graphics.print("Back", backTextX, backTextY)
+        
+        -- Store back button area for click detection
+        Options.backButtonArea.x = startX
+        Options.backButtonArea.y = startY
+        Options.backButtonArea.w = cellSize
+        Options.backButtonArea.h = cellSize
     end
 end
 
