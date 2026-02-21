@@ -30,10 +30,8 @@ Effects = require("modules.audio.sound_effects")
 
 -- Units
 UnitManager = require("modules.units.manager")
-Archer = require("modules.units.archer")
-Soldier = require("modules.units.soldier")
-Enemy_Soldier = require("modules.units.enemy_soldier")
-Harpoon_Fish = require("modules.units.harpoon_fish")
+UnitSpawner = require("modules.units.unit_spawner")
+
 
 function love.load()
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -59,19 +57,9 @@ function love.load()
     Clouds.load()
     Leaf.load()
 
-    UnitManager.add(Archer.player.unit)
-    UnitManager.add(Archer.enemy.unit)
-    UnitManager.add(Soldier.unit2)
-    UnitManager.add(Enemy_Soldier.unit)
-    UnitManager.add(Harpoon_Fish.player.unit)
-    UnitManager.add(Harpoon_Fish.enemy.unit)
-
-    Archer.player.setPosition(3, 3)
-    Archer.enemy.setPosition(6, 2)
-    Soldier.setPosition2(5, 2)
-    Enemy_Soldier.setPosition(9, 2)
-    Harpoon_Fish.player.setPosition(5, 7)
-    Harpoon_Fish.enemy.setPosition(6, 7)
+    -- Load units from map configuration
+    local mapUnitConfig = require("map.config.map_1_units")
+    UnitSpawner.spawnUnits(mapUnitConfig, UnitManager)
     
     TurnManager.startTurn()
 end
