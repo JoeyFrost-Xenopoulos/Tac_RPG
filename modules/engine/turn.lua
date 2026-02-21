@@ -142,7 +142,6 @@ function TurnManager.updateEnemyTurn(dt)
             if not currentUnit.hasMoveOrderQueued then
                 local targetUnit = TurnAI.findNearestEnemyUnit(currentUnit)
                 if targetUnit then
-                    TurnManager.enemyAttackTarget = targetUnit  -- Store the attack target
                     moveEnemyToward(currentUnit, targetUnit)
                 end
                 currentUnit.hasMoveOrderQueued = true
@@ -154,6 +153,7 @@ function TurnManager.updateEnemyTurn(dt)
                     local enemies = Attack.getEnemiesInRange(currentUnit)
                     if #enemies > 0 then
                         local target = enemies[1]
+                        TurnManager.enemyAttackTarget = target  -- Update to the actual target being attacked
                         -- Make attacker face the target
                         if target.tileX > currentUnit.tileX then
                             currentUnit.facingX = 1

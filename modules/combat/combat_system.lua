@@ -40,6 +40,7 @@ local weapons = {
         critical = 10,
         weight = 4,
         range = 2,
+        minRange = 2,
     },
     iron_sword = {
         name = "Iron Sword",

@@ -17,6 +17,8 @@ function MovementRange.show(unit)
     local CombatSystem = require("modules.combat.combat_system")
     local maxMove = unit.maxMoveRange
     local attackRange = CombatSystem.getAttackRange(unit)
+    local weapon = CombatSystem.getWeapon(unit.weapon)
+    local minRange = weapon.minRange or 1
     local startX, startY = unit.tileX, unit.tileY
     local visited = {}
     local moveQueue = {}
@@ -67,7 +69,8 @@ function MovementRange.show(unit)
     for _, tile in ipairs(moveTiles) do
         for dx = -attackRange, attackRange do
             for dy = -attackRange, attackRange do
-                if math.abs(dx) + math.abs(dy) <= attackRange then
+                local dist = math.abs(dx) + math.abs(dy)
+                if dist >= minRange and dist <= attackRange then
                     local ax, ay = tile.x + dx, tile.y + dy
                     local ak = key(ax, ay)
                     if not visited[ak] and not attackHighlighted[ak] then
@@ -89,11 +92,14 @@ function MovementRange.showAttackRange(unit)
     Grid.clearHighlights()
     local CombatSystem = require("modules.combat.combat_system")
     local attackRange = CombatSystem.getAttackRange(unit)
+    local weapon = CombatSystem.getWeapon(unit.weapon)
+    local minRange = weapon.minRange or 1
     local x, y = unit.tileX, unit.tileY
 
     for dx = -attackRange, attackRange do
         for dy = -attackRange, attackRange do
-            if math.abs(dx) + math.abs(dy) <= attackRange then
+            local dist = math.abs(dx) + math.abs(dy)
+            if dist >= minRange and dist <= attackRange then
                 local ax, ay = x + dx, y + dy
                 if ax ~= x or ay ~= y then  -- don't highlight the unit's own tile
                     Grid.highlightTile(ax, ay, {1.0, 0.2, 0.2, 0.4})

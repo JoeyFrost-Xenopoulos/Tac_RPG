@@ -23,8 +23,10 @@ function Lifecycle.startBattle(battle, attacker, defender)
     local defenderRange = CombatSystem.getAttackRange(defender)
     local attackerRange = CombatSystem.getAttackRange(attacker)
     
-    -- Disable counterattack if attacker is outside defender's range
-    if distance > defenderRange then
+    -- Disable counterattack if attacker is outside defender's range or inside defender's minimum range
+    local defenderWeapon = CombatSystem.getWeapon(defender.weapon)
+    local defenderMinRange = defenderWeapon.minRange or 1
+    if distance > defenderRange or distance < defenderMinRange then
         battle.counterattackEnabled = false
     end
     
