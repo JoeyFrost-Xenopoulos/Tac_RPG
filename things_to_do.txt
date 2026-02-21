@@ -3,13 +3,11 @@ Useful websites
 
 - add in names in battle frame
 
-- add in double hits
-    - animate the second attack
-
 - fix enemy weapon name being attached to attacker weapon name
 
 - add in exp system
-    - characters got lvl growth amounts
+    - characters got lvl growth amounts (That’s the base percent chance each stat will raise on a level up. Adding that together with the growth rate from their class gives you the 
+                                        total chance to raise a stat on leveling.)
     - after each combat the characters lvl up
 
 - For each specific stat, add a text when you click on it that describes what it does
@@ -29,8 +27,6 @@ Useful websites
 
 - add in the health potion system
     - fixup the health pot icon
-
-- fix scaling and power level
 
 - add in new sword icons
 
