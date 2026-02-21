@@ -141,7 +141,8 @@ function TurnManager.updateEnemyTurn(dt)
         if not TurnManager.unitsThatHaveMoved[currentUnit] then
             if not currentUnit.hasMoveOrderQueued then
                 local targetUnit = TurnAI.findNearestEnemyUnit(currentUnit)
-                if targetUnit then
+                -- Only move if we can actually reach an enemy
+                if targetUnit and TurnAI.canReachAnyEnemy(currentUnit) then
                     moveEnemyToward(currentUnit, targetUnit)
                 end
                 currentUnit.hasMoveOrderQueued = true
