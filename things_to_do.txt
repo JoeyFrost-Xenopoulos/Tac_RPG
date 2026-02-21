@@ -15,9 +15,6 @@ Useful websites
 - For each specific stat, add a text when you click on it that describes what it does
 
 - re-do the options menu
-- make the hits more "impactful"
-    - sending the enemies sliding back
-    - sparks fly out their backs
 
 - make the area for clicking on an enemy unit to attack more responsive
 
@@ -26,9 +23,9 @@ Useful websites
     - add in weapon triangle
     - make it so weapons have different looks visually
 
-- add in archers
 - add in mages
-- add in enemies
+
+- fix the enemy AI
 
 - add in the health potion system
     - fixup the health pot icon
