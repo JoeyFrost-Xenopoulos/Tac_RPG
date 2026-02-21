@@ -15,6 +15,11 @@ Options.cursorImage = nil
 -- Back button bounds
 Options.backButtonArea = {x = 0, y = 0, w = 0, h = 0}
 
+-- Scrollbar state
+Options.scrollPosition = 0.5  -- 0 to 1, where 0 is top and 1 is bottom
+Options.scrollBarImage = nil
+Options.scrollIconImage = nil
+
 local quadW = {left = 448, mid = 448, right = 448}
 local quadH = {top = 448, mid = 448, bot = 448}
 
@@ -53,6 +58,11 @@ function Options.load()
         music = love.graphics.newImage("assets/ui/icons/menu/music.png"),
         sfx = love.graphics.newImage("assets/ui/icons/menu/sfx.png")
     }
+
+    Options.scrollBarImage = love.graphics.newImage("assets/ui/icons/menu/scroll_bar.png")
+    Options.scrollBarImage:setFilter("nearest", "nearest")
+    Options.scrollIconImage = love.graphics.newImage("assets/ui/icons/menu/scroll_bar_2.png")
+    Options.scrollIconImage:setFilter("nearest", "nearest")
 
     Options.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
     Options.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
@@ -168,6 +178,25 @@ function Options.draw()
         Options.backButtonArea.y = startY
         Options.backButtonArea.w = cellSize
         Options.backButtonArea.h = cellSize
+        
+        -- Draw scrollbar on the right side
+        if Options.scrollBarImage and Options.scrollIconImage then
+            local scrollbarX = startX + 510
+            local scrollbarY = startY + 250
+            local scrollbarHeight = cellSize * 3 + offsetY * 2
+            
+            -- Draw scrollbar background
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.draw(Options.scrollBarImage, scrollbarX, scrollbarY, 0, 2, 3)
+            
+            -- Draw scrollbar icon at the appropriate position
+            local scrollIconHeight = Options.scrollIconImage:getHeight()
+            local availableHeight = scrollbarHeight - scrollIconHeight
+            local scrollIconY = scrollbarY + (availableHeight * Options.scrollPosition)
+            
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.draw(Options.scrollIconImage, scrollbarX, scrollIconY - 525, 0, 2, 4)
+        end
     end
 end
 
