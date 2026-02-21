@@ -72,7 +72,61 @@ local function createArcherConfig(isPlayer, colourSwapPath, animSwapPath, overri
     return config
 end
 
--- Player variant
+-- Factory function to create new archer instances
+local function createArcherInstance(variant)
+    variant = variant or "player"
+    
+    local config
+    if variant == "player" then
+        config = createArcherConfig(true, nil, nil, {
+            name = "Quickley",
+            maxHealth = 20,
+            health = 20,
+            strength = 10,
+            magic = 5,
+            skill = 6,
+            speed = 7,
+            luck = 8,
+            defense = 5,
+            resistance = 3,
+            constitution = 10
+        })
+    else -- enemy
+        config = createArcherConfig(
+            false,
+            "assets.units.archer.palettes.archer_avatar_swap",
+            "assets.units.archer.palettes.archer_main_swap",
+            {
+                name = "Enemy Archer",
+                maxHealth = 20,
+                health = 20,
+                strength = 8,
+                magic = 4,
+                skill = 4,
+                speed = 5,
+                luck = 6,
+                defense = 6,
+                resistance = 4,
+                constitution = 11
+            }
+        )
+    end
+    
+    local unit = UnitFactory.create(config)
+    
+    return {
+        unit = unit,
+        update = function(dt) unit:update(dt) end,
+        draw = function() unit:draw() end,
+        setPosition = function(x, y) unit:setPosition(x, y) end,
+        tryMove = function(x, y) return unit:tryMove(x, y) end,
+        setSelected = function(v) unit:setSelected(v) end,
+        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
+        isClicked = function(mx, my) return unit:isClicked(mx, my) end
+    }
+end
+
+-- Player variant (legacy singleton)
 local ArcherPlayer = createArcherConfig(true, nil, nil, {
     name = "Quickley",
     maxHealth = 20,
@@ -96,7 +150,7 @@ function ArcherPlayer.setSelected(v) ArcherPlayer.unit:setSelected(v) end
 function ArcherPlayer.isHovered(mx, my) return ArcherPlayer.unit:isHovered(mx, my) end
 function ArcherPlayer.isClicked(mx, my) return ArcherPlayer.unit:isClicked(mx, my) end
 
--- Enemy variant
+-- Enemy variant (legacy singleton)
 local ArcherEnemy = createArcherConfig(
     false,
     "assets.units.archer.palettes.archer_avatar_swap",
@@ -127,5 +181,6 @@ function ArcherEnemy.isClicked(mx, my) return ArcherEnemy.unit:isClicked(mx, my)
 
 return {
     player = ArcherPlayer,
-    enemy = ArcherEnemy
+    enemy = ArcherEnemy,
+    createInstance = createArcherInstance
 }

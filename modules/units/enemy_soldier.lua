@@ -1,7 +1,7 @@
 local UnitFactory = require("modules.units.unit_factory")
 
 local EnemyConfig = {
-    name = "Barnes",
+    name = "Enemy Soldier",
     type = "Enemy",
     avatar = love.graphics.newImage("assets/units/soldier/avatars/Avatars_06.png"),
     uiVariant = 2,
@@ -106,6 +106,26 @@ local EnemyConfig2 = {
     }
 }
 
+-- Factory function to create new enemy soldier instances
+local function createEnemySoldier(variant)
+    variant = variant or "unit"
+    
+    local config = (variant == "unit2") and EnemyConfig2 or EnemyConfig
+    local unit = UnitFactory.create(config)
+    
+    return {
+        unit = unit,
+        update = function(dt) unit:update(dt) end,
+        draw = function() unit:draw() end,
+        setPosition = function(x, y) unit:setPosition(x, y) end,
+        tryMove = function(x, y) return unit:tryMove(x, y) end,
+        setSelected = function(v) unit:setSelected(v) end,
+        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
+        isClicked = function(mx, my) return unit:isClicked(mx, my) end
+    }
+end
+
+-- Legacy singleton instances for backwards compatibility
 local Enemy = {}
 Enemy.unit = UnitFactory.create(EnemyConfig)
 Enemy.unit2 = UnitFactory.create(EnemyConfig2)
@@ -125,5 +145,8 @@ function Enemy.tryMove2(x, y) return Enemy.unit2:tryMove(x, y) end
 function Enemy.setSelected2(v) Enemy.unit2:setSelected(v) end
 function Enemy.isHovered2(mx, my) return Enemy.unit2:isHovered(mx, my) end
 function Enemy.isClicked2(mx, my) return Enemy.unit2:isClicked(mx, my) end
+
+-- Export both the legacy singleton and the factory
+Enemy.createInstance = createEnemySoldier
 
 return Enemy

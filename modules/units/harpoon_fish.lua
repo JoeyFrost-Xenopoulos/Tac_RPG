@@ -74,7 +74,64 @@ local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath, o
     return config
 end
 
--- Enemy variant
+-- Factory function to create new harpoon fish instances
+local function createHarpoonFishInstance(variant)
+    variant = variant or "player"
+    
+    local config
+    if variant == "enemy" then
+        config = createHarpoonFishConfig(
+            false,
+            {
+                "assets.units.harpoon_fish.palettes.enemy_pack_to_enemy",
+                "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap"
+            },
+            "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap",
+            {
+                name = "Barb",
+                maxHealth = 22,
+                health = 22,
+                strength = 6,
+                magic = 6,
+                skill = 4,
+                speed = 4,
+                luck = 2,
+                defense = 5,
+                resistance = 4,
+                constitution = 10
+            }
+        )
+    else -- player
+        config = createHarpoonFishConfig(true, "assets.units.harpoon_fish.palettes.enemy_pack_to_player", nil, {
+            name = "James",
+            maxHealth = 22,
+            health = 22,
+            strength = 9,
+            magic = 8,
+            skill = 6,
+            speed = 6,
+            luck = 3,
+            defense = 4,
+            resistance = 6,
+            constitution = 9
+        })
+    end
+    
+    local unit = UnitFactory.create(config)
+    
+    return {
+        unit = unit,
+        update = function(dt) unit:update(dt) end,
+        draw = function() unit:draw() end,
+        setPosition = function(x, y) unit:setPosition(x, y) end,
+        tryMove = function(x, y) return unit:tryMove(x, y) end,
+        setSelected = function(v) unit:setSelected(v) end,
+        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
+        isClicked = function(mx, my) return unit:isClicked(mx, my) end
+    }
+end
+
+-- Enemy variant (legacy singleton)
 local HarpoonFishEnemy = createHarpoonFishConfig(
     false,
     {
@@ -106,7 +163,7 @@ function HarpoonFishEnemy.setSelected(v) HarpoonFishEnemy.unit:setSelected(v) en
 function HarpoonFishEnemy.isHovered(mx, my) return HarpoonFishEnemy.unit:isHovered(mx, my) end
 function HarpoonFishEnemy.isClicked(mx, my) return HarpoonFishEnemy.unit:isClicked(mx, my) end
 
--- Player variant
+-- Player variant (legacy singleton)
 local HarpoonFishPlayer = createHarpoonFishConfig(true, "assets.units.harpoon_fish.palettes.enemy_pack_to_player", nil, {
     name = "James",
     maxHealth = 22,
@@ -132,5 +189,6 @@ function HarpoonFishPlayer.isClicked(mx, my) return HarpoonFishPlayer.unit:isCli
 
 return {
     enemy = HarpoonFishEnemy,
-    player = HarpoonFishPlayer
+    player = HarpoonFishPlayer,
+    createInstance = createHarpoonFishInstance
 }

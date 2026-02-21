@@ -16,6 +16,13 @@ end
 
 -- Helper to get unit and setPosition functions from module with variant
 local function getUnitAndSetPosition(unitModule, variant)
+    -- Check if module has a factory function (new system)
+    if unitModule.createInstance then
+        local instance = unitModule.createInstance(variant)
+        return instance.unit, instance.setPosition
+    end
+    
+    -- Fall back to legacy singleton system
     local unitInstance, setPositionFunc
     
     if variant then
