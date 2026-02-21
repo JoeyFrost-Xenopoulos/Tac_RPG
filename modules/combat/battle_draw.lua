@@ -131,6 +131,9 @@ function Draw.draw(state)
             if state.attacker and state.missEffectActive then
                 Effects.drawMiss(state, attackerStaticX + slideOffset, platformY + 160, state.defender)
             end
+            if state.attacker and state.critEffectActive then
+                Effects.drawCrit(state, attackerStaticX + slideOffset, platformY + 160)
+            end
         else
             -- During initial attack: attacker animates, defender is static
             
@@ -153,6 +156,9 @@ function Draw.draw(state)
             end
             if state.defender and state.missEffectActive then
                 Effects.drawMiss(state, defenderStaticX + slideOffset, platformY + 160, state.attacker)
+            end
+            if state.defender and state.critEffectActive then
+                Effects.drawCrit(state, defenderStaticX + slideOffset, platformY + 160)
             end
 
             if state.attacker then

@@ -210,4 +210,64 @@ function VisualEffects.drawMiss(state, targetX, targetY, missSourceUnit)
     love.graphics.draw(missImage, quad, targetX, targetY, 0, 2, 2, offsetX, offsetY)
 end
 
+function VisualEffects.updateCrit(state, attackFrameIndex, attacker, projectileHit)
+    if state.critEffectActive then return end
+
+    -- Only show crit effect if the attack was a critical hit
+    if not state.currentAttackIsCritical then return end
+    if not state.currentAttackHit then return end
+
+    local shouldTrigger = false
+    
+    -- Check if this is a ranged attack with projectile
+    local Projectile = require("modules.combat.battle_projectile")
+    if attacker and Projectile.needsProjectile(attacker) then
+        -- For ranged attacks, wait for projectile to hit
+        if projectileHit then
+            shouldTrigger = true
+        end
+    else
+        -- For melee attacks, use frame-based timing
+        if attackFrameIndex and attackFrameIndex >= 3 then
+            shouldTrigger = true
+        else
+            local critEffectTriggerTime = state.runDuration + 0.2
+            if state.battleTimer >= critEffectTriggerTime then
+                shouldTrigger = true
+            end
+        end
+    end
+
+    if shouldTrigger then
+        state.critEffectActive = true
+        state.critEffectStartTime = state.battleTimer
+        state.critFrameStartTime = state.battleTimer
+    end
+end
+
+function VisualEffects.drawCrit(state, targetX, targetY)
+    if not state.critEffectActive then return end
+
+    local critImage = state.critEffectImage
+    if not critImage then return end
+
+    local timeSinceCrit = state.battleTimer - state.critFrameStartTime
+    if timeSinceCrit > state.critAnimDuration then return end
+
+    local frameWidth = 100
+    local frameHeight = 100
+    local frameCount = 16
+    local animSpeed = state.critAnimDuration / frameCount
+
+    local frameIndex = math.floor(timeSinceCrit / animSpeed)
+    if frameIndex >= frameCount then return end
+
+    local frameX = frameIndex * frameWidth
+    local quad = love.graphics.newQuad(frameX, 0, frameWidth, frameHeight, critImage:getDimensions())
+
+    local offsetX = frameWidth / 2
+    local offsetY = frameHeight / 2
+    love.graphics.draw(critImage, quad, targetX, targetY, 0, 2, 2, offsetX, offsetY)
+end
+
 return VisualEffects

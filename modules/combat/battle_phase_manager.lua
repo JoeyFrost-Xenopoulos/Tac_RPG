@@ -41,8 +41,10 @@ function PhaseManager.updateInitialAttack(battleState, anim, effects, projectile
         -- Reset effect states for this attack phase
         battleState.hitEffectActive = false
         battleState.missEffectActive = false
+        battleState.critEffectActive = false
         battleState.hitFrameStartTime = 0
         battleState.missFrameStartTime = 0
+        battleState.critFrameStartTime = 0
         battleState.slideBackActive = false
         battleState.slideBackTarget = nil
         battleState.slideBackStartTime = 0
@@ -96,6 +98,7 @@ function PhaseManager.updateInitialAttack(battleState, anim, effects, projectile
     AttackHelpers.playAttackSounds(battleState, attackFrameIndex, battleState.attacker, projectileHit)
     effects.update(battleState, attackFrameIndex, battleState.attacker, projectileHit)
     effects.updateMiss(battleState, attackFrameIndex, battleState.attacker, projectileHit)
+    effects.updateCrit(battleState, attackFrameIndex, battleState.attacker, projectileHit)
 
     -- Apply damage when animation completes
     local totalDuration = battleState.runDuration + battleState.attackDuration + (battleState.returnDuration or 0)
@@ -128,8 +131,10 @@ function PhaseManager.updateCounterattack(battleState, anim, effects, projectile
         -- Reset effect states for this new attack phase
         battleState.hitEffectActive = false
         battleState.missEffectActive = false
+        battleState.critEffectActive = false
         battleState.hitFrameStartTime = 0
         battleState.missFrameStartTime = 0
+        battleState.critFrameStartTime = 0
         battleState.slideBackActive = false
         battleState.slideBackTarget = nil
         battleState.slideBackStartTime = 0
@@ -182,6 +187,7 @@ function PhaseManager.updateCounterattack(battleState, anim, effects, projectile
     AttackHelpers.playAttackSounds(battleState, attackFrameIndex, battleState.defender, projectileHit)
     effects.update(battleState, attackFrameIndex, battleState.defender, projectileHit)
     effects.updateMiss(battleState, attackFrameIndex, battleState.defender, projectileHit)
+    effects.updateCrit(battleState, attackFrameIndex, battleState.defender, projectileHit)
 
     -- Apply counterattack damage when animation completes
     local totalDuration = battleState.runDuration + battleState.attackDuration + (battleState.returnDuration or 0)

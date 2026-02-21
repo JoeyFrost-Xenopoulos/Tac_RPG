@@ -55,4 +55,12 @@ function Effects.drawMiss(state, targetX, targetY, missSourceUnit)
     return VisualEffects.drawMiss(state, targetX, targetY, missSourceUnit)
 end
 
+function Effects.updateCrit(state, attackFrameIndex, attacker, projectileHit)
+    return VisualEffects.updateCrit(state, attackFrameIndex, attacker, projectileHit)
+end
+
+function Effects.drawCrit(state, targetX, targetY)
+    return VisualEffects.drawCrit(state, targetX, targetY)
+end
+
 return Effects
