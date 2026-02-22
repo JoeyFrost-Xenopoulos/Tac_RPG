@@ -26,8 +26,6 @@ Useful websites
 
 - add in new sword icons
 
-- fix side by side draw bug
-
 - Make the spawning in useable for multiple maps somehow
 
 - Create a weapons table for item lookup

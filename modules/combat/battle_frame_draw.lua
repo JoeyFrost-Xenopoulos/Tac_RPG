@@ -63,9 +63,24 @@ function FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, weaponIcons, we
     love.graphics.setFont(weaponFont)
     love.graphics.setColor(1, 1, 1, 1)
 
-    -- Defender weapon (left side)
-    if state.defender then
-        local weaponType = state.defender.weapon or "sword"
+    local leftUnit
+    local rightUnit
+    if state.attacker and state.defender then
+        if state.attacker.isPlayer then
+            leftUnit = state.defender
+            rightUnit = state.attacker
+        else
+            leftUnit = state.attacker
+            rightUnit = state.defender
+        end
+    else
+        leftUnit = state.defender or state.attacker
+        rightUnit = (leftUnit == state.defender) and state.attacker or state.defender
+    end
+
+    -- Left side weapon
+    if leftUnit then
+        local weaponType = leftUnit.weapon or "sword"
         local weaponIcon = weaponIcons[weaponType] or weaponIcons.sword
         local iconW, iconH = weaponIcon:getDimensions()
         
@@ -80,9 +95,9 @@ function FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, weaponIcons, we
         )
     end
 
-    -- Attacker weapon (right side)
-    if state.attacker then
-        local weaponType = state.attacker.weapon or "sword"
+    -- Right side weapon
+    if rightUnit then
+        local weaponType = rightUnit.weapon or "sword"
         local weaponIcon = weaponIcons[weaponType] or weaponIcons.sword
         local iconW, iconH = weaponIcon:getDimensions()
         

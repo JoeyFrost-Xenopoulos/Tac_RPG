@@ -1,7 +1,7 @@
 local UnitFactory = require("modules.units.unit_factory")
 
 local EnemyConfig = {
-    name = "Enemy Soldier",
+    name = "Soldier",
     type = "Enemy",
     avatar = love.graphics.newImage("assets/units/soldier/avatars/Avatars_06.png"),
     uiVariant = 2,

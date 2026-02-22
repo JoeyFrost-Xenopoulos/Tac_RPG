@@ -97,7 +97,7 @@ local function createArcherInstance(variant)
             "assets.units.archer.palettes.archer_avatar_swap",
             "assets.units.archer.palettes.archer_main_swap",
             {
-                name = "Enemy Archer",
+                name = "Archer",
                 maxHealth = 20,
                 health = 20,
                 strength = 8,
