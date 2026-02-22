@@ -52,6 +52,24 @@ function Input.keypressed(key)
         -- Block all other input while UnitStats is visible
         return
     end
+
+    -- Show unit stats page when 'E' is pressed and cursor is hovered over a unit
+    if key == "e" then
+        local Cursor = require("modules.ui.cursor")
+        local UnitManager = require("modules.units.manager")
+        -- Only allow stats if not moving or in battle phase
+        if UnitManager.state ~= "idle" then return end
+        local Battle = require("modules.combat.battle")
+        if Battle.visible then return end
+        local tx, ty = Cursor.getTile()
+        for _, unit in ipairs(UnitManager.units or {}) do
+            if unit.tileX == tx and unit.tileY == ty then
+                UnitManager.selectedUnit = unit
+                UnitStats.show(unit)
+                return
+            end
+        end
+    end
 end
 
 return Input

@@ -26,22 +26,40 @@ State.transitionType = "vertical"  -- "vertical" or "horizontal"
 State.previousIndex = 1  -- Tracks the unit being transitioned away from
 State.previousView = "player"  -- Tracks the view being transitioned away from
 
-function State.show()
+function State.show(targetUnit)
     local UnitManager = require("modules.units.manager")
     State.playerUnits = {}
     State.enemyUnits = {}
-    
-    -- Separate units into player and enemy
-    for _, unit in ipairs(UnitManager.units or {}) do
+    local playerIndex, enemyIndex
+    -- Separate units into player and enemy, and find index of targetUnit
+    for i, unit in ipairs(UnitManager.units or {}) do
         if unit.isPlayer then
             table.insert(State.playerUnits, unit)
+            if targetUnit and unit == targetUnit then
+                playerIndex = #State.playerUnits
+            end
         else
             table.insert(State.enemyUnits, unit)
+            if targetUnit and unit == targetUnit then
+                enemyIndex = #State.enemyUnits
+            end
         end
     end
-    
-    State.currentView = "player"
-    State.index = 1
+    if targetUnit then
+        if playerIndex then
+            State.currentView = "player"
+            State.index = playerIndex
+        elseif enemyIndex then
+            State.currentView = "enemy"
+            State.index = enemyIndex
+        else
+            State.currentView = "player"
+            State.index = 1
+        end
+    else
+        State.currentView = "player"
+        State.index = 1
+    end
     State.visible = true
 end
 

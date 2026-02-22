@@ -20,12 +20,16 @@ function UnitStats.load()
     Resources.load()
 end
 
-function UnitStats.show()
-    State.show()
+function UnitStats.show(unit)
+    State.show(unit)
 end
 
 function UnitStats.hide()
     State.hide()
+    local Cursor = require("modules.ui.cursor")
+    local UnitManager = require("modules.units.manager")
+    UnitManager.selectedUnit = nil
+    Cursor.setMouse("default")
 end
 
 function UnitStats.isVisible()
