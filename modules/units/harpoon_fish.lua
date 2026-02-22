@@ -12,7 +12,7 @@ end
 local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
     local config = {
         name = "James",
-        type = "Soldier",
+        type = "Harpoon Fish",
         avatar = Utils.applyColourSwaps("assets/units/harpoon_fish/avatars/Harpoon_Fish.png", colourSwapPath),
         uiVariant = isPlayer and 1 or 2,
         isPlayer = isPlayer,
