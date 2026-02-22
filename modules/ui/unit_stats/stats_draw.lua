@@ -38,10 +38,35 @@ function StatsDraw.draw(unit, panelX, padding, nameY, statsY, opacity)
                 StatBar.draw(barX, barY, unit, stat.key, opacity)
             end
 
-            love.graphics.setColor(1, 1, 1, opacity)
-            love.graphics.print(stat.label .. ":", statsX + Config.STATS_LABEL_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
-            love.graphics.setColor(1, 1, 1, opacity)
-            love.graphics.print(stat.value, statsX + Config.STATS_VALUE_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
+            -- Draw border for label
+            local labelText = stat.label .. ":"
+            local labelX = statsX + Config.STATS_LABEL_X_OFFSET
+            local labelY = lineY + Config.STATS_Y_DRAW_OFFSET
+            love.graphics.setColor(0.086, 0.094, 0.329, opacity) -- #161754 border
+            for dx = -1, 1 do
+                for dy = -1, 1 do
+                    if dx ~= 0 or dy ~= 0 then
+                        love.graphics.print(labelText, labelX + dx, labelY + dy)
+                    end
+                end
+            end
+            love.graphics.setColor(0.745, 0.957, 0.965, opacity) -- #bef4f6 fill
+            love.graphics.print(labelText, labelX, labelY)
+
+            -- Draw border for value
+            local valueText = stat.value
+            local valueX = statsX + Config.STATS_VALUE_X_OFFSET
+            local valueY = lineY + Config.STATS_Y_DRAW_OFFSET
+            love.graphics.setColor(0.086, 0.094, 0.329, opacity) -- #161754 border
+            for dx = -1, 1 do
+                for dy = -1, 1 do
+                    if dx ~= 0 or dy ~= 0 then
+                        love.graphics.print(valueText, valueX + dx, valueY + dy)
+                    end
+                end
+            end
+            love.graphics.setColor(0.745, 0.957, 0.965, opacity) -- #bef4f6 fill
+            love.graphics.print(valueText, valueX, valueY)
         end
         
         -- Draw right column
@@ -55,10 +80,35 @@ function StatsDraw.draw(unit, panelX, padding, nameY, statsY, opacity)
                 StatBar.draw(barX, barY, unit, stat.key, opacity)
             end
 
-            love.graphics.setColor(1, 1, 1, opacity)
-            love.graphics.print(stat.label .. ":", rightX + Config.STATS_LABEL_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
-            love.graphics.setColor(1, 1, 1, opacity)
-            love.graphics.print(stat.value, rightX + Config.STATS_VALUE_X_OFFSET, lineY + Config.STATS_Y_DRAW_OFFSET)
+            -- Draw border for label
+            local labelText = stat.label .. ":"
+            local labelX = rightX + Config.STATS_LABEL_X_OFFSET
+            local labelY = lineY + Config.STATS_Y_DRAW_OFFSET
+            love.graphics.setColor(0.086, 0.094, 0.329, opacity) -- #161754 border
+            for dx = -1, 1 do
+                for dy = -1, 1 do
+                    if dx ~= 0 or dy ~= 0 then
+                        love.graphics.print(labelText, labelX + dx, labelY + dy)
+                    end
+                end
+            end
+            love.graphics.setColor(0.745, 0.957, 0.965, opacity) -- #bef4f6 fill
+            love.graphics.print(labelText, labelX, labelY)
+
+            -- Draw border for value
+            local valueText = stat.value
+            local valueX = rightX + Config.STATS_VALUE_X_OFFSET
+            local valueY = lineY + Config.STATS_Y_DRAW_OFFSET
+            love.graphics.setColor(0.086, 0.094, 0.329, opacity) -- #161754 border
+            for dx = -1, 1 do
+                for dy = -1, 1 do
+                    if dx ~= 0 or dy ~= 0 then
+                        love.graphics.print(valueText, valueX + dx, valueY + dy)
+                    end
+                end
+            end
+            love.graphics.setColor(0.745, 0.957, 0.965, opacity) -- #bef4f6 fill
+            love.graphics.print(valueText, valueX, valueY)
         end
     end
 end

@@ -33,3 +33,9 @@ Useful websites
 - add in the double platforms for ranged attacks with no counter attack
 
 - Completely redo enemy AI
+
+----
+enemy colour
+
+#f6c0be
+#541636
