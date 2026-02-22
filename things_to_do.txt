@@ -3,8 +3,6 @@ Useful websites
 
 - add in names in battle frame
 
-- fix enemy weapon name being attached to attacker weapon name
-
 - add in exp system
     - characters got lvl growth amounts (That’s the base percent chance each stat will raise on a level up. Adding that together with the growth rate from their class gives you the 
                                         total chance to raise a stat on leveling.)
@@ -22,8 +20,6 @@ Useful websites
     - make it so weapons have different looks visually
 
 - add in mages
-
-- fix the enemy AI
 
 - add in the health potion system
     - fixup the health pot icon

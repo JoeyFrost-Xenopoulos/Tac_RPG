@@ -47,7 +47,8 @@ function MovementRange.show(unit)
                     local blocked = false
                     for _, otherUnit in ipairs(UnitManager.units) do
                         if otherUnit ~= unit and otherUnit.tileX == nx and otherUnit.tileY == ny then
-                            if not otherUnit.isPlayer then
+                            -- Block only if the other unit is on a different team
+                            if otherUnit.isPlayer ~= unit.isPlayer then
                                 blocked = true
                                 break
                             end

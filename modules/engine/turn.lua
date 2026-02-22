@@ -103,6 +103,17 @@ function TurnManager.areAllUnitsMoved()
     return true
 end
 
+-- Helper function to check if any unit is currently moving
+local function isAnyUnitMoving()
+    local UnitManager = require("modules.units.manager")
+    for _, unit in ipairs(UnitManager.units) do
+        if unit.isMoving then
+            return true
+        end
+    end
+    return false
+end
+
 function TurnManager.updateEnemyTurn(dt)
     if TurnManager.currentTurn ~= "enemy" or TurnManager.enemyTurnState ~= "moving" then 
         return 
@@ -130,6 +141,11 @@ function TurnManager.updateEnemyTurn(dt)
         TurnManager.enemyCurrentUnit = nil
         TurnManager.enemyAttackTarget = nil  -- Clear attack target after battle
         TurnManager.currentUnitIndex = TurnManager.currentUnitIndex + 1
+        return
+    end
+    
+    -- Wait for all units to finish moving before processing the next unit
+    if isAnyUnitMoving() then
         return
     end
     

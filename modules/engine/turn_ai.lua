@@ -92,7 +92,12 @@ local function findRetreatPosition(enemyUnit, targetUnit)
     
     while #queue > 0 do
         local node = table.remove(queue, 1)
-        table.insert(reachableTiles, {x = node.x, y = node.y, dist = node.dist})
+        
+        -- Only add to reachableTiles if the tile is not occupied by another unit
+        local tileOccupant = getUnitAtTile(node.x, node.y, enemyUnit)
+        if not tileOccupant then
+            table.insert(reachableTiles, {x = node.x, y = node.y, dist = node.dist})
+        end
         
         if node.dist < maxMove then
             for _, d in ipairs({{1,0},{-1,0},{0,1},{0,-1}}) do
@@ -101,7 +106,8 @@ local function findRetreatPosition(enemyUnit, targetUnit)
                 
                 if not visited[k] and Map.canMove(node.x, node.y, nx, ny) then
                     local occupying = getUnitAtTile(nx, ny, enemyUnit)
-                    if not occupying then
+                    -- Allow moving through allies (same team)
+                    if not occupying or occupying.isPlayer == enemyUnit.isPlayer then
                         visited[k] = true
                         table.insert(queue, {x = nx, y = ny, dist = node.dist + 1})
                     end
@@ -154,7 +160,8 @@ function TurnAI.moveEnemyToward(enemyUnit, targetUnit)
                     return false
                 end
                 local occupying = UnitManager.getUnitAt(toX, toY)
-                return not occupying
+                -- Allow moving through allies (same team)
+                return not occupying or occupying.isPlayer == enemyUnit.isPlayer
             end
             
             local path = Pathfinding.findPath(
@@ -178,7 +185,8 @@ function TurnAI.moveEnemyToward(enemyUnit, targetUnit)
             return false
         end
         local occupying = UnitManager.getUnitAt(toX, toY)
-        return not occupying or occupying == targetUnit
+        -- Allow moving through allies (same team) or the target unit
+        return not occupying or occupying == targetUnit or occupying.isPlayer == enemyUnit.isPlayer
     end
 
     local path = Pathfinding.findPath(

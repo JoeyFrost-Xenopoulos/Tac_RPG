@@ -45,7 +45,6 @@ return {
             y = 2
         },
         
-        -- Enemy Units (using helper function)
         -- Enemy Archers
         spawnEnemy("archer", 2, 4),
         spawnEnemy("archer", 13, 7),

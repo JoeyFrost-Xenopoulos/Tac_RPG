@@ -10,8 +10,29 @@ local function attach(UnitManager)
         table.insert(UnitManager.units, unit)
     end
 
+    local function getDrawY(unit)
+        if unit.isMoving and unit.moveDuration and unit.moveDuration > 0 then
+            local t = unit.moveTime / unit.moveDuration
+            return unit.startY + (unit.targetY - unit.startY) * t
+        end
+
+        return unit.tileY
+    end
+
     function UnitManager.draw()
-        table.sort(UnitManager.units, function(a, b) return a.tileY < b.tileY end)
+        table.sort(UnitManager.units, function(a, b)
+            local ay = getDrawY(a)
+            local by = getDrawY(b)
+            if ay ~= by then
+                return ay < by
+            end
+
+            if a.isMoving ~= b.isMoving then
+                return not a.isMoving
+            end
+
+            return (a.tileX or 0) < (b.tileX or 0)
+        end)
         for _, unit in ipairs(UnitManager.units) do
             if not UnitManager._isUnitDead(unit) then
                 unit:draw()
