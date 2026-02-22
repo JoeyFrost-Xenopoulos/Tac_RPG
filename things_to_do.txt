@@ -31,6 +31,3 @@ Useful websites
 - Create a weapons table for item lookup
 
 - add in the double platforms for ranged attacks with no counter attack
-
-- refactor battle.lua agian
-- refactor battle_effects.lua again

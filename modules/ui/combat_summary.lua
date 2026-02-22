@@ -159,6 +159,7 @@ function CombatSummary.draw()
     end
     
     -- Helper function to draw comparison stats
+    local attackerValueOffsetX = 10
     local function drawStat(label, attackerValue, defenderValue, customFont, valueFont, attackerOffset, defenderOffset, labelFont, attackerX, attackerY, defenderX, defenderY)
         local font = labelFont or customFont or CombatSummary.font
         local vFont = valueFont or customFont or CombatSummary.font
@@ -196,7 +197,7 @@ function CombatSummary.draw()
         
         -- Draw values with borders
         love.graphics.setFont(vFont)
-        drawTextWithBorder(attackerStr, attackerX, attackerY, vFont, true)
+        drawTextWithBorder(attackerStr, attackerX + attackerValueOffsetX, attackerY, vFont, true)
         drawTextWithBorder(defenderStr, defenderX, defenderY, vFont, true)
         
         textY = textY + lineHeight
