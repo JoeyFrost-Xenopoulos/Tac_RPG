@@ -4,8 +4,7 @@ Useful websites
 - add in names in battle frame
 
 - add in exp system
-    - characters got lvl growth amounts (That’s the base percent chance each stat will raise on a level up. Adding that together with the growth rate from their class gives you the 
-                                        total chance to raise a stat on leveling.)
+    - characters got lvl growth amounts
     - after each combat the characters lvl up
 
 - For each specific stat, add a text when you click on it that describes what it does
@@ -31,11 +30,3 @@ Useful websites
 - Create a weapons table for item lookup
 
 - add in the double platforms for ranged attacks with no counter attack
-
-- Completely redo enemy AI
-
-----
-enemy colour
-
-#f6c0be
-#541636

@@ -1,0 +1,141 @@
+{
+  "name": "Edit Preset",
+  "created": "2026-03-10T18:57:06.847Z",
+  "version": 4,
+  "edits": [
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 65,
+          "g": 145,
+          "b": 157,
+          "hex": "#41919d"
+        },
+        "to": {
+          "r": 190,
+          "g": 110,
+          "b": 97,
+          "hex": "#be6e61"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 92,
+          "g": 179,
+          "b": 163,
+          "hex": "#5cb3a3"
+        },
+        "to": {
+          "r": 210,
+          "g": 170,
+          "b": 136,
+          "hex": "#d2aa88"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 66,
+          "g": 80,
+          "b": 98,
+          "hex": "#425062"
+        },
+        "to": {
+          "r": 105,
+          "g": 61,
+          "b": 91,
+          "hex": "#693d5b"
+        },
+        "hasSelection": false
+      }
+    },
+    {
+      "type": "swap",
+      "swap": {
+        "from": {
+          "r": 72,
+          "g": 126,
+          "b": 143,
+          "hex": "#487e8f"
+        },
+        "to": {
+          "r": 168,
+          "g": 98,
+          "b": 98,
+          "hex": "#a86262"
+        },
+        "hasSelection": false
+      }
+    }
+  ],
+  "swaps": [
+    {
+      "from": {
+        "r": 65,
+        "g": 145,
+        "b": 157,
+        "hex": "#41919d"
+      },
+      "to": {
+        "r": 190,
+        "g": 110,
+        "b": 97,
+        "hex": "#be6e61"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 92,
+        "g": 179,
+        "b": 163,
+        "hex": "#5cb3a3"
+      },
+      "to": {
+        "r": 210,
+        "g": 170,
+        "b": 136,
+        "hex": "#d2aa88"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 66,
+        "g": 80,
+        "b": 98,
+        "hex": "#425062"
+      },
+      "to": {
+        "r": 105,
+        "g": 61,
+        "b": 91,
+        "hex": "#693d5b"
+      },
+      "hasSelection": false
+    },
+    {
+      "from": {
+        "r": 72,
+        "g": 126,
+        "b": 143,
+        "hex": "#487e8f"
+      },
+      "to": {
+        "r": 168,
+        "g": 98,
+        "b": 98,
+        "hex": "#a86262"
+      },
+      "hasSelection": false
+    }
+  ]
+}
