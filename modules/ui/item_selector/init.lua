@@ -16,6 +16,13 @@ function ItemSelector.load()
     State.icons.sword:setFilter("nearest", "nearest")
     State.icons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
     State.icons.harpoon:setFilter("nearest", "nearest")
+    State.icons.fire = love.graphics.newImage("assets/ui/icons/fire_book.png")
+    State.icons.fire:setFilter("nearest", "nearest")
+    State.icons.ice = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    State.icons.ice:setFilter("nearest", "nearest")
+    -- Keep thunder mapped for compatibility with older spell ids.
+    State.icons.thunder = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    State.icons.thunder:setFilter("nearest", "nearest")
     
     State.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
 

@@ -15,6 +15,13 @@ function WeaponSelector.load()
     State.weaponIcons.harpoon:setFilter("nearest", "nearest")
     State.weaponIcons.bow = love.graphics.newImage("assets/ui/icons/bow.png")
     State.weaponIcons.bow:setFilter("nearest", "nearest")
+    State.weaponIcons.fire = love.graphics.newImage("assets/ui/icons/fire_book.png")
+    State.weaponIcons.fire:setFilter("nearest", "nearest")
+    State.weaponIcons.ice = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    State.weaponIcons.ice:setFilter("nearest", "nearest")
+    -- Keep thunder mapped for compatibility with older spell ids.
+    State.weaponIcons.thunder = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    State.weaponIcons.thunder:setFilter("nearest", "nearest")
     
     State.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
 

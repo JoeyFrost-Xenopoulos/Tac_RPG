@@ -32,6 +32,9 @@ Config.ITEM_NAMES = {
     sword = "Heavy Sword",
     sword_test = "Practice Blade",
     harpoon = "Harpoon",
+    fire = "Fire Tome",
+    ice = "Ice Tome",
+    thunder = "Ice Tome",
 }
 
 return Config

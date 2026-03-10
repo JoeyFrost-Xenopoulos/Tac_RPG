@@ -7,7 +7,8 @@ local function spawnEnemy(unitClass, x, y)
     local enemyVariants = {
         soldier = { type = "enemy_soldier", variant = "unit" },
         archer = { type = "archer", variant = "enemy" },
-        harpoon_fish = { type = "harpoon_fish", variant = "enemy" }
+        harpoon_fish = { type = "harpoon_fish", variant = "enemy" },
+        monk = { type = "monk", variant = "enemy" }
     }
     
     local config = enemyVariants[unitClass]
@@ -44,6 +45,12 @@ return {
             x = 2,
             y = 2
         },
+        {
+            type = "monk",
+            variant = "player",
+            x = 4,
+            y = 2
+        },
         
         -- Enemy Archers
         spawnEnemy("archer", 2, 4),
@@ -57,6 +64,9 @@ return {
         
         -- Enemy Harpoon Fish
         spawnEnemy("harpoon_fish", 8, 8),
-        spawnEnemy("harpoon_fish", 10, 2)
+        spawnEnemy("harpoon_fish", 10, 2),
+
+        -- Enemy Monks
+        spawnEnemy("monk", 13, 10)
     }
 }

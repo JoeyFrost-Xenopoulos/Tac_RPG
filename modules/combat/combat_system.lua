@@ -69,6 +69,15 @@ local weapons = {
         weight = 3,
         range = 1,
     },
+    ice = {
+        name = "Ice",
+        type = "magic",
+        might = 6,
+        hitRate = 80,
+        critical = 10,
+        weight = 4,
+        range = 1,
+    },
     thunder = {
         name = "Thunder",
         type = "magic",

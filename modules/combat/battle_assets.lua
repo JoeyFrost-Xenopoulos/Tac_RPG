@@ -34,6 +34,13 @@ function Assets.load(state)
     state.weaponIcons.harpoon:setFilter("nearest", "nearest")
     state.weaponIcons.bow = love.graphics.newImage("assets/ui/icons/bow.png")
     state.weaponIcons.bow:setFilter("nearest", "nearest")
+    state.weaponIcons.fire = love.graphics.newImage("assets/ui/icons/fire_book.png")
+    state.weaponIcons.fire:setFilter("nearest", "nearest")
+    state.weaponIcons.ice = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    state.weaponIcons.ice:setFilter("nearest", "nearest")
+    -- Keep thunder mapped for compatibility with older spell ids.
+    state.weaponIcons.thunder = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    state.weaponIcons.thunder:setFilter("nearest", "nearest")
     
     -- Load projectile images
     state.projectileImages = {}

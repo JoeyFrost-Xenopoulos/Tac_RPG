@@ -8,6 +8,8 @@ local WEAPON_NAMES = {
     sword_test = "Practice Blade",
     bow = "Bow",
     harpoon = "Harpoon",
+    fire = "Fire Tome",
+    ice = "Ice Tome",
 }
 
 local PREVIEW_CONFIG = {
