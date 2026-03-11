@@ -3,6 +3,46 @@
 
 local VisualEffects = {}
 
+local function isMonkFireCast(attacker)
+    local Helpers = require("modules.combat.battle_helpers")
+    return attacker
+        and Helpers.isMonkCaster(attacker)
+        and attacker.weapon == "fire"
+        and attacker.animations
+        and attacker.animations.attack_fire
+end
+
+local function maybeStartMonkFire(state, attackFrameIndex, attacker)
+    if not isMonkFireCast(attacker) then return false end
+    if state.fireEffectActive then return true end
+
+    local castAnim = attacker.animations and attacker.animations.attack
+    local castFrameCount = castAnim and castAnim.quads and #castAnim.quads or 0
+    if castFrameCount <= 0 then return false end
+    if not attackFrameIndex then return false end
+
+    if attackFrameIndex >= castFrameCount then
+        state.fireEffectActive = true
+        state.fireEffectStartTime = state.battleTimer
+        state.fireImpactTriggered = false
+    end
+
+    return state.fireEffectActive
+end
+
+function VisualEffects.getFireFrameIndex(state, attacker)
+    if not state.fireEffectActive then return 0 end
+    if not state.fireEffectStartTime then return 0 end
+    if not attacker or not attacker.animations or not attacker.animations.attack_fire then return 0 end
+
+    local fireAnim = attacker.animations.attack_fire
+    local speed = fireAnim.speed or 0.1
+    local elapsed = state.battleTimer - state.fireEffectStartTime
+    if elapsed < 0 then return 0 end
+
+    return math.floor(elapsed / speed) + 1
+end
+
 function VisualEffects.update(state, attackFrameIndex, attacker, projectileHit)
     if state.hitEffectActive then return end
 
@@ -10,15 +50,23 @@ function VisualEffects.update(state, attackFrameIndex, attacker, projectileHit)
     if not state.currentAttackHit then return end
 
     local shouldTrigger = false
+    local monkFireActive = maybeStartMonkFire(state, attackFrameIndex, attacker)
+    if monkFireActive then
+        local fireFrameIndex = VisualEffects.getFireFrameIndex(state, attacker)
+        if fireFrameIndex >= 8 and not state.fireImpactTriggered then
+            state.fireImpactTriggered = true
+            shouldTrigger = true
+        end
+    end
     
     -- Check if this is a ranged attack with projectile
     local Projectile = require("modules.combat.battle_projectile")
-    if attacker and Projectile.needsProjectile(attacker) then
+    if not shouldTrigger and attacker and Projectile.needsProjectile(attacker) then
         -- For ranged attacks, wait for projectile to hit
         if projectileHit then
             shouldTrigger = true
         end
-    else
+    elseif not shouldTrigger then
         -- For melee attacks, use frame-based timing
         if attackFrameIndex and attackFrameIndex >= 3 then
             shouldTrigger = true
@@ -152,15 +200,23 @@ function VisualEffects.updateMiss(state, attackFrameIndex, attacker, projectileH
     if state.currentAttackHit then return end
 
     local shouldTrigger = false
+    local monkFireActive = maybeStartMonkFire(state, attackFrameIndex, attacker)
+    if monkFireActive then
+        local fireFrameIndex = VisualEffects.getFireFrameIndex(state, attacker)
+        if fireFrameIndex >= 8 and not state.fireImpactTriggered then
+            state.fireImpactTriggered = true
+            shouldTrigger = true
+        end
+    end
     
     -- Check if this is a ranged attack with projectile
     local Projectile = require("modules.combat.battle_projectile")
-    if attacker and Projectile.needsProjectile(attacker) then
+    if not shouldTrigger and attacker and Projectile.needsProjectile(attacker) then
         -- For ranged attacks, wait for projectile to hit
         if projectileHit then
             shouldTrigger = true
         end
-    else
+    elseif not shouldTrigger then
         -- For melee attacks, use frame-based timing
         if attackFrameIndex and attackFrameIndex >= 3 then
             shouldTrigger = true
@@ -218,15 +274,23 @@ function VisualEffects.updateCrit(state, attackFrameIndex, attacker, projectileH
     if not state.currentAttackHit then return end
 
     local shouldTrigger = false
+    local monkFireActive = maybeStartMonkFire(state, attackFrameIndex, attacker)
+    if monkFireActive then
+        local fireFrameIndex = VisualEffects.getFireFrameIndex(state, attacker)
+        if fireFrameIndex >= 8 and not state.fireImpactTriggered then
+            state.fireImpactTriggered = true
+            shouldTrigger = true
+        end
+    end
     
     -- Check if this is a ranged attack with projectile
     local Projectile = require("modules.combat.battle_projectile")
-    if attacker and Projectile.needsProjectile(attacker) then
+    if not shouldTrigger and attacker and Projectile.needsProjectile(attacker) then
         -- For ranged attacks, wait for projectile to hit
         if projectileHit then
             shouldTrigger = true
         end
-    else
+    elseif not shouldTrigger then
         -- For melee attacks, use frame-based timing
         if attackFrameIndex and attackFrameIndex >= 3 then
             shouldTrigger = true
@@ -243,6 +307,37 @@ function VisualEffects.updateCrit(state, attackFrameIndex, attacker, projectileH
         state.critEffectStartTime = state.battleTimer
         state.critFrameStartTime = state.battleTimer
     end
+end
+
+function VisualEffects.drawFire(state, targetX, targetY, attacker)
+    if not state.fireEffectActive then return end
+    if not attacker or not attacker.animations or not attacker.animations.attack_fire then return end
+
+    local fireAnim = attacker.animations.attack_fire
+    if not fireAnim.img or not fireAnim.quads then return end
+
+    local frameIndex = VisualEffects.getFireFrameIndex(state, attacker)
+    if frameIndex < 1 then return end
+
+    if frameIndex > #fireAnim.quads then
+        state.fireEffectActive = false
+        return
+    end
+
+    local quad = fireAnim.quads[frameIndex]
+    local _, _, qw, qh = quad:getViewport()
+
+    love.graphics.draw(
+        fireAnim.img,
+        quad,
+        targetX,
+        targetY,
+        0,
+        4,
+        4,
+        qw / 2,
+        qh / 2
+    )
 end
 
 function VisualEffects.drawCrit(state, targetX, targetY)

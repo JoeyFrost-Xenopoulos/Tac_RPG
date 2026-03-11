@@ -6,6 +6,7 @@ local Helpers = {}
 function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, projectileHit)
     local Audio = require("modules.audio.sound_effects")
     local Projectile = require("modules.combat.battle_projectile")
+    local BattleHelpers = require("modules.combat.battle_helpers")
 
     if attacker and attacker.weapon == "bow" and attackFrameIndex == 1 and not battleState.attackBowPlayed then
         Audio.playBowArrow()
@@ -17,8 +18,21 @@ function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, proje
         battleState.attackHarpoonPlayed = true
     end
     
+    local isMonkFire = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "fire"
+
+    if isMonkFire and battleState.fireImpactTriggered and not battleState.attackHitPlayed then
+        if battleState.currentAttackHit then
+            if battleState.currentAttackIsCritical then
+                Audio.playAttackCritical()
+            else
+                Audio.playAttackHit()
+            end
+        else
+            Audio.playAttackMiss()
+        end
+        battleState.attackHitPlayed = true
     -- For ranged attacks, play sounds based on projectile hit
-    if attacker and Projectile.needsProjectile(attacker) then
+    elseif attacker and Projectile.needsProjectile(attacker) then
         if projectileHit then
             if battleState.currentAttackHit then
                 if battleState.currentAttackIsCritical then
@@ -133,6 +147,9 @@ function Helpers.resetPhaseFlags(battleState)
     battleState.attackResultCalculated = false
     battleState.projectileSpawned = false
     battleState.projectileFrame4Time = 0
+    battleState.fireEffectActive = false
+    battleState.fireEffectStartTime = 0
+    battleState.fireImpactTriggered = false
 end
 
 function Helpers.finalizeDamageAnimation(battleState)

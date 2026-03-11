@@ -4,10 +4,11 @@
 local PhaseManager = {}
 
 local function applyAttackDurations(battleState, unit)
+    local Helpers = require("modules.combat.battle_helpers")
     local CombatSystem = require("modules.combat.combat_system")
     local unitRange = CombatSystem.getAttackRange(unit)
 
-    if unitRange > 1 then
+    if Helpers.isMonkCaster(unit) or unitRange > 1 then
         battleState.runDuration = 0
         battleState.returnDuration = 0
         battleState.attackDuration = 1.6
@@ -41,6 +42,9 @@ function PhaseManager.startFollowupAttack(battleState, isDefenderAttacking)
     battleState.projectileStartY = 0
     battleState.projectileTargetX = 0
     battleState.projectileTargetY = 0
+    battleState.fireEffectActive = false
+    battleState.fireEffectStartTime = 0
+    battleState.fireImpactTriggered = false
     battleState.slideBackActive = false
     battleState.slideBackTarget = nil
     battleState.slideBackStartTime = 0

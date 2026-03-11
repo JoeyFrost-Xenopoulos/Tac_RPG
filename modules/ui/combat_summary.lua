@@ -40,6 +40,12 @@ function CombatSummary.load()
     CombatSummary.weaponIcons.bow:setFilter("nearest", "nearest")
     CombatSummary.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
     CombatSummary.weaponIcons.harpoon:setFilter("nearest", "nearest")
+    CombatSummary.weaponIcons.fire = love.graphics.newImage("assets/ui/icons/fire_book.png")
+    CombatSummary.weaponIcons.fire:setFilter("nearest", "nearest")
+    CombatSummary.weaponIcons.ice = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    CombatSummary.weaponIcons.ice:setFilter("nearest", "nearest")
+    CombatSummary.weaponIcons.thunder = love.graphics.newImage("assets/ui/icons/ice_book.png")
+    CombatSummary.weaponIcons.thunder:setFilter("nearest", "nearest")
 end
 
 function CombatSummary.show(attacker, defender)

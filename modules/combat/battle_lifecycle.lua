@@ -43,8 +43,8 @@ function Lifecycle.startBattle(battle, attacker, defender)
         battle.followupAttackerIsDefender = false
     end
     
-    -- Skip walk animation for ranged attacks (range > 1)
-    if attackerRange > 1 then
+    -- Skip walk animation for ranged attacks and monk casting in place
+    if Helpers.isMonkCaster(attacker) or attackerRange > 1 then
         battle.runDuration = 0
         battle.returnDuration = 0
         battle.attackDuration = 1.6  -- Extended duration to accommodate projectile flight

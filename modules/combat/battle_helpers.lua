@@ -23,6 +23,12 @@ function Helpers.getPlayerUnit(attacker, defender)
     return nil
 end
 
+function Helpers.isMonkCaster(unit)
+    if not unit then return false end
+    local unitType = type(unit.type) == "string" and unit.type:lower() or ""
+    return unitType == "monk"
+end
+
 function Helpers.getEnemyUnit(attacker, defender)
     if attacker and not attacker.isPlayer then
         return attacker
@@ -59,8 +65,11 @@ function Helpers.isReturnPhase(state)
         and state.battleTimer < timings.returnStartTime + timings.returnDuration
 end
 
-function Helpers.getAttackAnimName(state)
+function Helpers.getAttackAnimName(state, actingUnit)
     if Helpers.isRunPhase(state) or Helpers.isReturnPhase(state) then
+        if Helpers.isMonkCaster(actingUnit) then
+            return "attack"
+        end
         return "walk"
     elseif Helpers.isAttackPhase(state) then
         return "attack"

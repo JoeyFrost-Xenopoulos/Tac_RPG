@@ -120,7 +120,7 @@ function Draw.draw(state)
 
             if state.defender then
                 local defenderX = Anim.getAttackerDisplayPosition(state, screenW, platformW, state.defender)
-                local defenderAnim = Helpers.getAttackAnimName(state)
+                local defenderAnim = Helpers.getAttackAnimName(state, state.defender)
                 Draw.drawUnit(state, state.defender, defenderX, platformY - 60, defenderFacingX, false, defenderAnim)
             end
 
@@ -133,6 +133,10 @@ function Draw.draw(state)
             end
             if state.attacker and state.critEffectActive then
                 Effects.drawCrit(state, attackerStaticX + slideOffset, platformY + 160)
+            end
+
+            if state.attacker and state.fireEffectActive then
+                Effects.drawFire(state, attackerStaticX + slideOffset, platformY + 160, state.defender)
             end
         else
             -- During initial attack: attacker animates, defender is static
@@ -151,6 +155,10 @@ function Draw.draw(state)
                 Draw.drawUnit(state, state.defender, defenderStaticX + slideOffset, platformY - 60, defenderFacingX, false, defenderAnim, true)
             end
 
+            if state.defender and state.fireEffectActive then
+                Effects.drawFire(state, defenderStaticX + slideOffset, platformY + 160, state.attacker)
+            end
+
             if state.defender and state.hitEffectActive then
                 Effects.drawBreak(state, defenderStaticX + slideOffset, platformY + 160, state.attacker)
             end
@@ -164,7 +172,7 @@ function Draw.draw(state)
             if state.attacker then
                 local attackerX = Anim.getAttackerDisplayPosition(state, screenW, platformW, state.attacker)
                 local attackerFacingX = state.attacker.isPlayer and -1 or 1
-                local attackAnim = Helpers.getAttackAnimName(state)
+                local attackAnim = Helpers.getAttackAnimName(state, state.attacker)
                 Draw.drawUnit(state, state.attacker, attackerX, platformY - 60, attackerFacingX, false, attackAnim)
             end
         end
@@ -203,8 +211,10 @@ function Draw.drawUnit(state, unit, x, y, facingX, isAttacking, animNameOverride
     if not isVisible then return end
 
     local animName = animNameOverride or (isAttacking and "attack" or "idle")
+    local drawAnimName = animName
     local quad
     if animName == "attack" then
+        drawAnimName = Anim.getAttackAnimName(unit)
         quad = Anim.getAttackFrame(state, unit)
     else
         quad = Anim.getAnimationFrame(state, unit, animName)
@@ -232,7 +242,7 @@ function Draw.drawUnit(state, unit, x, y, facingX, isAttacking, animNameOverride
     end
 
     love.graphics.setColor(1, 1, 1, alpha)
-    love.graphics.draw(unit.animations[animName].img, quad, x, y + 280, 0, sX * 2, sY * 2, offsetX, offsetY)
+    love.graphics.draw(unit.animations[drawAnimName].img, quad, x, y + 280, 0, sX * 2, sY * 2, offsetX, offsetY)
     if shouldWhiteFlash then
         love.graphics.setShader()
     end

@@ -11,9 +11,9 @@ function AnimationDraw.draw(unit, panelX, padding, nameY, opacity)
         local anim = unit.animations.idle
         if anim.quads and anim.quads[State.animFrame] and anim.img then
             local quad = anim.quads[State.animFrame]
-            local animScale = 1
-            local animX = panelX + padding + Config.ANIM_X_OFFSET
-            local animY = nameY + Config.ANIM_Y_OFFSET
+            local animScale = 1.4
+            local animX = panelX + padding + Config.ANIM_X_OFFSET - 40
+            local animY = nameY + Config.ANIM_Y_OFFSET - 30
             love.graphics.setColor(1, 1, 1, opacity)
             love.graphics.draw(anim.img, quad, animX + Config.ANIM_DRAW_X_OFFSET, animY + Config.ANIM_DRAW_Y_OFFSET, 0, animScale, animScale)
         end

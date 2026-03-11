@@ -1,6 +1,7 @@
 -- modules/combat/battle_transition_draw.lua
 local TransitionDraw = {}
 local UiDraw = require("modules.combat.battle_ui_draw")
+local Helpers = require("modules.combat.battle_helpers")
 
 local function clamp(value, minValue, maxValue)
     if value < minValue then return minValue end
@@ -158,7 +159,8 @@ function TransitionDraw.draw(state, screenW, screenH, drawUnit)
 
     if state.attacker then
         local attackerFacingX = attackerOnRight and -1 or 1
-        drawUnit(state, state.attacker, attackerUnitX, attackerUnitY, attackerFacingX, false, "walk", nil, unitScale)
+        local attackerAnim = Helpers.isMonkCaster(state.attacker) and "idle" or "walk"
+        drawUnit(state, state.attacker, attackerUnitX, attackerUnitY, attackerFacingX, false, attackerAnim, nil, unitScale)
     end
 
     drawFrameAt(state, screenW, screenH, progress)

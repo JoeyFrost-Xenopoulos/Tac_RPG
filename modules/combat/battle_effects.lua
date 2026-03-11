@@ -43,6 +43,10 @@ function Effects.drawBreak(state, targetX, targetY, attacker)
     return VisualEffects.drawBreak(state, targetX, targetY, attacker)
 end
 
+function Effects.drawFire(state, targetX, targetY, attacker)
+    return VisualEffects.drawFire(state, targetX, targetY, attacker)
+end
+
 function Effects.drawFlash(state, screenW, screenH)
     return VisualEffects.drawFlash(state, screenW, screenH)
 end

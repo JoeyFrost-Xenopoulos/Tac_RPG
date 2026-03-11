@@ -7,6 +7,27 @@ local function clamp(value, minValue, maxValue)
     return value
 end
 
+function Anim.getAttackAnimName(unit)
+    if not unit or not unit.animations then
+        return "attack"
+    end
+
+    local weaponKey = unit.weapon
+    local unitType = type(unit.type) == "string" and unit.type:lower() or ""
+    if unitType == "monk" and weaponKey == "fire" and unit.animations.attack then
+        return "attack"
+    end
+
+    if weaponKey then
+        local weaponAttackAnim = "attack_" .. tostring(weaponKey)
+        if unit.animations[weaponAttackAnim] then
+            return weaponAttackAnim
+        end
+    end
+
+    return "attack"
+end
+
 function Anim.getAnimationFrame(state, unit, animName, timeOffset)
     local anim = unit.animations[animName]
     if not anim or not anim.quads then return nil end
@@ -19,9 +40,9 @@ function Anim.getAnimationFrame(state, unit, animName, timeOffset)
 end
 
 function Anim.getAttackFrameIndex(state, unit)
-    if not unit or not unit.animations or not unit.animations.attack then return nil end
+    if not unit or not unit.animations then return nil end
 
-    local anim = unit.animations.attack
+    local anim = unit.animations[Anim.getAttackAnimName(unit)]
     if not anim.quads or #anim.quads == 0 then return nil end
 
     local speed = anim.speed or 0.1
@@ -44,7 +65,7 @@ function Anim.getAttackFrameIndex(state, unit)
 end
 
 function Anim.getAttackFrame(state, unit)
-    local anim = unit.animations.attack
+    local anim = unit.animations[Anim.getAttackAnimName(unit)]
     if not anim or not anim.quads then return nil end
 
     local frameIndex = Anim.getAttackFrameIndex(state, unit)
