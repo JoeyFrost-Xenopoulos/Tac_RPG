@@ -39,7 +39,7 @@ local weapons = {
         hitRate = 85,
         critical = 10,
         weight = 4,
-        range = 2,
+        range = 3,
         minRange = 2,
     },
     iron_sword = {
@@ -67,7 +67,7 @@ local weapons = {
         hitRate = 100,
         critical = 0,
         weight = 3,
-        range = 1,
+        range = 2,
     },
     ice = {
         name = "Ice",
@@ -76,7 +76,7 @@ local weapons = {
         hitRate = 80,
         critical = 10,
         weight = 4,
-        range = 1,
+        range = 2,
     },
     thunder = {
         name = "Thunder",
@@ -85,7 +85,7 @@ local weapons = {
         hitRate = 80,
         critical = 10,
         weight = 4,
-        range = 1,
+        range = 2,
     },
 }
 

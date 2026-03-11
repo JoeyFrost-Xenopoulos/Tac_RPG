@@ -1,6 +1,6 @@
 -- modules/combat/battle_effects.lua
 -- Re-exports effects from specialized modules for backward compatibility
--- Code has been split into:
+-- Two parts to battle effects:
 --   - battle_movement_effects.lua (shake, slide-back)
 --   - battle_visual_effects.lua (hit, miss effects)
 

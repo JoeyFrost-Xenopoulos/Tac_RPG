@@ -169,23 +169,20 @@ local function attach(UnitManager)
         -- Check if the unit has moved
         local hasMoved = (resolvedUnit.tileX ~= resolvedUnit.prevX) or (resolvedUnit.tileY ~= resolvedUnit.prevY)
 
+        if not hasMoved then
+            UnitManager.state = "idle"
+            UnitManager.selectedUnit = resolvedUnit
+            resolvedUnit:setSelected(true)
+            MovementRange.show(resolvedUnit)
+            return
+        end
+
         if UnitManager.selectedUnit ~= resolvedUnit then
             UnitManager.selectedUnit = resolvedUnit
-            if hasMoved then
-                -- Only show attack range if unit has moved
-                MovementRange.showAttackRange(resolvedUnit)
-            else
-                resolvedUnit:setSelected(true)
-            end
+            MovementRange.showAttackRange(resolvedUnit)
         else
             -- Unit is already selected but we need to refresh the ranges after weapon change
-            if hasMoved then
-                -- Only show attack range if unit has moved
-                MovementRange.showAttackRange(resolvedUnit)
-            else
-                resolvedUnit:setSelected(false)
-                resolvedUnit:setSelected(true)
-            end
+            MovementRange.showAttackRange(resolvedUnit)
         end
 
         UnitManager.showWaitMenu()

@@ -23,7 +23,7 @@ end
 -- Get projectile spawn delay for a given weapon
 function Projectile.getSpawnDelay(weapon)
     if weapon == "bow" then
-        return 0.0  -- Arrows spawn immediately on frame 6 (no additional delay)
+        return 0.0  -- Arrows spawn immediately on frame 6
     else
         return 0.15  -- Default delay for other weapons
     end
