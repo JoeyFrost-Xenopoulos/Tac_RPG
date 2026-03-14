@@ -92,8 +92,8 @@ function VisualEffects.update(state, attackFrameIndex, attacker, projectileHit)
         local MovementEffects = require("modules.combat.battle_movement_effects")
         MovementEffects.startOverlayShake(state)
         
-        -- Trigger slide-back for harpoon, sword, and bow attacks (start earlier)
-        if attacker and (attacker.weapon == "harpoon" or attacker.weapon == "sword" or attacker.weapon == "bow") then
+        -- Trigger slide-back for harpoon, sword, bow, and ice attacks (start earlier)
+        if attacker and (attacker.weapon == "harpoon" or attacker.weapon == "sword" or attacker.weapon == "bow" or attacker.weapon == "ice") then
             -- Determine who is being hit
             local target
             if state.battlePhase == "counterattack" then

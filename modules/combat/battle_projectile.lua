@@ -3,6 +3,44 @@
 
 local Projectile = {}
 
+local function buildQuads(image, frameWidth, frameHeight, columns, rows)
+    local quads = {}
+    local imageW, imageH = image:getDimensions()
+
+    for row = 0, rows - 1 do
+        for col = 0, columns - 1 do
+            local x = col * frameWidth
+            local y = row * frameHeight
+            table.insert(quads, love.graphics.newQuad(x, y, frameWidth, frameHeight, imageW, imageH))
+        end
+    end
+
+    return quads
+end
+
+local function lerp(a, b, t)
+    return a + (b - a) * t
+end
+
+local function getFrameFromRange(startIndex, endIndex, progress)
+    local frameCount = endIndex - startIndex + 1
+    if frameCount <= 1 then
+        return startIndex
+    end
+
+    local frameOffset = math.min(frameCount - 1, math.floor(progress * frameCount))
+    return startIndex + frameOffset
+end
+
+local function getIceTimings(state)
+    local chargeDuration = state.projectileChargeDuration or 0.28
+    local flightDuration = state.projectileFlightDuration or 0.40
+    local impactDuration = state.projectileImpactDuration or 0.24
+    local elapsed = state.battleTimer - state.projectileStartTime
+
+    return elapsed, chargeDuration, flightDuration, impactDuration
+end
+
 -- Check if a unit uses a ranged weapon and needs projectile
 function Projectile.needsProjectile(unit)
     if not unit or not unit.weapon then return false end
@@ -39,6 +77,15 @@ function Projectile.spawn(state, attacker, defender, screenW, platformW, platfor
     state.projectileStartTime = state.battleTimer
     state.projectileImage = state.projectileImages[attacker.weapon]
     state.projectileWeapon = attacker.weapon  -- Store weapon type for later reference
+    state.projectileFlipX = false
+
+    -- Optional animated spritesheet data (used by ice shard)
+    state.projectileQuads = nil
+    state.projectileFrameDuration = nil
+    state.projectileImpactHitTriggered = false
+    state.projectileChargeDuration = nil
+    state.projectileFlightDuration = nil
+    state.projectileImpactDuration = nil
     
     -- Calculate start position (attacker's position)
     if attacker.isPlayer then
@@ -46,7 +93,7 @@ function Projectile.spawn(state, attacker, defender, screenW, platformW, platfor
     else
         state.projectileStartX = screenW / 2 - platformW * 0.3
     end
-    state.projectileStartY = platformY - 60 + 96 + 100  -- Center of unit sprite, adjusted down
+    state.projectileStartY = platformY + 150  -- Approx chest height
     
     -- Calculate target position (defender's position - middle of sprite)
     if defender.isPlayer then
@@ -54,11 +101,22 @@ function Projectile.spawn(state, attacker, defender, screenW, platformW, platfor
     else
         state.projectileTargetX = screenW / 2 - platformW * 0.3
     end
-    state.projectileTargetY = platformY - 60 + 96 + 100  -- Center of defender sprite, adjusted down
+    state.projectileTargetY = platformY + 150  -- Defender chest height
     
     -- Set duration based on weapon type
     if attacker.weapon == "bow" then
         state.projectileDuration = 0.35  -- Longer duration for arc trajectory
+    elseif attacker.weapon == "ice" then
+        state.projectileDuration = 0.92
+        -- Ice sheet faces left in source art; mirror for player-side casts.
+        state.projectileFlipX = attacker.isPlayer == true
+
+        -- Ice shard sheet: 2048x1536, 4 columns x 3 rows, 512x512 frames
+        state.projectileQuads = buildQuads(state.projectileImage, 512, 512, 4, 3)
+        state.projectileFrameDuration = 0.08
+        state.projectileChargeDuration = state.projectileFrameDuration * 4  -- Frames 1-4 in place
+        state.projectileFlightDuration = state.projectileFrameDuration * 3  -- Frames 5-7 while flying
+        state.projectileImpactDuration = state.projectileFrameDuration * 3  -- Last 3 frames on impact
     else
         state.projectileDuration = 0.25  -- Default duration
     end
@@ -67,6 +125,24 @@ end
 -- Update projectile and check if it has reached target
 function Projectile.update(state)
     if not state.projectileActive then return false end
+
+    if state.projectileWeapon == "ice" then
+        local elapsed, chargeDuration, flightDuration, impactDuration = getIceTimings(state)
+        local impactStart = chargeDuration + flightDuration
+        local endTime = impactStart + impactDuration
+        local impactTriggeredNow = false
+
+        if not state.projectileImpactHitTriggered and elapsed >= impactStart then
+            state.projectileImpactHitTriggered = true
+            impactTriggeredNow = true
+        end
+
+        if elapsed >= endTime then
+            state.projectileActive = false
+        end
+
+        return impactTriggeredNow
+    end
     
     local timeSinceLaunch = state.battleTimer - state.projectileStartTime
     
@@ -150,10 +226,57 @@ end
 -- Draw the projectile
 function Projectile.draw(state)
     if not state.projectileActive or not state.projectileImage then return end
-    
+
+    if state.projectileWeapon == "ice" and state.projectileQuads and #state.projectileQuads > 0 then
+        local elapsed, chargeDuration, flightDuration, impactDuration = getIceTimings(state)
+        local chargeEnd = chargeDuration
+        local flightEnd = chargeDuration + flightDuration
+        local impactEnd = flightEnd + impactDuration
+
+        local x = state.projectileStartX
+        local y = state.projectileStartY
+        local frameIndex = 1
+
+        if elapsed < chargeEnd then
+            local progress = math.max(0, math.min(1, elapsed / chargeDuration))
+            frameIndex = getFrameFromRange(1, 4, progress)
+        elseif elapsed < flightEnd then
+            local progress = math.max(0, math.min(1, (elapsed - chargeDuration) / flightDuration))
+            frameIndex = getFrameFromRange(5, 7, progress)
+            x = lerp(state.projectileStartX, state.projectileTargetX, progress)
+            y = lerp(state.projectileStartY, state.projectileTargetY, progress)
+        elseif elapsed < impactEnd then
+            local progress = math.max(0, math.min(1, (elapsed - flightEnd) / impactDuration))
+            local lastFrameStart = math.max(1, #state.projectileQuads - 2)
+            frameIndex = getFrameFromRange(lastFrameStart, #state.projectileQuads, progress)
+            x = state.projectileTargetX
+            y = state.projectileTargetY
+        else
+            return
+        end
+
+        local quad = state.projectileQuads[frameIndex]
+        local _, _, qw, qh = quad:getViewport()
+        local scale = 0.35
+        local scaleX = state.projectileFlipX and -scale or scale
+
+        love.graphics.draw(
+            state.projectileImage,
+            quad,
+            x,
+            y,
+            0,
+            scaleX,
+            scale,
+            qw / 2,
+            qh / 2
+        )
+        return
+    end
+
     local x, y, angle = Projectile.getPosition(state)
     if not x or not y then return end
-    
+
     local imgW, imgH = state.projectileImage:getDimensions()
     local scale = 2.0
     
