@@ -3,6 +3,36 @@
 
 local PhaseManager = {}
 
+local function applyLevelGrowths(unit, levelsGained)
+    if not unit or levelsGained <= 0 then return end
+
+    local growthRates = unit.growthRates or {}
+    local growthStats = {
+        "maxHealth",
+        "strength",
+        "magic",
+        "skill",
+        "speed",
+        "luck",
+        "defense",
+        "resistance",
+        "constitution",
+        "aid",
+    }
+
+    for _ = 1, levelsGained do
+        for _, statName in ipairs(growthStats) do
+            local chance = growthRates[statName] or 0
+            if love.math.random(100) <= chance then
+                unit[statName] = (unit[statName] or 0) + 1
+                if statName == "maxHealth" then
+                    unit.health = (unit.health or 0) + 1
+                end
+            end
+        end
+    end
+end
+
 local function applyAttackDurations(battleState, unit)
     local Helpers = require("modules.combat.battle_helpers")
     local CombatSystem = require("modules.combat.combat_system")
@@ -283,15 +313,26 @@ function PhaseManager.updateDone(battleState, dt)
         local expGain = 30
 
         if playerUnit then
-            local maxExperience = playerUnit.maxExperience or 100
+            local maxExperience = math.max(playerUnit.maxExperience or 100, 1)
             local previousExperience = playerUnit.experience or 0
-            battleState.expBarStartFillPercent = previousExperience / maxExperience
-            playerUnit.experience = math.min((playerUnit.experience or 0) + expGain, playerUnit.maxExperience or 100)
-            battleState.expBarFillPercent = playerUnit.experience / maxExperience
-            battleState.expBarGainAmount = expGain
+            local previousLevel = playerUnit.level or 1
+            local totalExperience = previousExperience + expGain
+            local gainedLevels = math.floor(totalExperience / maxExperience)
+            local newExperience = totalExperience % maxExperience
 
-            local leveledUp = previousExperience < maxExperience and playerUnit.experience >= maxExperience
-            if leveledUp then
+            playerUnit.level = previousLevel + gainedLevels
+            playerUnit.experience = newExperience
+            applyLevelGrowths(playerUnit, gainedLevels)
+
+            battleState.expBarStartFillPercent = previousExperience / maxExperience
+            battleState.expBarFillPercent = newExperience / maxExperience
+            battleState.expBarTargetFillUnits = battleState.expBarStartFillPercent + (expGain / maxExperience)
+            battleState.expBarGainAmount = expGain
+            battleState.expLeveledUp = gainedLevels > 0
+            battleState.expLevelBefore = previousLevel
+            battleState.expLevelAfter = playerUnit.level
+
+            if gainedLevels > 0 then
                 Audio.playLevelUp()
             else
                 Audio.playExpGain()
@@ -299,7 +340,11 @@ function PhaseManager.updateDone(battleState, dt)
         else
             battleState.expBarStartFillPercent = 0
             battleState.expBarFillPercent = 0
+            battleState.expBarTargetFillUnits = 0
             battleState.expBarGainAmount = 0
+            battleState.expLeveledUp = false
+            battleState.expLevelBefore = 1
+            battleState.expLevelAfter = 1
         end
 
         battleState.expBarActive = true

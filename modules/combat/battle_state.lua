@@ -115,11 +115,15 @@ State.expBarActive = false
 State.expBarTimer = 0
 State.expBarAnimDelay = 0.0
 State.expBarAnimDuration = 1.0
-State.expBarPostHoldDuration = 0.8
+State.expBarPostHoldDuration = 1.3
 State.expBarDisplayDuration = State.expBarAnimDelay + State.expBarAnimDuration + State.expBarPostHoldDuration
 State.expBarStartFillPercent = 0
 State.expBarFillPercent = 0
+State.expBarTargetFillUnits = 0
 State.expBarGainAmount = 0
+State.expLeveledUp = false
+State.expLevelBefore = 1
+State.expLevelAfter = 1
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -171,7 +175,11 @@ function State.resetTimers()
     State.expBarTimer = 0
     State.expBarStartFillPercent = 0
     State.expBarFillPercent = 0
+    State.expBarTargetFillUnits = 0
     State.expBarGainAmount = 0
+    State.expLeveledUp = false
+    State.expLevelBefore = 1
+    State.expLevelAfter = 1
 end
 
 return State

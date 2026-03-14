@@ -1,5 +1,18 @@
 local Stats = {}
 
+local DEFAULT_GROWTH_RATES = {
+    maxHealth = 70,
+    strength = 70,
+    magic = 70,
+    skill = 70,
+    speed = 70,
+    luck = 70,
+    defense = 70,
+    resistance = 70,
+    constitution = 70,
+    aid = 70,
+}
+
 function Stats.init(self, config)
     self.name = config.name or config.type or "Unknown"
     self.type = config.type or "Unknown"
@@ -20,6 +33,7 @@ function Stats.init(self, config)
 
     self.maxHealth = config.maxHealth or 100
     self.health = config.health or self.maxHealth
+    self.level = config.level or 1
     self.experience = config.experience or 0
     self.maxExperience = config.maxExperience or 100
     self.weapon = config.weapon or "sword"
@@ -37,6 +51,12 @@ function Stats.init(self, config)
     self.resistance = config.resistance or 3
     self.constitution = config.constitution or 10
     self.aid = config.aid or 0
+
+    self.growthRates = {}
+    local growthOverrides = config.growthRates or {}
+    for stat, defaultRate in pairs(DEFAULT_GROWTH_RATES) do
+        self.growthRates[stat] = growthOverrides[stat] or defaultRate
+    end
 
     self.avatar = config.avatar
     self.uiVariant = config.uiVariant

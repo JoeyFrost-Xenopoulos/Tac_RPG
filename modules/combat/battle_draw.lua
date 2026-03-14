@@ -14,6 +14,28 @@ local function drawExpBar(state, screenW, screenH)
     if not state.expBarActive then return end
     if not state.expBarImage or not state.expBarBaseQuad or not state.expBarFullFillQuad then return end
 
+    local function drawOutlinedText(text, x, y, width, align)
+        align = align or "left"
+        love.graphics.setColor(0, 0, 0, 1)
+        if width then
+            love.graphics.printf(text, x - 1, y, width, align)
+            love.graphics.printf(text, x + 1, y, width, align)
+            love.graphics.printf(text, x, y - 1, width, align)
+            love.graphics.printf(text, x, y + 1, width, align)
+            love.graphics.setColor(1, 0.8706, 0.2588, 1)
+            love.graphics.printf(text, x, y, width, align)
+        else
+            love.graphics.print(text, x - 1, y)
+            love.graphics.print(text, x + 1, y)
+            love.graphics.print(text, x, y - 1)
+            love.graphics.print(text, x, y + 1)
+            love.graphics.setColor(1, 0.8706, 0.2588, 1)
+            love.graphics.print(text, x, y)
+        end
+
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+
     local barScaleX, barScaleY = 2, 1
     local barW, barH = 192 * barScaleX, 64 * barScaleY
     local numberGap = -4
@@ -34,14 +56,60 @@ local function drawExpBar(state, screenW, screenH)
     local animElapsed = math.max(0, (state.expBarTimer or 0) - animDelay)
     local animProgress = math.max(0, math.min(1, animElapsed / animDuration))
     local startFill = state.expBarStartFillPercent or 0
-    local targetFill = state.expBarFillPercent or 0
-    local fillPercent = startFill + (targetFill - startFill) * animProgress
+    local targetFillUnits = state.expBarTargetFillUnits
+    if targetFillUnits == nil then
+        targetFillUnits = state.expBarFillPercent or 0
+    end
+
+    local traveledFillUnits = startFill + (targetFillUnits - startFill) * animProgress
+    local fillPercent
+    if animProgress >= 1 then
+        fillPercent = state.expBarFillPercent or 0
+    elseif traveledFillUnits >= 1 then
+        fillPercent = traveledFillUnits % 1
+        if fillPercent == 0 then
+            fillPercent = 1
+        end
+    else
+        fillPercent = traveledFillUnits
+    end
+
     fillPercent = math.max(0, math.min(1, fillPercent))
     local fillVisibleWidth = math.floor(192 * barScaleX * fillPercent)
     local displayedGain = math.floor((state.expBarGainAmount or 0) * animProgress + 0.5)
 
-    love.graphics.setColor(0, 0, 0, 0.55)
+    love.graphics.setColor(0.05, 0.1, 0.35, 0.85)
     love.graphics.rectangle("fill", panelX, panelY, panelW, panelH, 14, 14)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", panelX, panelY, panelW, panelH, 14, 14)
+    love.graphics.setLineWidth(1)
+
+    if state.expLeveledUp then
+        local bannerW = 320
+        local bannerH = 42
+        local bannerX = panelX + (panelW - bannerW) / 2
+        local bannerY = panelY - 24
+        local bannerText = "LEVEL UP! " .. tostring(state.expLevelBefore or 1) .. " -> " .. tostring(state.expLevelAfter or 1)
+        local textYOffset = 8
+
+        if state.weaponFont then
+            love.graphics.setFont(state.weaponFont)
+            textYOffset = 6
+        elseif state.previewFont then
+            love.graphics.setFont(state.previewFont)
+            textYOffset = 4
+        end
+
+        love.graphics.setColor(0.05, 0.1, 0.35, 0.95)
+        love.graphics.rectangle("fill", bannerX, bannerY, bannerW, bannerH, 12, 12)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setLineWidth(2)
+        love.graphics.rectangle("line", bannerX, bannerY, bannerW, bannerH, 12, 12)
+        love.graphics.setLineWidth(1)
+
+        drawOutlinedText(bannerText, bannerX, bannerY + textYOffset, bannerW, "center")
+    end
 
     love.graphics.setColor(1, 1, 1, 1)
     if fillVisibleWidth > 0 then
@@ -64,24 +132,26 @@ local function drawExpBar(state, screenW, screenH)
 
     if state.pixelFont then
         love.graphics.setFont(state.pixelFont)
-        love.graphics.print(gainLabelText, textX, textY)
-        love.graphics.printf(gainNumberText, numberX, barY + 2, numberAreaW, "right")
+        drawOutlinedText(gainLabelText, textX, textY)
+        drawOutlinedText(gainNumberText, numberX, barY + 2, numberAreaW, "right")
     elseif state.previewFont then
         love.graphics.setFont(state.previewFont)
-        love.graphics.print(gainLabelText, textX, textY)
-        love.graphics.printf(gainNumberText, numberX, barY + 8, numberAreaW, "right")
+        drawOutlinedText(gainLabelText, textX, textY)
+        drawOutlinedText(gainNumberText, numberX, barY + 8, numberAreaW, "right")
     elseif state.weaponFont then
         love.graphics.setFont(state.weaponFont)
-        love.graphics.print(gainLabelText, textX, textY)
-        love.graphics.printf(gainNumberText, numberX, barY + 10, numberAreaW, "right")
+        drawOutlinedText(gainLabelText, textX, textY)
+        drawOutlinedText(gainNumberText, numberX, barY + 10, numberAreaW, "right")
     else
-        love.graphics.print(gainLabelText, textX, textY)
-        love.graphics.printf(gainNumberText, numberX, barY + 10, numberAreaW, "right")
+        drawOutlinedText(gainLabelText, textX, textY)
+        drawOutlinedText(gainNumberText, numberX, barY + 10, numberAreaW, "right")
     end
 
     if previousFont then
         love.graphics.setFont(previousFont)
     end
+
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 local function getWhiteSpriteShader()

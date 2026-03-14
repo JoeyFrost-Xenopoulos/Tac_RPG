@@ -14,7 +14,7 @@ function HPLevelDraw.draw(unit, panelX, padding, nameY, opacity)
         local hpText = string.format("HP: %d/%d", unit.health or 0, unit.maxHealth or 0)
         local hpX = panelX + padding + Config.HP_X_OFFSET
         local hpY = nameY + Config.HP_Y_OFFSET
-        local levelText = "Lvl: --"
+        local levelText = string.format("Lvl: %d", unit.level or 1)
         local levelX = panelX + padding + Config.HP_X_OFFSET
         local levelY = nameY + Config.LEVEL_Y_OFFSET
 
