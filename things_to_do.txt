@@ -18,8 +18,6 @@ Useful websites
     - add in weapon triangle
     - make it so weapons have different looks visually
 
-- add in mages
-
 - add in the health potion system
     - fixup the health pot icon
 

@@ -21,6 +21,9 @@ CombatSummary.critFont = nil
 CombatSummary.smallFont = nil
 CombatSummary.weaponIcons = {}
 CombatSummary.weaponIconScale = 0.8
+CombatSummary.attackerWeaponIconOffsetX = -100
+CombatSummary.defenderWeaponIconOffsetX = 60
+CombatSummary.weaponIconOffsetY = -10
 
 function CombatSummary.load()
     CombatSummary.menuImage = love.graphics.newImage("assets/ui/menu/combat_summary_menu_2.png")
@@ -136,17 +139,17 @@ function CombatSummary.draw()
     local defenderIcon = CombatSummary.weaponIcons[defender.weapon] or CombatSummary.weaponIcons.sword
     if attackerIcon or defenderIcon then
         local iconScale = CombatSummary.weaponIconScale
-        local defenderNameWidth = CombatSummary.nameFont:getWidth(defenderName)
+        local attackerIconX = centerX + CombatSummary.attackerWeaponIconOffsetX
+        local defenderIconX = centerX + CombatSummary.defenderWeaponIconOffsetX
+        local attackerIconY = attackerNameY + CombatSummary.weaponIconOffsetY
+        local defenderIconY = defenderNameY + CombatSummary.weaponIconOffsetY
 
         love.graphics.setColor(1, 1, 1, 1)
         if attackerIcon then
-            local iconW = attackerIcon:getWidth()
-            local attackerIconX = attackerNameX - 30 - iconW * iconScale
-            love.graphics.draw(attackerIcon, attackerIconX, attackerNameY - 10, 0, iconScale, iconScale)
+            love.graphics.draw(attackerIcon, attackerIconX, attackerIconY, 0, iconScale, iconScale)
         end
         if defenderIcon then
-            local defenderIconX = defenderNameX + defenderNameWidth + 30
-            love.graphics.draw(defenderIcon, defenderIconX, defenderNameY - 10, 0, iconScale, iconScale)
+            love.graphics.draw(defenderIcon, defenderIconX, defenderIconY, 0, iconScale, iconScale)
         end
     end
     

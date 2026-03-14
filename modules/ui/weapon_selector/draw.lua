@@ -2,6 +2,32 @@ local Draw = {}
 local State = require("modules.ui.weapon_selector.state")
 local Config = require("modules.ui.weapon_selector.config")
 local Input = require("modules.ui.weapon_selector.input")
+local CombatSystem = require("modules.combat.combat_system")
+
+local function calculatePreviewStats(unit, weaponId)
+    if not unit then
+        return "--", "--", "--", "--"
+    end
+
+    local weapon = CombatSystem.getWeapon(weaponId or unit.weapon)
+    local might = weapon.might or 0
+    local isMagic = weapon.type == "magic"
+
+    local attackBase = isMagic and (unit.magic or 5) or (unit.strength or 10)
+    local attackValue = math.max(0, attackBase + might)
+
+    local skill = unit.skill or 10
+    local luck = unit.luck or 0
+    local hitValue = math.floor((skill * 3 + luck) / 2) + (weapon.hitRate or 90)
+    hitValue = math.min(100, math.max(0, hitValue))
+
+    local critValue = math.floor(skill / 2) + (weapon.critical or 0)
+    critValue = math.min(100, math.max(0, critValue))
+
+    local avoidValue = CombatSystem.calculateAvoidChance(unit)
+
+    return tostring(attackValue), tostring(critValue), tostring(hitValue), tostring(avoidValue)
+end
 
 local function drawMenuFrameAt(x, y, width, height)
     if not State.menuImage or not State.variants then return end
@@ -35,7 +61,7 @@ local function drawMenuFrame()
     drawMenuFrameAt(State.x, State.y, State.width, State.height)
 end
 
-local function drawUnitPanel()
+local function drawUnitPanel(hoveredIndex)
     if not State.unit then return end
     if not State.unit.avatar then return end
 
@@ -61,11 +87,15 @@ local function drawUnitPanel()
     love.graphics.draw(avatar, avatarX, avatarY, 0, scale, scale)
 
     if State.smallFont or State.font then
+        local hoveredOption = hoveredIndex and State.options[hoveredIndex] or nil
+        local previewWeaponId = hoveredOption and hoveredOption.id or State.unit.weapon
+        local atkValue, critValue, hitValue, avoidValue = calculatePreviewStats(State.unit, previewWeaponId)
+
         local stats = {
-            { label = "Atk", value = "--" },
-            { label = "Crit", value = "--" },
-            { label = "Hit", value = "--" },
-            { label = "Avoid", value = "--" }
+            { label = "Atk", value = atkValue },
+            { label = "Crit", value = critValue },
+            { label = "Hit", value = hitValue },
+            { label = "Avoid", value = avoidValue }
         }
         local statFont = State.smallFont or State.font
         love.graphics.setFont(statFont)
@@ -77,6 +107,7 @@ local function drawUnitPanel()
         local colGap = 6
         local colW = (innerW - colGap) / 2
         local rowH = innerH / 2
+        local valueXOffset = -15
 
         for i, stat in ipairs(stats) do
             local col = (i - 1) % 2
@@ -85,10 +116,9 @@ local function drawUnitPanel()
             local valueText = stat.value
             local cellX = startX + col * (colW + colGap)
             local textY = startY + row * rowH + (rowH - statFont:getHeight()) / 2
-            local valueW = statFont:getWidth(valueText)
-            local valueX = cellX + colW - valueW
+            local valueX = cellX + colW + valueXOffset
             love.graphics.print(labelText, cellX + 20, textY)
-            love.graphics.print(valueText, valueX + 20, textY)
+            love.graphics.print(valueText, valueX, textY)
         end
     end
 end
@@ -159,7 +189,7 @@ function Draw.draw()
 
     drawMenuFrame()
     drawWeaponItems(hoveredIndex)
-    drawUnitPanel()
+    drawUnitPanel(hoveredIndex)
 
     love.graphics.setColor(1, 1, 1, 1)
 end
