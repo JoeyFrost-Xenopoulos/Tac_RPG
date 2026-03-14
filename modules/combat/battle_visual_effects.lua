@@ -25,6 +25,12 @@ local function maybeStartMonkFire(state, attackFrameIndex, attacker)
         state.fireEffectActive = true
         state.fireEffectStartTime = state.battleTimer
         state.fireImpactTriggered = false
+        -- Three staggered instances: centre, higher, lower
+        state.fireInstances = {
+            { startTime = state.battleTimer,         yOffset =   0 },
+            { startTime = state.battleTimer + 0.10,  yOffset = -40 },
+            { startTime = state.battleTimer + 0.20,  yOffset =  40 },
+        }
     end
 
     return state.fireEffectActive
@@ -316,28 +322,40 @@ function VisualEffects.drawFire(state, targetX, targetY, attacker)
     local fireAnim = attacker.animations.attack_fire
     if not fireAnim.img or not fireAnim.quads then return end
 
-    local frameIndex = VisualEffects.getFireFrameIndex(state, attacker)
-    if frameIndex < 1 then return end
+    local instances = state.fireInstances or {{ startTime = state.fireEffectStartTime, yOffset = 0 }}
+    local speed = fireAnim.speed or 0.1
+    local totalFrames = #fireAnim.quads
+    local allDone = true
 
-    if frameIndex > #fireAnim.quads then
-        state.fireEffectActive = false
-        return
+    for _, inst in ipairs(instances) do
+        local elapsed = state.battleTimer - inst.startTime
+        if elapsed < 0 then
+            -- Not started yet — keep waiting
+            allDone = false
+        else
+            local frameIndex = math.floor(elapsed / speed) + 1
+            if frameIndex <= totalFrames then
+                allDone = false
+                local quad = fireAnim.quads[frameIndex]
+                local _, _, qw, qh = quad:getViewport()
+                love.graphics.draw(
+                    fireAnim.img,
+                    quad,
+                    targetX,
+                    targetY + inst.yOffset,
+                    0,
+                    4,
+                    4,
+                    qw / 2,
+                    qh / 2
+                )
+            end
+        end
     end
 
-    local quad = fireAnim.quads[frameIndex]
-    local _, _, qw, qh = quad:getViewport()
-
-    love.graphics.draw(
-        fireAnim.img,
-        quad,
-        targetX,
-        targetY,
-        0,
-        4,
-        4,
-        qw / 2,
-        qh / 2
-    )
+    if allDone then
+        state.fireEffectActive = false
+    end
 end
 
 function VisualEffects.drawCrit(state, targetX, targetY)

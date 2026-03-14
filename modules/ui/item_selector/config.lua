@@ -31,6 +31,7 @@ Config.ITEM_NAMES = {
     -- Weapons (matching weapon selector)
     sword = "Heavy Sword",
     sword_test = "Practice Blade",
+    bow = "Bow",
     harpoon = "Harpoon",
     fire = "Fire Tome",
     ice = "Ice Tome",

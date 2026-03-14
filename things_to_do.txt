@@ -11,8 +11,6 @@ Useful websites
 
 - re-do the options menu
 
-- make the area for clicking on an enemy unit to attack more responsive
-
 - fix current weapon system
     - add in attack amounts
     - add in weapon triangle
@@ -22,9 +20,5 @@ Useful websites
     - fixup the health pot icon
 
 - add in new sword icons
-
-- Make the spawning in useable for multiple maps somehow
-
 - Create a weapons table for item lookup
-
 - add in the double platforms for ranged attacks with no counter attack
