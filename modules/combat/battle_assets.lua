@@ -22,6 +22,14 @@ function Assets.load(state)
     state.bigBarBaseImage:setFilter("nearest", "nearest")
     state.bigBarFillImage = love.graphics.newImage("assets/ui/bars/BigBar_Fill.png")
     state.bigBarFillImage:setFilter("nearest", "nearest")
+    state.expBarImage = love.graphics.newImage("assets/ui/bars/exp_bar.png")
+    state.expBarImage:setFilter("nearest", "nearest")
+    do
+        local frameW, frameH = 192, 64
+        local imageW, imageH = state.expBarImage:getDimensions()
+        state.expBarBaseQuad = love.graphics.newQuad(0, 0, frameW, frameH, imageW, imageH)
+        state.expBarFullFillQuad = love.graphics.newQuad(frameW, 0, frameW, frameH, imageW, imageH)
+    end
     state.pixelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
     state.weaponFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
     state.previewFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 30)

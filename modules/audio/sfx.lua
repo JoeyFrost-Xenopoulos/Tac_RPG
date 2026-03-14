@@ -20,6 +20,8 @@ function Sfx.load()
     Sfx.deathBell = love.audio.newSource("assets/audio/combat/Death_Bell.wav", "static")
     Sfx.bowArrow = love.audio.newSource("assets/audio/combat/bow_arrow.mp3", "static")
     Sfx.harpoonThrow = love.audio.newSource("assets/audio/combat/harpoon_throw.mp3", "static")
+    Sfx.expGain = love.audio.newSource("assets/audio/exp_gain.mp3", "static")
+    Sfx.levelUp = love.audio.newSource("assets/audio/level_up.mp3", "static")
 
     Sfx.baseVolumes = {
         menuIn   = 1.0,
@@ -37,7 +39,9 @@ function Sfx.load()
         criticalHit = 0.8,
         deathBell = 0.9,
         bowArrow = 0.85,
-        harpoonThrow = 0.85
+        harpoonThrow = 0.85,
+        expGain = 0.9,
+        levelUp = 0.95
     }
 
     Sfx.setSFXVolume(0.6)
@@ -60,7 +64,9 @@ function Sfx.setSFXVolume(v)
         criticalHit = Sfx.criticalHit,
         deathBell = Sfx.deathBell,
         bowArrow = Sfx.bowArrow,
-        harpoonThrow = Sfx.harpoonThrow
+        harpoonThrow = Sfx.harpoonThrow,
+        expGain = Sfx.expGain,
+        levelUp = Sfx.levelUp
     }
 
     for name, src in pairs(sources) do
@@ -186,6 +192,20 @@ function Sfx.playHarpoonThrow()
     if Sfx.harpoonThrow then
         Sfx.harpoonThrow:stop()
         Sfx.harpoonThrow:play()
+    end
+end
+
+function Sfx.playExpGain()
+    if Sfx.expGain then
+        Sfx.expGain:stop()
+        Sfx.expGain:play()
+    end
+end
+
+function Sfx.playLevelUp()
+    if Sfx.levelUp then
+        Sfx.levelUp:stop()
+        Sfx.levelUp:play()
     end
 end
 

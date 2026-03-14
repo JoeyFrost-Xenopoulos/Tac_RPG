@@ -127,6 +127,13 @@ function VisualEffects.drawBreak(state, targetX, targetY, attacker)
         rows = 2
         frameWidth = 128
         frameHeight = 64
+    elseif weaponType == "ice" then
+        effectImage = state.harpoonHitEffectImage
+        frameCount = 10
+        cols = 5
+        rows = 2
+        frameWidth = 128
+        frameHeight = 64
     elseif weaponType == "sword" then
         effectImage = state.meleeHitEffectImage
         frameCount = 10
@@ -172,7 +179,7 @@ function VisualEffects.drawBreak(state, targetX, targetY, attacker)
     local scaleX, scaleY = 4, 4
     local drawX = targetX
     
-    if weaponType == "harpoon" or weaponType == "sword" or weaponType == "bow" then
+    if weaponType == "harpoon" or weaponType == "sword" or weaponType == "bow" or weaponType == "ice" then
         scaleX = 3.2  -- 0.8 * 4 = scaled down
         scaleY = 3.2
         
@@ -184,7 +191,13 @@ function VisualEffects.drawBreak(state, targetX, targetY, attacker)
         end
     end
     
+    if weaponType == "ice" then
+        love.graphics.setColor(0.6, 0.9, 1.0, 1)
+    end
     love.graphics.draw(effectImage, quad, drawX, targetY, 0, scaleX, scaleY, offsetX, offsetY)
+    if weaponType == "ice" then
+        love.graphics.setColor(1, 1, 1, 1)
+    end
 end
 
 function VisualEffects.drawFlash(state, screenW, screenH)

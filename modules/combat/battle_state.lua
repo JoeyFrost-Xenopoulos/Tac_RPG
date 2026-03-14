@@ -108,6 +108,18 @@ State.slideBackTarget = nil  -- Which unit is being pushed back
 State.slideBackDistance = 100
 State.slideBackDuration = 0.45  -- Time to slide back
 State.slideReturnDuration = 1.0  -- Time to return to position
+State.expBarImage = nil
+State.expBarBaseQuad = nil
+State.expBarFullFillQuad = nil
+State.expBarActive = false
+State.expBarTimer = 0
+State.expBarAnimDelay = 0.0
+State.expBarAnimDuration = 1.0
+State.expBarPostHoldDuration = 0.8
+State.expBarDisplayDuration = State.expBarAnimDelay + State.expBarAnimDuration + State.expBarPostHoldDuration
+State.expBarStartFillPercent = 0
+State.expBarFillPercent = 0
+State.expBarGainAmount = 0
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -155,6 +167,11 @@ function State.resetTimers()
     State.deathAnimActive = false
     State.deathAnimUnit = nil
     State.deathAnimStartTime = 0
+    State.expBarActive = false
+    State.expBarTimer = 0
+    State.expBarStartFillPercent = 0
+    State.expBarFillPercent = 0
+    State.expBarGainAmount = 0
 end
 
 return State

@@ -20,6 +20,8 @@ function Stats.init(self, config)
 
     self.maxHealth = config.maxHealth or 100
     self.health = config.health or self.maxHealth
+    self.experience = config.experience or 0
+    self.maxExperience = config.maxExperience or 100
     self.weapon = config.weapon or "sword"
     self.weapons = config.weapons or {}
     self.items = config.items or {}

@@ -60,7 +60,7 @@ function Battle.update(dt)
     elseif Battle.battlePhase == "death_anim" then
         AttackHelpers.updateDeathAnimation(Battle)
     elseif Battle.battlePhase == "done" then
-        PhaseManager.updateDone(Battle)
+        PhaseManager.updateDone(Battle, dt)
     end
 end
 

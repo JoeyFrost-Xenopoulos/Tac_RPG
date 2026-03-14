@@ -270,9 +270,48 @@ function PhaseManager.updateCounterattack(battleState, anim, effects, projectile
     end
 end
 
-function PhaseManager.updateDone(battleState)
+function PhaseManager.updateDone(battleState, dt)
     -- Wait for slide-back animation to complete before ending battle
     if battleState.slideBackActive then
+        return
+    end
+
+    if not battleState.expBarActive then
+        local Helpers = require("modules.combat.battle_helpers")
+        local Audio = require("modules.audio.sound_effects")
+        local playerUnit = Helpers.getPlayerUnit(battleState.attacker, battleState.defender)
+        local expGain = 30
+
+        if playerUnit then
+            local maxExperience = playerUnit.maxExperience or 100
+            local previousExperience = playerUnit.experience or 0
+            battleState.expBarStartFillPercent = previousExperience / maxExperience
+            playerUnit.experience = math.min((playerUnit.experience or 0) + expGain, playerUnit.maxExperience or 100)
+            battleState.expBarFillPercent = playerUnit.experience / maxExperience
+            battleState.expBarGainAmount = expGain
+
+            local leveledUp = previousExperience < maxExperience and playerUnit.experience >= maxExperience
+            if leveledUp then
+                Audio.playLevelUp()
+            else
+                Audio.playExpGain()
+            end
+        else
+            battleState.expBarStartFillPercent = 0
+            battleState.expBarFillPercent = 0
+            battleState.expBarGainAmount = 0
+        end
+
+        battleState.expBarActive = true
+        battleState.expBarTimer = 0
+        return
+    end
+
+    battleState.expBarTimer = (battleState.expBarTimer or 0) + dt
+    local expBarTotalDuration = (battleState.expBarAnimDelay or 0)
+        + (battleState.expBarAnimDuration or 1.0)
+        + (battleState.expBarPostHoldDuration or 0.8)
+    if battleState.expBarTimer < expBarTotalDuration then
         return
     end
     
