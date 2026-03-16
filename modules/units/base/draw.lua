@@ -1,3 +1,5 @@
+local Animation = require("modules.units.base.animation")
+
 local Draw = {}
 
 function Draw.init(self) end
@@ -38,7 +40,10 @@ function Draw.draw(self)
         love.graphics.setColor(1, 1, 1, 1)
     end
 
-    love.graphics.draw(anim.img, quad, px, py, 0, sX, self.scaleY, offsetX, offsetY)
+    local animImage = Animation.getImage(self, self.currentAnimation)
+    if not animImage then return end
+
+    love.graphics.draw(animImage, quad, px, py, 0, sX, self.scaleY, offsetX, offsetY)
     love.graphics.setColor(1, 1, 1, 1)
 end
 

@@ -10,14 +10,28 @@ function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, proje
     local isMonkFire = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "fire"
     local isMonkIce = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "ice"
 
-    if isMonkFire and attackFrameIndex == 1 and not battleState.attackFireCastPlayed then
-        Audio.playFireCast()
-        battleState.attackFireCastPlayed = true
+    if isMonkFire and attackFrameIndex == 1 and not battleState.attackFireCastScheduled then
+        battleState.attackFireCastScheduled = true
+        battleState.attackFireCastPlayAt = (battleState.battleTimer or 0) + 0.8
     end
 
-    if isMonkIce and attackFrameIndex == 1 and not battleState.attackIceCastPlayed then
-        Audio.playIceCast()
-        battleState.attackIceCastPlayed = true
+    if isMonkFire and battleState.attackFireCastScheduled and not battleState.attackFireCastPlayed then
+        if (battleState.battleTimer or 0) >= (battleState.attackFireCastPlayAt or math.huge) then
+            Audio.playFireCast()
+            battleState.attackFireCastPlayed = true
+        end
+    end
+
+    if isMonkIce and attackFrameIndex == 1 and not battleState.attackIceCastScheduled then
+        battleState.attackIceCastScheduled = true
+        battleState.attackIceCastPlayAt = (battleState.battleTimer or 0) + 0.8
+    end
+
+    if isMonkIce and battleState.attackIceCastScheduled and not battleState.attackIceCastPlayed then
+        if (battleState.battleTimer or 0) >= (battleState.attackIceCastPlayAt or math.huge) then
+            Audio.playIceCast()
+            battleState.attackIceCastPlayed = true
+        end
     end
 
     if attacker and attacker.weapon == "bow" and attackFrameIndex == 1 and not battleState.attackBowPlayed then
@@ -150,7 +164,11 @@ function Helpers.resetPhaseFlags(battleState)
     battleState.attackBowPlayed = false
     battleState.attackHarpoonPlayed = false
     battleState.attackFireCastPlayed = false
+    battleState.attackFireCastScheduled = false
+    battleState.attackFireCastPlayAt = 0
     battleState.attackIceCastPlayed = false
+    battleState.attackIceCastScheduled = false
+    battleState.attackIceCastPlayAt = 0
     battleState.hitEffectActive = false
     battleState.hitFrameStartTime = 0
     battleState.isLastAttackHit = true

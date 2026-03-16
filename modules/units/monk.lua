@@ -9,6 +9,24 @@ local function loadAnimImage(imagePath, swapPath)
     return love.graphics.newImage(imagePath)
 end
 
+local function loadWeaponAnimImages(imagePath, baseSwapPath, weaponSwapPaths)
+    if type(weaponSwapPaths) ~= "table" then
+        return nil
+    end
+
+    local weaponImages = {}
+    for weapon, swapPath in pairs(weaponSwapPaths) do
+        local combinedSwapPath = swapPath
+        if baseSwapPath then
+            combinedSwapPath = { baseSwapPath, swapPath }
+        end
+
+        weaponImages[weapon] = loadAnimImage(imagePath, combinedSwapPath)
+    end
+
+    return next(weaponImages) and weaponImages or nil
+end
+
 local function createMonkConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
     local config = {
         name = "Ari",
@@ -52,6 +70,10 @@ local function createMonkConfig(isPlayer, colourSwapPath, animSwapPath, override
             },
             attack = {
                 img = loadAnimImage("assets/units/monk/base/Monk_Heal.png", animSwapPath),
+                weaponImgs = loadWeaponAnimImages("assets/units/monk/base/Monk_Heal.png", animSwapPath, {
+                    fire = "assets.units.monk.palettes.fire_preset",
+                    ice = "assets.units.monk.palettes.ice_preset"
+                }),
                 frames = {
                     {x=0,y=0,width=192,height=192},{x=192,y=0,width=192,height=192},
                     {x=384,y=0,width=192,height=192},{x=576,y=0,width=192,height=192},
@@ -64,6 +86,10 @@ local function createMonkConfig(isPlayer, colourSwapPath, animSwapPath, override
             },
             attack_fire = {
                 img = loadAnimImage("assets/units/monk/base/Fire_attack.png", animSwapPath),
+                weaponImgs = loadWeaponAnimImages("assets/units/monk/base/Fire_attack.png", animSwapPath, {
+                    fire = "assets.units.monk.palettes.fire_preset",
+                    ice = "assets.units.monk.palettes.ice_preset"
+                }),
                 frames = {
                     {x=0,y=0,width=64,height=64},{x=64,y=0,width=64,height=64},
                     {x=128,y=0,width=64,height=64},{x=192,y=0,width=64,height=64},

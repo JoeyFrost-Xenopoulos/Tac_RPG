@@ -6,6 +6,7 @@ local UiDraw = require("modules.combat.battle_ui_draw")
 local Helpers = require("modules.combat.battle_helpers")
 local FrameDraw = require("modules.combat.battle_frame_draw")
 local Projectile = require("modules.combat.battle_projectile")
+local UnitAnimation = require("modules.units.base.animation")
 
 local Draw = {}
 local whiteSpriteShader
@@ -396,8 +397,11 @@ function Draw.drawUnit(state, unit, x, y, facingX, isAttacking, animNameOverride
         love.graphics.setShader(getWhiteSpriteShader())
     end
 
+    local animImage = UnitAnimation.getImage(unit, drawAnimName)
+    if not animImage then return end
+
     love.graphics.setColor(1, 1, 1, alpha)
-    love.graphics.draw(unit.animations[drawAnimName].img, quad, x, y + 280, 0, sX * 2, sY * 2, offsetX, offsetY)
+    love.graphics.draw(animImage, quad, x, y + 280, 0, sX * 2, sY * 2, offsetX, offsetY)
     if shouldWhiteFlash then
         love.graphics.setShader()
     end

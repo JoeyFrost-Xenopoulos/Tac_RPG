@@ -1,6 +1,8 @@
 -- modules/combat/battle_visual_effects.lua
 -- Handles hit and miss visual effects animations
 
+local UnitAnimation = require("modules.units.base.animation")
+
 local VisualEffects = {}
 
 local function isMonkFireCast(attacker)
@@ -333,7 +335,8 @@ function VisualEffects.drawFire(state, targetX, targetY, attacker)
     if not attacker or not attacker.animations or not attacker.animations.attack_fire then return end
 
     local fireAnim = attacker.animations.attack_fire
-    if not fireAnim.img or not fireAnim.quads then return end
+    local fireImage = UnitAnimation.getImage(attacker, "attack_fire")
+    if not fireImage or not fireAnim.quads then return end
 
     local instances = state.fireInstances or {{ startTime = state.fireEffectStartTime, yOffset = 0 }}
     local speed = fireAnim.speed or 0.1
@@ -352,7 +355,7 @@ function VisualEffects.drawFire(state, targetX, targetY, attacker)
                 local quad = fireAnim.quads[frameIndex]
                 local _, _, qw, qh = quad:getViewport()
                 love.graphics.draw(
-                    fireAnim.img,
+                    fireImage,
                     quad,
                     targetX,
                     targetY + inst.yOffset,

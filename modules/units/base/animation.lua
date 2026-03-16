@@ -15,11 +15,25 @@ function Animation.init(self, animConfig)
         end
         self.animations[name] = {
             img = img,
+            weaponImgs = data.weaponImgs,
             quads = quads,
             frameCount = #quads,
             speed = data.speed or 0.1
         }
     end
+end
+
+function Animation.getImage(unit, animName)
+    if not unit or not unit.animations then return nil end
+
+    local anim = unit.animations[animName]
+    if not anim then return nil end
+
+    if anim.weaponImgs and unit.weapon and anim.weaponImgs[unit.weapon] then
+        return anim.weaponImgs[unit.weapon]
+    end
+
+    return anim.img
 end
 
 function Animation.update(self, dt)
