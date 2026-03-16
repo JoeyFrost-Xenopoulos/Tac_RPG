@@ -24,6 +24,8 @@ function Assets.load(state)
     state.bigBarFillImage:setFilter("nearest", "nearest")
     state.expBarImage = love.graphics.newImage("assets/ui/bars/exp_bar.png")
     state.expBarImage:setFilter("nearest", "nearest")
+        state.expBarBackgroundImage = love.graphics.newImage("assets/ui/bars/exp_background_myself.png")
+        state.expBarBackgroundImage:setFilter("nearest", "nearest")
     do
         local frameW, frameH = 192, 64
         local imageW, imageH = state.expBarImage:getDimensions()

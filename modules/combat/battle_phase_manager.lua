@@ -49,6 +49,27 @@ local function applyAttackDurations(battleState, unit)
     end
 end
 
+local function recordResolvedAttack(battleState, actingUnit, targetUnit, damageAmount, wasCritical)
+    if not actingUnit or not targetUnit then return end
+
+    if targetUnit.isPlayer then
+        battleState.playerWasAttackedThisBattle = true
+        battleState.playerWasCounterattacked = true
+    end
+
+    if actingUnit.isPlayer and damageAmount > 0 then
+        battleState.playerAttackedThisBattle = true
+
+        if wasCritical then
+            battleState.playerCriticalThisBattle = true
+        end
+
+        if not targetUnit.isPlayer and (targetUnit.isDead or (targetUnit.health or 0) <= 0) then
+            battleState.enemyWasKilled = true
+        end
+    end
+end
+
 function PhaseManager.startFollowupAttack(battleState, isDefenderAttacking)
     local AttackHelpers = require("modules.combat.battle_attack_helpers")
 
@@ -183,16 +204,13 @@ function PhaseManager.updateInitialAttack(battleState, anim, effects, projectile
     if battleState.damageApplied and battleState.isHealthAnimating then
         if AttackHelpers.updateHealthAnimation(battleState) then
             AttackHelpers.finalizeDamageAnimation(battleState)
-            
-            -- Track that player dealt damage
-            if battleState.damageAmount > 0 then
-                battleState.playerAttackedThisBattle = true
-            end
-            
-            -- Track if enemy was killed
-            if battleState.defender.isDead then
-                battleState.enemyWasKilled = true
-            end
+            recordResolvedAttack(
+                battleState,
+                battleState.attacker,
+                battleState.defender,
+                battleState.damageAmount or 0,
+                battleState.currentAttackIsCritical
+            )
             
             if AttackHelpers.startDeathAnimationIfNeeded(battleState, battleState.defender) then
                 battleState.battlePhase = "death_anim"
@@ -289,6 +307,13 @@ function PhaseManager.updateCounterattack(battleState, anim, effects, projectile
     if battleState.counterattackApplied and battleState.isHealthAnimating then
         if AttackHelpers.updateHealthAnimation(battleState) then
             AttackHelpers.finalizeDamageAnimation(battleState)
+            recordResolvedAttack(
+                battleState,
+                battleState.defender,
+                battleState.attacker,
+                battleState.counterattackDamage or 0,
+                battleState.currentAttackIsCritical
+            )
             if AttackHelpers.startDeathAnimationIfNeeded(battleState, battleState.attacker) then
                 battleState.battlePhase = "death_anim"
             else
@@ -322,15 +347,23 @@ function PhaseManager.updateDone(battleState, dt)
         local Helpers = require("modules.combat.battle_helpers")
         local Audio = require("modules.audio.sound_effects")
         local playerUnit = Helpers.getPlayerUnit(battleState.attacker, battleState.defender)
+        local enemyUnit = Helpers.getEnemyUnit(battleState.attacker, battleState.defender)
         
         -- Determine EXP gain based on battle outcome
         local expGain = 0
-        if battleState.enemyWasKilled then
-            expGain = 70  -- Kill
-        elseif battleState.playerWasCounterattacked then
-            expGain = 10  -- Got attacked and survived
-        elseif battleState.playerAttackedThisBattle then
-            expGain = 30  -- Dealt damage
+        local playerSurvived = playerUnit and not playerUnit.isDead and (playerUnit.health or 0) > 0
+        if playerSurvived then
+            if battleState.enemyWasKilled or (enemyUnit and enemyUnit.isDead) then
+                expGain = 70
+            elseif battleState.playerAttackedThisBattle then
+                expGain = 30
+            elseif battleState.playerWasAttackedThisBattle then
+                expGain = 10
+            end
+        end
+
+        if expGain > 0 and battleState.playerCriticalThisBattle then
+            expGain = expGain * 2
         end
 
         if playerUnit then
@@ -349,13 +382,16 @@ function PhaseManager.updateDone(battleState, dt)
             battleState.expBarFillPercent = newExperience / maxExperience
             battleState.expBarTargetFillUnits = battleState.expBarStartFillPercent + (expGain / maxExperience)
             battleState.expBarGainAmount = expGain
+            battleState.expBarStartValue = previousExperience
+            battleState.expBarEndValue = newExperience
+            battleState.expBarMaxValue = maxExperience
             battleState.expLeveledUp = gainedLevels > 0
             battleState.expLevelBefore = previousLevel
             battleState.expLevelAfter = playerUnit.level
 
             if gainedLevels > 0 then
                 Audio.playLevelUp()
-            else
+            elseif expGain > 0 then
                 Audio.playExpGain()
             end
         else
@@ -363,6 +399,9 @@ function PhaseManager.updateDone(battleState, dt)
             battleState.expBarFillPercent = 0
             battleState.expBarTargetFillUnits = 0
             battleState.expBarGainAmount = 0
+            battleState.expBarStartValue = 0
+            battleState.expBarEndValue = 0
+            battleState.expBarMaxValue = 100
             battleState.expLeveledUp = false
             battleState.expLevelBefore = 1
             battleState.expLevelAfter = 1

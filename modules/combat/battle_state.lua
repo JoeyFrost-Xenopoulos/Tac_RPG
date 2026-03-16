@@ -121,11 +121,16 @@ State.expBarStartFillPercent = 0
 State.expBarFillPercent = 0
 State.expBarTargetFillUnits = 0
 State.expBarGainAmount = 0
+State.expBarStartValue = 0
+State.expBarEndValue = 0
+State.expBarMaxValue = 100
 State.expLeveledUp = false
 State.expLevelBefore = 1
 State.expLevelAfter = 1
 State.playerAttackedThisBattle = false
 State.playerWasCounterattacked = false
+State.playerWasAttackedThisBattle = false
+State.playerCriticalThisBattle = false
 State.enemyWasKilled = false
 
 function State.resetTimers()
@@ -180,11 +185,16 @@ function State.resetTimers()
     State.expBarFillPercent = 0
     State.expBarTargetFillUnits = 0
     State.expBarGainAmount = 0
+    State.expBarStartValue = 0
+    State.expBarEndValue = 0
+    State.expBarMaxValue = 100
     State.expLeveledUp = false
     State.expLevelBefore = 1
     State.expLevelAfter = 1
     State.playerAttackedThisBattle = false
     State.playerWasCounterattacked = false
+    State.playerWasAttackedThisBattle = false
+    State.playerCriticalThisBattle = false
     State.enemyWasKilled = false
 end
 

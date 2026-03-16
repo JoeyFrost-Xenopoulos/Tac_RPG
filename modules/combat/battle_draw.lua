@@ -76,14 +76,23 @@ local function drawExpBar(state, screenW, screenH)
 
     fillPercent = math.max(0, math.min(1, fillPercent))
     local fillVisibleWidth = math.floor(192 * barScaleX * fillPercent)
-    local displayedGain = math.floor((state.expBarGainAmount or 0) * animProgress + 0.5)
+    local maxExperience = math.max(state.expBarMaxValue or 100, 1)
+    local displayedExpValue
+    if animProgress >= 1 then
+        displayedExpValue = state.expBarEndValue or 0
+    else
+        local startExpValue = state.expBarStartValue or 0
+        local animatedGain = math.floor((state.expBarGainAmount or 0) * animProgress + 0.5)
+        displayedExpValue = (startExpValue + animatedGain) % maxExperience
+    end
 
-    love.graphics.setColor(0.05, 0.1, 0.35, 0.85)
-    love.graphics.rectangle("fill", panelX, panelY, panelW, panelH, 14, 14)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", panelX, panelY, panelW, panelH, 14, 14)
-    love.graphics.setLineWidth(1)
+    -- Draw the EXP bar background image
+    if state.expBarBackgroundImage then
+        local bgScaleX = panelW / 1000
+        local bgScaleY = panelH / 400
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(state.expBarBackgroundImage, panelX - 30, panelY - 140, 0, bgScaleX, bgScaleY)
+    end
 
     if state.expLeveledUp then
         local bannerW = 320
@@ -125,8 +134,8 @@ local function drawExpBar(state, screenW, screenH)
     love.graphics.draw(state.expBarImage, state.expBarBaseQuad, barX, barY, 0, barScaleX, barScaleY)
 
     local previousFont = love.graphics.getFont()
-    local gainLabelText = "EXP GAIN"
-    local gainNumberText = "+" .. tostring(displayedGain)
+    local gainLabelText = "EXP"
+    local gainNumberText = tostring(displayedExpValue)
     local textX = panelX + 46
     local textY = panelY + 16
 
