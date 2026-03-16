@@ -124,6 +124,9 @@ State.expBarGainAmount = 0
 State.expLeveledUp = false
 State.expLevelBefore = 1
 State.expLevelAfter = 1
+State.playerAttackedThisBattle = false
+State.playerWasCounterattacked = false
+State.enemyWasKilled = false
 
 function State.resetTimers()
     State.battleTimer = 0
@@ -180,6 +183,9 @@ function State.resetTimers()
     State.expLeveledUp = false
     State.expLevelBefore = 1
     State.expLevelAfter = 1
+    State.playerAttackedThisBattle = false
+    State.playerWasCounterattacked = false
+    State.enemyWasKilled = false
 end
 
 return State

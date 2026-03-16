@@ -97,6 +97,7 @@ function PhaseManager.transitionToCounterattack(battleState)
         local AttackHelpers = require("modules.combat.battle_attack_helpers")
         
         battleState.battlePhase = "counterattack"
+        battleState.playerWasCounterattacked = true
         battleState.battleTimer = 0
         AttackHelpers.resetPhaseFlags(battleState)
         battleState.counterattackApplied = false
@@ -182,6 +183,17 @@ function PhaseManager.updateInitialAttack(battleState, anim, effects, projectile
     if battleState.damageApplied and battleState.isHealthAnimating then
         if AttackHelpers.updateHealthAnimation(battleState) then
             AttackHelpers.finalizeDamageAnimation(battleState)
+            
+            -- Track that player dealt damage
+            if battleState.damageAmount > 0 then
+                battleState.playerAttackedThisBattle = true
+            end
+            
+            -- Track if enemy was killed
+            if battleState.defender.isDead then
+                battleState.enemyWasKilled = true
+            end
+            
             if AttackHelpers.startDeathAnimationIfNeeded(battleState, battleState.defender) then
                 battleState.battlePhase = "death_anim"
             else
@@ -310,7 +322,16 @@ function PhaseManager.updateDone(battleState, dt)
         local Helpers = require("modules.combat.battle_helpers")
         local Audio = require("modules.audio.sound_effects")
         local playerUnit = Helpers.getPlayerUnit(battleState.attacker, battleState.defender)
-        local expGain = 30
+        
+        -- Determine EXP gain based on battle outcome
+        local expGain = 0
+        if battleState.enemyWasKilled then
+            expGain = 70  -- Kill
+        elseif battleState.playerWasCounterattacked then
+            expGain = 10  -- Got attacked and survived
+        elseif battleState.playerAttackedThisBattle then
+            expGain = 30  -- Dealt damage
+        end
 
         if playerUnit then
             local maxExperience = math.max(playerUnit.maxExperience or 100, 1)
