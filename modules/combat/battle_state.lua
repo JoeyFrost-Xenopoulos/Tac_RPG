@@ -58,6 +58,8 @@ State.attackSwingPlayed = false
 State.attackHitPlayed = false
 State.attackBowPlayed = false
 State.attackHarpoonPlayed = false
+State.attackFireCastPlayed = false
+State.attackIceCastPlayed = false
 State.currentAttackIsCritical = false
 State.isLastAttackHit = true
 State.playerAttackPreview = { hit = 0, damage = 0, crit = 0 }
@@ -142,6 +144,8 @@ function State.resetTimers()
     State.attackHitPlayed = false
     State.attackBowPlayed = false
     State.attackHarpoonPlayed = false
+    State.attackFireCastPlayed = false
+    State.attackIceCastPlayed = false
     State.isLastAttackHit = true
     State.defenderCounterAttackPlayed = false
     State.transitionPhase = "none"

@@ -7,6 +7,18 @@ function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, proje
     local Audio = require("modules.audio.sound_effects")
     local Projectile = require("modules.combat.battle_projectile")
     local BattleHelpers = require("modules.combat.battle_helpers")
+    local isMonkFire = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "fire"
+    local isMonkIce = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "ice"
+
+    if isMonkFire and attackFrameIndex == 1 and not battleState.attackFireCastPlayed then
+        Audio.playFireCast()
+        battleState.attackFireCastPlayed = true
+    end
+
+    if isMonkIce and attackFrameIndex == 1 and not battleState.attackIceCastPlayed then
+        Audio.playIceCast()
+        battleState.attackIceCastPlayed = true
+    end
 
     if attacker and attacker.weapon == "bow" and attackFrameIndex == 1 and not battleState.attackBowPlayed then
         Audio.playBowArrow()
@@ -17,8 +29,6 @@ function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, proje
         Audio.playHarpoonThrow()
         battleState.attackHarpoonPlayed = true
     end
-    
-    local isMonkFire = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "fire"
 
     if isMonkFire and battleState.fireImpactTriggered and not battleState.attackHitPlayed then
         if battleState.currentAttackHit then
@@ -139,6 +149,8 @@ function Helpers.resetPhaseFlags(battleState)
     battleState.attackHitPlayed = false
     battleState.attackBowPlayed = false
     battleState.attackHarpoonPlayed = false
+    battleState.attackFireCastPlayed = false
+    battleState.attackIceCastPlayed = false
     battleState.hitEffectActive = false
     battleState.hitFrameStartTime = 0
     battleState.isLastAttackHit = true

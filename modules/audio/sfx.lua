@@ -20,6 +20,8 @@ function Sfx.load()
     Sfx.deathBell = love.audio.newSource("assets/audio/combat/Death_Bell.wav", "static")
     Sfx.bowArrow = love.audio.newSource("assets/audio/combat/bow_arrow.mp3", "static")
     Sfx.harpoonThrow = love.audio.newSource("assets/audio/combat/harpoon_throw.mp3", "static")
+    Sfx.fireCast = love.audio.newSource("assets/audio/combat/magic/fire_cast.mp3", "static")
+    Sfx.iceCast = love.audio.newSource("assets/audio/combat/magic/ice_cast.mp3", "static")
     Sfx.expGain = love.audio.newSource("assets/audio/exp_gain.mp3", "static")
     Sfx.levelUp = love.audio.newSource("assets/audio/level_up.mp3", "static")
 
@@ -40,6 +42,8 @@ function Sfx.load()
         deathBell = 0.9,
         bowArrow = 0.85,
         harpoonThrow = 0.85,
+        fireCast = 0.85,
+        iceCast = 0.85,
         expGain = 0.9,
         levelUp = 0.95
     }
@@ -65,6 +69,8 @@ function Sfx.setSFXVolume(v)
         deathBell = Sfx.deathBell,
         bowArrow = Sfx.bowArrow,
         harpoonThrow = Sfx.harpoonThrow,
+        fireCast = Sfx.fireCast,
+        iceCast = Sfx.iceCast,
         expGain = Sfx.expGain,
         levelUp = Sfx.levelUp
     }
@@ -192,6 +198,20 @@ function Sfx.playHarpoonThrow()
     if Sfx.harpoonThrow then
         Sfx.harpoonThrow:stop()
         Sfx.harpoonThrow:play()
+    end
+end
+
+function Sfx.playFireCast()
+    if Sfx.fireCast then
+        Sfx.fireCast:stop()
+        Sfx.fireCast:play()
+    end
+end
+
+function Sfx.playIceCast()
+    if Sfx.iceCast then
+        Sfx.iceCast:stop()
+        Sfx.iceCast:play()
     end
 end
 

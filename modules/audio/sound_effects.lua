@@ -41,6 +41,8 @@ Effects.playAttackCritical = Sfx.playAttackCritical
 Effects.playDeathBell = Sfx.playDeathBell
 Effects.playBowArrow = Sfx.playBowArrow
 Effects.playHarpoonThrow = Sfx.playHarpoonThrow
+Effects.playFireCast = Sfx.playFireCast
+Effects.playIceCast = Sfx.playIceCast
 Effects.playExpGain = Sfx.playExpGain
 Effects.playLevelUp = Sfx.playLevelUp
 
