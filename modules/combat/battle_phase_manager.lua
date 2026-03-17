@@ -3,6 +3,51 @@
 
 local PhaseManager = {}
 
+local LEVEL_VALUE_UPDATE_DELAY = 0.7
+local LEVEL_LIGHT_RECT_DURATION = 0.42
+local STAR_ANIM_FRAME_COUNT = 11
+local STAR_ANIM_FRAME_DURATION = 0.06
+local LEVEL_TO_STATS_DELAY = 0.10
+local STAT_ANIM_GAP = 0.08
+local STAT_ANIM_OVERLAP = 0.45
+
+local function captureLevelUpStats(unit)
+    return {
+        strength = unit and unit.strength or 0,
+        defense = unit and unit.defense or 0,
+        luck = unit and unit.luck or 0,
+        speed = unit and unit.speed or 0,
+        magic = unit and unit.magic or 0,
+        resistance = unit and unit.resistance or 0,
+        skill = unit and unit.skill or 0,
+        constitution = unit and unit.constitution or 0,
+    }
+end
+
+local function countPlusOneStatGains(beforeStats, afterStats)
+    local orderedKeys = {
+        "strength",
+        "defense",
+        "luck",
+        "speed",
+        "magic",
+        "resistance",
+        "skill",
+        "constitution",
+    }
+
+    local count = 0
+    for _, key in ipairs(orderedKeys) do
+        local beforeValue = beforeStats[key] or 0
+        local afterValue = afterStats[key] or 0
+        if afterValue == beforeValue + 1 then
+            count = count + 1
+        end
+    end
+
+    return count
+end
+
 local function applyLevelGrowths(unit, levelsGained)
     if not unit or levelsGained <= 0 then return end
 
@@ -373,10 +418,12 @@ function PhaseManager.updateDone(battleState, dt)
             local totalExperience = previousExperience + expGain
             local gainedLevels = math.floor(totalExperience / maxExperience)
             local newExperience = totalExperience % maxExperience
+            local levelUpStatsBefore = captureLevelUpStats(playerUnit)
 
             playerUnit.level = previousLevel + gainedLevels
             playerUnit.experience = newExperience
             applyLevelGrowths(playerUnit, gainedLevels)
+            local levelUpStatsAfter = captureLevelUpStats(playerUnit)
 
             battleState.expBarStartFillPercent = previousExperience / maxExperience
             battleState.expBarFillPercent = newExperience / maxExperience
@@ -388,6 +435,9 @@ function PhaseManager.updateDone(battleState, dt)
             battleState.expLeveledUp = gainedLevels > 0
             battleState.expLevelBefore = previousLevel
             battleState.expLevelAfter = playerUnit.level
+            battleState.levelUpStatsBefore = levelUpStatsBefore
+            battleState.levelUpStatsAfter = levelUpStatsAfter
+            battleState.levelUpAnimatedStatCount = countPlusOneStatGains(levelUpStatsBefore, levelUpStatsAfter)
 
             if gainedLevels > 0 then
                 Audio.playLevelUp()
@@ -406,6 +456,9 @@ function PhaseManager.updateDone(battleState, dt)
             battleState.levelUpMenuTimer = 0
             battleState.expLevelBefore = 1
             battleState.expLevelAfter = 1
+            battleState.levelUpStatsBefore = nil
+            battleState.levelUpStatsAfter = nil
+            battleState.levelUpAnimatedStatCount = 0
         end
 
         battleState.expBarActive = true
@@ -421,7 +474,13 @@ function PhaseManager.updateDone(battleState, dt)
         + (battleState.expBarAnimDuration or 1.0)
         + (battleState.expBarPostHoldDuration or 0.8)
     if battleState.expLeveledUp then
-        expBarTotalDuration = expBarTotalDuration + 1.0
+        local starDuration = STAR_ANIM_FRAME_COUNT * STAR_ANIM_FRAME_DURATION
+        local statStepDuration = math.max(0.05, LEVEL_LIGHT_RECT_DURATION + starDuration + STAT_ANIM_GAP - STAT_ANIM_OVERLAP)
+        local animatedStatCount = battleState.levelUpAnimatedStatCount or 0
+        local menuSequenceDuration = LEVEL_VALUE_UPDATE_DELAY + starDuration + LEVEL_TO_STATS_DELAY
+            + (animatedStatCount * statStepDuration)
+            + 0.2
+        expBarTotalDuration = expBarTotalDuration + menuSequenceDuration
     end
     if battleState.expBarTimer < expBarTotalDuration then
         return

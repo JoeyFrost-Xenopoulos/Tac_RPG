@@ -147,7 +147,7 @@ function SceneDraw.draw(state, drawUnit)
     Projectile.draw(state)
 
     ProgressionDraw.drawExpBar(state, screenW, screenH)
-    ProgressionDraw.drawLevelUpStats(state, screenW, screenH)
+    -- Legacy level-up overlay disabled; level-up UI is now handled by LevelUpMenu in exp_bar.
 
     Effects.drawFlash(state, screenW, screenH)
 end

@@ -28,10 +28,11 @@ function Assets.load(state)
         state.expBarBackgroundImage:setFilter("nearest", "nearest")
     state.levelUpTableImage = love.graphics.newImage("assets/ui/menu/menu.png")
     state.levelUpTableImage:setFilter("nearest", "nearest")
-    state.levelUpStarEffect = love.graphics.newImage("assets/ui/bars/star_effect.png")
-    state.levelUpStarEffect:setFilter("nearest", "nearest")
-    state.levelUpArrow = love.graphics.newImage("assets/ui/bars/level_up_arrow.png")
-    state.levelUpArrow:setFilter("nearest", "nearest")
+        state.levelUpArrowImage = love.graphics.newImage("assets/ui/bars/level_up_arrow.png")
+        state.levelUpArrowImage:setFilter("nearest", "nearest")
+    state.levelUpStarAnimImage = love.graphics.newImage("assets/ui/bars/star_anim.png")
+    state.levelUpStarAnimImage:setFilter("nearest", "nearest")
+
     do
         local frameW, frameH = 192, 64
         local imageW, imageH = state.expBarImage:getDimensions()
