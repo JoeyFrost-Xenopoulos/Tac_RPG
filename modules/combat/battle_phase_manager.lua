@@ -356,7 +356,7 @@ function PhaseManager.updateDone(battleState, dt)
             if battleState.enemyWasKilled or (enemyUnit and enemyUnit.isDead) then
                 expGain = 70
             elseif battleState.playerAttackedThisBattle then
-                expGain = 30
+                expGain = 100
             elseif battleState.playerWasAttackedThisBattle then
                 expGain = 10
             end
