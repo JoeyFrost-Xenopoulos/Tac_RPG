@@ -137,6 +137,7 @@ State.expLevelAfter = 1
 State.levelUpStatsBefore = nil
 State.levelUpStatsAfter = nil
 State.levelUpAnimatedStatCount = 0
+State.levelUpPlusOnePlayedByStat = nil
 State.playerAttackedThisBattle = false
 State.playerWasCounterattacked = false
 State.playerWasAttackedThisBattle = false
@@ -211,6 +212,7 @@ function State.resetTimers()
     State.levelUpStatsBefore = nil
     State.levelUpStatsAfter = nil
     State.levelUpAnimatedStatCount = 0
+    State.levelUpPlusOnePlayedByStat = nil
     State.playerAttackedThisBattle = false
     State.playerWasCounterattacked = false
     State.playerWasAttackedThisBattle = false

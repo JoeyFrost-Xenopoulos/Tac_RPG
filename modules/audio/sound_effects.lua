@@ -45,5 +45,6 @@ Effects.playFireCast = Sfx.playFireCast
 Effects.playIceCast = Sfx.playIceCast
 Effects.playExpGain = Sfx.playExpGain
 Effects.playLevelUp = Sfx.playLevelUp
+Effects.playPlusOne = Sfx.playPlusOne
 
 return Effects

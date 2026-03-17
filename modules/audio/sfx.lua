@@ -24,6 +24,7 @@ function Sfx.load()
     Sfx.iceCast = love.audio.newSource("assets/audio/combat/magic/ice_cast.mp3", "static")
     Sfx.expGain = love.audio.newSource("assets/audio/exp_gain.mp3", "static")
     Sfx.levelUp = love.audio.newSource("assets/audio/level_up.mp3", "static")
+    Sfx.plusOne = love.audio.newSource("assets/audio/plus_one.mp3", "static")
 
     Sfx.baseVolumes = {
         menuIn   = 1.0,
@@ -45,7 +46,8 @@ function Sfx.load()
         fireCast = 0.85,
         iceCast = 0.85,
         expGain = 0.9,
-        levelUp = 0.95
+        levelUp = 0.95,
+        plusOne = 0.95
     }
 
     Sfx.setSFXVolume(0.6)
@@ -72,7 +74,8 @@ function Sfx.setSFXVolume(v)
         fireCast = Sfx.fireCast,
         iceCast = Sfx.iceCast,
         expGain = Sfx.expGain,
-        levelUp = Sfx.levelUp
+        levelUp = Sfx.levelUp,
+        plusOne = Sfx.plusOne
     }
 
     for name, src in pairs(sources) do
@@ -226,6 +229,13 @@ function Sfx.playLevelUp()
     if Sfx.levelUp then
         Sfx.levelUp:stop()
         Sfx.levelUp:play()
+    end
+end
+
+function Sfx.playPlusOne()
+    if Sfx.plusOne then
+        Sfx.plusOne:stop()
+        Sfx.plusOne:play()
     end
 end
 

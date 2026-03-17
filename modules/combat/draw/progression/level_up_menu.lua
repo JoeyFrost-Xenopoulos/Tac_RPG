@@ -1,5 +1,6 @@
 local Helpers = require("modules.combat.battle_helpers")
 local Utils = require("modules.combat.draw.progression.utils")
+local Audio = require("modules.audio.sound_effects")
 
 local LevelUpMenu = {}
 
@@ -10,7 +11,7 @@ local LEVEL_UP_HEADER_PANEL_H = 140
 local LEVEL_UP_PANEL_BASE_SIZE = 192
 local LEVEL_VALUE_UPDATE_DELAY = 0.7
 local LEVEL_MENU_SLIDE_IN_DURATION = 0.35
-local LEVEL_LIGHT_RECT_DURATION = 0.42
+local LEVEL_LIGHT_RECT_DURATION = 0.36
 local LEVEL_LIGHT_RECT_PAD = 10
 local LEVEL_LIGHT_RECT_EXTRA_REACH = 48
 local STAR_ANIM_FRAME_W = 100
@@ -21,7 +22,7 @@ local LEVEL_TO_STATS_DELAY = 0.10
 local STAT_ANIM_GAP = 0.08
 local STAT_ANIM_OVERLAP = 0.45
 local STAT_GAIN_ARROW_SCALE = 0.6
-local STAT_GAIN_BOUNCE_DURATION = 0.42
+local STAT_GAIN_BOUNCE_DURATION = 0.34
 local STAT_GAIN_BOUNCE_SCALE = 0.30
 local STAT_GAIN_BOUNCE_Y_OFFSET = 10
 
@@ -262,14 +263,6 @@ function LevelUpMenu.draw(state, screenW, screenH)
 
     Utils.drawOutlinedText(levelText, headerValueX, headerTextY)
 
-    if showUpdatedLevel and state.levelUpArrowImage then
-        local textWidth = love.graphics.getFont():getWidth(levelText)
-        local arrowX = headerValueX + textWidth + 10
-        local arrowY = headerTextY + 4
-        love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(state.levelUpArrowImage, arrowX, arrowY - 15, 0, 0.8, 0.8)
-    end
-
     if state.levelUpStatsFont then
         love.graphics.setFont(state.levelUpStatsFont)
     elseif state.previewFont then
@@ -309,6 +302,8 @@ function LevelUpMenu.draw(state, screenW, screenH)
 
     local animatedStatIndexByKey = {}
     local animatedStatCount = 0
+    local plusOnePlayedByStat = state.levelUpPlusOnePlayedByStat or {}
+    state.levelUpPlusOnePlayedByStat = plusOnePlayedByStat
     for _, stat in ipairs(statDrawOrder) do
         local beforeValue = statsBefore[stat.key]
         if beforeValue == nil then
@@ -347,6 +342,10 @@ function LevelUpMenu.draw(state, screenW, screenH)
                 displayedValue = beforeValue
             else
                 statTriggered = true
+                if not plusOnePlayedByStat[stat.key] then
+                    Audio.playPlusOne()
+                    plusOnePlayedByStat[stat.key] = true
+                end
             end
 
             drawLevelLightBridge(
