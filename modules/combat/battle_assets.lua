@@ -26,6 +26,12 @@ function Assets.load(state)
     state.expBarImage:setFilter("nearest", "nearest")
         state.expBarBackgroundImage = love.graphics.newImage("assets/ui/bars/exp_background_myself.png")
         state.expBarBackgroundImage:setFilter("nearest", "nearest")
+    state.levelUpTableImage = love.graphics.newImage("assets/ui/menu/menu.png")
+    state.levelUpTableImage:setFilter("nearest", "nearest")
+    state.levelUpStarEffect = love.graphics.newImage("assets/ui/bars/star_effect.png")
+    state.levelUpStarEffect:setFilter("nearest", "nearest")
+    state.levelUpArrow = love.graphics.newImage("assets/ui/bars/level_up_arrow.png")
+    state.levelUpArrow:setFilter("nearest", "nearest")
     do
         local frameW, frameH = 192, 64
         local imageW, imageH = state.expBarImage:getDimensions()
@@ -35,6 +41,8 @@ function Assets.load(state)
     state.pixelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
     state.weaponFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
     state.previewFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 30)
+    state.levelUpHeaderFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
+    state.levelUpStatsFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 36)
     
     -- Load weapon icons
     state.weaponIcons = {}

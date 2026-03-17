@@ -403,6 +403,7 @@ function PhaseManager.updateDone(battleState, dt)
             battleState.expBarEndValue = 0
             battleState.expBarMaxValue = 100
             battleState.expLeveledUp = false
+            battleState.levelUpMenuTimer = 0
             battleState.expLevelBefore = 1
             battleState.expLevelAfter = 1
         end
@@ -413,9 +414,15 @@ function PhaseManager.updateDone(battleState, dt)
     end
 
     battleState.expBarTimer = (battleState.expBarTimer or 0) + dt
+    if battleState.expLeveledUp then
+        battleState.levelUpMenuTimer = (battleState.levelUpMenuTimer or 0) + dt
+    end
     local expBarTotalDuration = (battleState.expBarAnimDelay or 0)
         + (battleState.expBarAnimDuration or 1.0)
         + (battleState.expBarPostHoldDuration or 0.8)
+    if battleState.expLeveledUp then
+        expBarTotalDuration = expBarTotalDuration + 1.0
+    end
     if battleState.expBarTimer < expBarTotalDuration then
         return
     end
