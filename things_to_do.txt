@@ -1,12 +1,6 @@
 Useful websites
     - https://pixelpaletteswap.com/
 
-- add in names in battle frame
-
-- add in exp system
-    - characters got lvl growth amounts
-    - after each combat the characters lvl up
-
 - For each specific stat, add a text when you click on it that describes what it does
 
 - re-do the options menu
@@ -17,8 +11,7 @@ Useful websites
     - make it so weapons have different looks visually
 
 - add in the health potion system
-    - fixup the health pot icon
 
-- add in new sword icons
-- Create a weapons table for item lookup
+- Create a weapons within the unit stats menu for item lookup
+
 - add in the double platforms for ranged attacks with no counter attack
