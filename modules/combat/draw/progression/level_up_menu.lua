@@ -6,7 +6,7 @@ local LevelUpMenu = {}
 
 local LEVEL_UP_STATS_PANEL_W = 480
 local LEVEL_UP_STATS_PANEL_H = 360
-local LEVEL_UP_HEADER_PANEL_W = 360
+local LEVEL_UP_HEADER_PANEL_W = 500
 local LEVEL_UP_HEADER_PANEL_H = 140
 local LEVEL_UP_PANEL_BASE_SIZE = 192
 local LEVEL_VALUE_UPDATE_DELAY = 0.7
@@ -92,6 +92,24 @@ local function getLevelUpPanelQuads(state)
     }
 
     return state.levelUpPanelQuads
+end
+
+local function getLevelUpHeaderRibbonQuads(state)
+    if state.levelUpHeaderRibbonQuads then
+        return state.levelUpHeaderRibbonQuads
+    end
+    if not state.levelUpHeaderRibbonImage then
+        return nil
+    end
+
+    local imageW, imageH = state.levelUpHeaderRibbonImage:getDimensions()
+    state.levelUpHeaderRibbonQuads = {
+        left = love.graphics.newQuad(0, 0, 128, 128, imageW, imageH),
+        mid = love.graphics.newQuad(192, 0, 64, 128, imageW, imageH),
+        right = love.graphics.newQuad(320, 0, 130, 128, imageW, imageH),
+    }
+
+    return state.levelUpHeaderRibbonQuads
 end
 
 local function getLevelUpStarQuad(state, frameIndex)
@@ -195,6 +213,33 @@ local function drawMenuPanelAt(state, panelX, panelY, panelW, panelH)
     love.graphics.draw(image, quads.botRight, x3, y3, 0, scaleX, scaleY)
 end
 
+local function drawHeaderRibbonAt(state, panelX, panelY, panelW, panelH)
+    local quads = getLevelUpHeaderRibbonQuads(state)
+    if not quads then
+        return false
+    end
+
+    local image = state.levelUpHeaderRibbonImage
+    local _, _, leftW, leftH = quads.left:getViewport()
+    local _, _, midW = quads.mid:getViewport()
+    local _, _, rightW = quads.right:getViewport()
+
+    local minWidth = leftW + rightW
+    if panelW <= minWidth then
+        return false
+    end
+
+    local stretchMidW = panelW - minWidth
+    local scaleMidX = stretchMidW / midW
+    local scaleY = panelH / leftH
+
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(image, quads.left, panelX, panelY, 0, 1, scaleY)
+    love.graphics.draw(image, quads.mid, panelX + leftW, panelY, 0, scaleMidX, scaleY)
+    love.graphics.draw(image, quads.right, panelX + leftW + stretchMidW, panelY, 0, 1, scaleY)
+    return true
+end
+
 function LevelUpMenu.draw(state, screenW, screenH)
     if not state.levelUpTableImage then return end
 
@@ -217,7 +262,9 @@ function LevelUpMenu.draw(state, screenW, screenH)
     local panelX = math.floor(startPanelX + (targetPanelX - startPanelX) * easedSlideProgress)
     local headerPanelX = math.floor(startHeaderPanelX + (targetHeaderPanelX - startHeaderPanelX) * easedSlideProgress)
 
-    drawMenuPanelAt(state, headerPanelX, topPanelY, headerPanelW, headerPanelH)
+    if not drawHeaderRibbonAt(state, headerPanelX, topPanelY, headerPanelW, headerPanelH) then
+        drawMenuPanelAt(state, headerPanelX, topPanelY, headerPanelW, headerPanelH)
+    end
     drawMenuPanelAt(state, panelX, statsPanelY, panelW, panelH)
 
     local previousFont = love.graphics.getFont()
@@ -234,8 +281,8 @@ function LevelUpMenu.draw(state, screenW, screenH)
     local showUpdatedLevel = menuAnimTime >= LEVEL_VALUE_UPDATE_DELAY
     local displayedLevel = showUpdatedLevel and updatedLevel or previousLevel
 
-    local headerLabelX = headerPanelX + headerPanelW * 0.13
-    local headerValueX = headerPanelX + headerPanelW * 0.70
+    local headerLabelX = headerPanelX + headerPanelW * 0.13 + 50
+    local headerValueX = headerPanelX + headerPanelW * 0.70 - 40
     local headerTextY = topPanelY + headerPanelH * 0.34
     local unitNameText = tostring(unitName)
     Utils.drawOutlinedText(unitNameText, headerLabelX, headerTextY)
