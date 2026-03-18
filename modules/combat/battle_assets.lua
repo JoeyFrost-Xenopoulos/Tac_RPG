@@ -4,7 +4,7 @@ local Assets = {}
 function Assets.load(state)
     state.platformImage = love.graphics.newImage("assets/combat/arena/battle_platform.png")
     state.platformImage:setFilter("nearest", "nearest")
-    state.hitEffectImage = love.graphics.newImage("assets/combat/hit_effect/break01.png")
+    state.hitEffectImage = love.graphics.newImage("assets/combat/hit_effect/symett_hit_1.png")
     state.hitEffectImage:setFilter("nearest", "nearest")
     state.harpoonHitEffectImage = love.graphics.newImage("assets/combat/hit_effect/harpoon_hit_3.png")
     state.harpoonHitEffectImage:setFilter("nearest", "nearest")

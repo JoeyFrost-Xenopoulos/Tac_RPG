@@ -152,11 +152,11 @@ function VisualEffects.drawBreak(state, targetX, targetY, attacker)
         frameHeight = 64
     else
         effectImage = state.hitEffectImage
-        frameCount = 11
-        cols = 11
+        frameCount = 7
+        cols = 7
         rows = 1
-        frameWidth = 64
-        frameHeight = 64
+        frameWidth = 96
+        frameHeight = 96
     end
     
     if not effectImage then return end
