@@ -43,6 +43,7 @@ Effects.playBowArrow = Sfx.playBowArrow
 Effects.playHarpoonThrow = Sfx.playHarpoonThrow
 Effects.playFireCast = Sfx.playFireCast
 Effects.playIceCast = Sfx.playIceCast
+Effects.playMagicCast = Sfx.playMagicCast
 Effects.playExpGain = Sfx.playExpGain
 Effects.playLevelUp = Sfx.playLevelUp
 Effects.playPlusOne = Sfx.playPlusOne

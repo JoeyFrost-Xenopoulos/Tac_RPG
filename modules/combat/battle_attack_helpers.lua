@@ -9,6 +9,12 @@ function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, proje
     local BattleHelpers = require("modules.combat.battle_helpers")
     local isMonkFire = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "fire"
     local isMonkIce = attacker and BattleHelpers.isMonkCaster(attacker) and attacker.weapon == "ice"
+    local isMonkHeal = attacker and BattleHelpers.isMonkCaster(attacker)
+
+    if isMonkHeal and attackFrameIndex == 1 and not battleState.attackMagicCastPlayed then
+        Audio.playMagicCast()
+        battleState.attackMagicCastPlayed = true
+    end
 
     if isMonkFire and attackFrameIndex == 1 and not battleState.attackFireCastScheduled then
         battleState.attackFireCastScheduled = true
@@ -163,6 +169,7 @@ function Helpers.resetPhaseFlags(battleState)
     battleState.attackHitPlayed = false
     battleState.attackBowPlayed = false
     battleState.attackHarpoonPlayed = false
+    battleState.attackMagicCastPlayed = false
     battleState.attackFireCastPlayed = false
     battleState.attackFireCastScheduled = false
     battleState.attackFireCastPlayAt = 0

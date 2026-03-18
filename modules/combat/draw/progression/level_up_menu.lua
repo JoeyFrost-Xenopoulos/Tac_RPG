@@ -254,7 +254,11 @@ function LevelUpMenu.draw(state, screenW, screenH)
     local targetHeaderPanelX = math.floor((screenW - headerPanelW) / 2)
     local statsPanelY = topPanelY + headerPanelH + panelGap
 
-    local menuAnimTime = math.max(0, (state.levelUpMenuTimer or 0) - (state.expBarAnimDelay or 0) - (state.expBarAnimDuration or 0))
+    local menuStartDelay = math.max(state.expBarPostHoldDuration or 0.8, 0)
+    local menuAnimTime = math.max(0, (state.levelUpMenuTimer or 0)
+        - (state.expBarAnimDelay or 0)
+        - (state.expBarAnimDuration or 0)
+        - menuStartDelay)
     local slideProgress = math.max(0, math.min(1, menuAnimTime / LEVEL_MENU_SLIDE_IN_DURATION))
     local easedSlideProgress = easeOutCubic(slideProgress)
     local startPanelX = -panelW - 40

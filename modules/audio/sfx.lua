@@ -22,6 +22,7 @@ function Sfx.load()
     Sfx.harpoonThrow = love.audio.newSource("assets/audio/combat/harpoon_throw.mp3", "static")
     Sfx.fireCast = love.audio.newSource("assets/audio/combat/magic/fire_cast.mp3", "static")
     Sfx.iceCast = love.audio.newSource("assets/audio/combat/magic/ice_cast.mp3", "static")
+    Sfx.magicCast = love.audio.newSource("assets/audio/combat/magic/magic_cast.mp3", "static")
     Sfx.expGain = love.audio.newSource("assets/audio/exp_gain.mp3", "static")
     Sfx.levelUp = love.audio.newSource("assets/audio/level_up.mp3", "static")
     Sfx.plusOne = love.audio.newSource("assets/audio/plus_one.mp3", "static")
@@ -45,6 +46,7 @@ function Sfx.load()
         harpoonThrow = 0.85,
         fireCast = 0.85,
         iceCast = 0.85,
+        magicCast = 0.85,
         expGain = 0.9,
         levelUp = 0.95,
         plusOne = 0.95
@@ -73,6 +75,7 @@ function Sfx.setSFXVolume(v)
         harpoonThrow = Sfx.harpoonThrow,
         fireCast = Sfx.fireCast,
         iceCast = Sfx.iceCast,
+        magicCast = Sfx.magicCast,
         expGain = Sfx.expGain,
         levelUp = Sfx.levelUp,
         plusOne = Sfx.plusOne
@@ -215,6 +218,13 @@ function Sfx.playIceCast()
     if Sfx.iceCast then
         Sfx.iceCast:stop()
         Sfx.iceCast:play()
+    end
+end
+
+function Sfx.playMagicCast()
+    if Sfx.magicCast then
+        Sfx.magicCast:stop()
+        Sfx.magicCast:play()
     end
 end
 

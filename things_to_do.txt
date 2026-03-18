@@ -8,10 +8,11 @@ Useful websites
 - fix current weapon system
     - add in attack amounts
     - add in weapon triangle
+    - make height matter for damage
     - make it so weapons have different looks visually
 
 - add in the health potion system
 
-- Create a weapons within the unit stats menu for item lookup
+- Create a weapons table within the unit stats menu for item lookup
 
 - add in the double platforms for ranged attacks with no counter attack

@@ -3,6 +3,10 @@ local LevelUpMenu = require("modules.combat.draw.progression.level_up_menu")
 
 local ExpBarDraw = {}
 
+local function getLevelUpMenuDelay(state)
+    return math.max(state.expBarPostHoldDuration or 0.8, 0)
+end
+
 local function getFillAndDisplayedExp(state, animProgress, barScaleX)
     local startFill = state.expBarStartFillPercent or 0
     local targetFillUnits = state.expBarTargetFillUnits
@@ -88,7 +92,14 @@ function ExpBarDraw.draw(state, screenW, screenH)
     local numberX = barX + barW + numberGap
 
     local animProgress = Utils.getExpAnimProgress(state)
-    if state.expLeveledUp and state.levelUpTableImage and animProgress >= 1 then
+    local expAnimEndTime = (state.expBarAnimDelay or 0) + (state.expBarAnimDuration or 1.0)
+    local elapsedSinceExpAnimEnd = (state.expBarTimer or 0) - expAnimEndTime
+    local canShowLevelUpMenu = state.expLeveledUp
+        and state.levelUpTableImage
+        and animProgress >= 1
+        and elapsedSinceExpAnimEnd >= getLevelUpMenuDelay(state)
+
+    if canShowLevelUpMenu then
         LevelUpMenu.draw(state, screenW, screenH)
         return
     end
