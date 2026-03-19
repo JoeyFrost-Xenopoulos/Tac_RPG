@@ -11,7 +11,7 @@ local SoldierConfig = {
     health = 30,
     weapon = "sword",
     weapons = { "sword", "sword_test" },
-    items = { "health_potion", "mana_potion" },
+    items = { "health_potion" },
     -- Combat stats
     strength = 15,
     magic = 3,
