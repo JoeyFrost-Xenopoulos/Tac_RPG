@@ -51,12 +51,18 @@ function FrameDraw.drawAttackPreview(state, frameX, frameY, frameW)
         leftPreviewX + 50, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight * 2)
 
     -- Player preview (right)
+    -- Check if player is an archer and adjust positioning
+    local isPlayerArcher = state.attacker and state.attacker.isPlayer and state.attacker.type == "Archer"
+    local isPlayerHarpoonFish = state.attacker and state.attacker.isPlayer and state.attacker.type == "Harpoon Fish"
+    local dmgXOffset = (isPlayerArcher and -8) or (isPlayerHarpoonFish and -8) or 0
+    local critXOffset = isPlayerArcher and 8 or 0
+    
     love.graphics.printf(string.format("Hit: %d%%", playerPreview.hit or 0), 
         rightPreviewX - 100, previewTopY + PREVIEW_CONFIG.offsetY, PREVIEW_CONFIG.width, "right")
     love.graphics.printf(string.format("Dmg: %d", playerPreview.damage or 0), 
-        rightPreviewX - 110, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight, PREVIEW_CONFIG.width, "right")
+        rightPreviewX - 110 + dmgXOffset, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight, PREVIEW_CONFIG.width, "right")
     love.graphics.printf(string.format("Crit: %d%%", playerPreview.crit or 0), 
-        rightPreviewX - 100, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight * 2, PREVIEW_CONFIG.width, "right")
+        rightPreviewX - 100 + critXOffset, previewTopY + PREVIEW_CONFIG.offsetY + lineHeight * 2, PREVIEW_CONFIG.width, "right")
 end
 
 function FrameDraw.drawWeaponInfo(state, frameX, frameY, frameW, weaponIcons, weaponFont)
