@@ -45,6 +45,7 @@ State.missEffectImage = nil
 State.missEffectPlayerImage = nil
 State.missEffectEnemyImage = nil
 State.missEffectActive = false
+State.missEffectSourceIsPlayer = nil
 State.missEffectStartTime = 0
 State.missFrameStartTime = 0
 State.missAnimDuration = 1.2
@@ -178,6 +179,8 @@ function State.resetTimers()
     State.followupQueued = false
     State.followupAttackerIsDefender = false
     State.missEffectActive = false
+    State.missEffectSourceIsPlayer = nil
+    State.missEffectImage = nil
     State.missFrameStartTime = 0
     State.critEffectActive = false
     State.critFrameStartTime = 0

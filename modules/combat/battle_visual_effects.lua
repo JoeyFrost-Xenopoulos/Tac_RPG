@@ -251,6 +251,14 @@ function VisualEffects.updateMiss(state, attackFrameIndex, attacker, projectileH
 
     if shouldTrigger then
         state.missEffectActive = true
+        state.missEffectSourceIsPlayer = attacker and attacker.isPlayer or nil
+        if state.missEffectSourceIsPlayer == true and state.missEffectPlayerImage then
+            state.missEffectImage = state.missEffectPlayerImage
+        elseif state.missEffectSourceIsPlayer == false and state.missEffectEnemyImage then
+            state.missEffectImage = state.missEffectEnemyImage
+        else
+            state.missEffectImage = nil
+        end
         state.missEffectStartTime = state.battleTimer
         state.missFrameStartTime = state.battleTimer
     end
@@ -260,10 +268,12 @@ function VisualEffects.drawMiss(state, targetX, targetY, missSourceUnit)
     if not state.missEffectActive then return end
 
     local missImage = state.missEffectImage
-    if missSourceUnit and missSourceUnit.isPlayer and state.missEffectPlayerImage then
-        missImage = state.missEffectPlayerImage
-    elseif missSourceUnit and missSourceUnit.isPlayer == false and state.missEffectEnemyImage then
-        missImage = state.missEffectEnemyImage
+    if not missImage then
+        if missSourceUnit and missSourceUnit.isPlayer and state.missEffectPlayerImage then
+            missImage = state.missEffectPlayerImage
+        elseif missSourceUnit and missSourceUnit.isPlayer == false and state.missEffectEnemyImage then
+            missImage = state.missEffectEnemyImage
+        end
     end
     if not missImage then return end
 
@@ -273,7 +283,6 @@ function VisualEffects.drawMiss(state, targetX, targetY, missSourceUnit)
     local frameWidth = 100
     local frameHeight = 100
     local frameCount = 16
-    local frameDuration = 0.075
     local animSpeed = state.missAnimDuration / frameCount
 
     local frameIndex = math.floor(timeSinceMiss / animSpeed)

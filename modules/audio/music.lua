@@ -2,15 +2,15 @@
 local Music = {}
 
 function Music.load()
-    Music.mainTheme = love.audio.newSource("assets/audio/themes/Main_Theme.mp3", "stream")
+    Music.mainTheme = love.audio.newSource("assets/audio/music/Main_Theme.mp3", "stream")
     Music.mainTheme:setLooping(false)
     Music.mainTheme:setVolume(0.1)
 
-    Music.overworld2 = love.audio.newSource("assets/audio/themes/Overworld_2.mp3", "stream")
+    Music.overworld2 = love.audio.newSource("assets/audio/music/Overworld_2.mp3", "stream")
     Music.overworld2:setLooping(false)
     Music.overworld2:setVolume(0.1)
 
-    Music.battleTheme = love.audio.newSource("assets/audio/themes/battle_theme.mp3", "stream")
+    Music.battleTheme = love.audio.newSource("assets/audio/music/battle_theme.mp3", "stream")
     Music.battleTheme:setLooping(true)
     Music.battleTheme:setVolume(0.1)
 

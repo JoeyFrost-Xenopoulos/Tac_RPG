@@ -107,6 +107,8 @@ local function resetAttackPhaseState(battleState)
     battleState.healthAnimStartTime = 0
     battleState.hitEffectActive = false
     battleState.missEffectActive = false
+    battleState.missEffectSourceIsPlayer = nil
+    battleState.missEffectImage = nil
     battleState.critEffectActive = false
     battleState.hitFrameStartTime = 0
     battleState.missFrameStartTime = 0
