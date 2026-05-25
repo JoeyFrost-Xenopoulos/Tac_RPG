@@ -39,7 +39,7 @@ local function createMonkConfig(isPlayer, colourSwapPath, animSwapPath, override
         health = 21,
         weapon = "fire",
         weapons = { "fire", "ice" },
-        items = { "mana_potion" },
+        items = {},
         -- Combat stats
         strength = 7,
         magic = 12,
