@@ -20,7 +20,6 @@ function Map.load(mapPath)
             for x = 1, map.width do
                 local treeTile = treeLayer.data[y] and treeLayer.data[y][x] or 0
                 if treeTile ~= 0 then
-                    blockedTiles[x .. "," .. y] = true
                     -- tile to the right of the tree
                     local rightX = x + 1
                     if rightX <= map.width then
