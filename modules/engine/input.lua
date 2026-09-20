@@ -7,6 +7,9 @@ local Mouse = require("modules.engine.mouse")
 local CameraManager = require("modules.engine.camera_manager")
 local TurnManager = require("modules.engine.turn")
 local UnitStats = require("modules.ui.unit_stats")
+local Cursor = require("modules.ui.cursor")
+local UnitManager = require("modules.units.manager")
+local Battle = require("modules.combat.battle")
 
 function Input.mousepressed(x, y, button)
     -- Block mouse input if UnitStats is visible
@@ -55,11 +58,8 @@ function Input.keypressed(key)
 
     -- Show unit stats page when 'E' is pressed and cursor is hovered over a unit
     if key == "e" then
-        local Cursor = require("modules.ui.cursor")
-        local UnitManager = require("modules.units.manager")
         -- Only allow stats if not moving or in battle phase
         if UnitManager.state ~= "idle" then return end
-        local Battle = require("modules.combat.battle")
         if Battle.visible then return end
         local tx, ty = Cursor.getTile()
         for _, unit in ipairs(UnitManager.units or {}) do

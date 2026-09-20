@@ -1,0 +1,1273 @@
+================================================================================
+PROJECT DIRECTORY SUMMARY
+Root: C:\Users\joey7\Documents\my_game_2
+Total Lua files: 114
+================================================================================
+
+DIRECTORY STRUCTURE
+--------------------------------------------------------------------------------
+my_game_2/
+├── assets/
+│   ├── audio/
+│   │   ├── music/
+│   │   │   ├── Main_Theme.mp3
+│   │   │   ├── Overworld_2.mp3
+│   │   │   ├── Overworld_4.mp3
+│   │   │   └── battle_theme.mp3
+│   │   └── sfx/
+│   │       ├── combat/
+│   │       │   ├── magic/
+│   │       │   │   ├── fire_cast.mp3
+│   │       │   │   ├── ice_cast.mp3
+│   │       │   │   └── magic_cast.mp3
+│   │       │   ├── melee/
+│   │       │   │   ├── Attack_1.wav
+│   │       │   │   ├── Attack_Hit_1.wav
+│   │       │   │   ├── Attack_Miss_1.wav
+│   │       │   │   ├── Critical_Hit_1.wav
+│   │       │   │   └── Death_Bell.wav
+│   │       │   └── ranged/
+│   │       │       ├── bow_arrow.mp3
+│   │       │       └── harpoon_throw.mp3
+│   │       ├── footsteps/
+│   │       │   └── Running_In_Grass.wav
+│   │       ├── progression/
+│   │       │   ├── exp_gain.mp3
+│   │       │   ├── level_up.mp3
+│   │       │   └── plus_one.mp3
+│   │       └── ui/
+│   │           ├── Back.ogg
+│   │           ├── Back.wav
+│   │           ├── Click.wav
+│   │           ├── Confirmation.wav
+│   │           ├── Flip.ogg
+│   │           ├── Menu_In.wav
+│   │           ├── Menu_Out.wav
+│   │           ├── Next_Turn.wav
+│   │           └── Select.wav
+│   ├── backgrounds/
+│   │   └── options_background.ogv
+│   ├── combat/
+│   │   ├── arena/
+│   │   │   └── battle_platform.png
+│   │   ├── hit_effect/
+│   │   │   ├── harpoon_hit.png
+│   │   │   ├── harpoon_hit_3.png
+│   │   │   ├── melee_hit_1.png
+│   │   │   └── symett_hit_1.png
+│   │   ├── battle_frame_attp.png
+│   │   ├── crit.png
+│   │   ├── double_hit.png
+│   │   ├── miss_enemy.png
+│   │   └── miss_player.png
+│   ├── ui/
+│   │   ├── arrows/
+│   │   │   └── up_down.png
+│   │   ├── bars/
+│   │   │   ├── BigBar_Base.png
+│   │   │   ├── BigBar_Fill.png
+│   │   │   ├── BigBar_Fill_Stats.png
+│   │   │   ├── SmallBar_Base.png
+│   │   │   ├── SmallBar_Fill.png
+│   │   │   ├── SmallBar_Fill_Stats.png
+│   │   │   ├── exp_background_myself.png
+│   │   │   ├── exp_bar.png
+│   │   │   ├── level_up_arrow.png
+│   │   │   ├── level_up_table.png
+│   │   │   └── star_anim.png
+│   │   ├── cursors/
+│   │   │   ├── Cursor_01.png
+│   │   │   ├── Cursor_02.png
+│   │   │   ├── Cursor_03.png
+│   │   │   └── Cursor_04.png
+│   │   ├── font/
+│   │   │   ├── Pixel_Font.otf
+│   │   │   └── Star_Crush_Font.otf
+│   │   ├── icons/
+│   │   │   ├── menu/
+│   │   │   │   ├── back.png
+│   │   │   │   ├── cog.png
+│   │   │   │   ├── music.png
+│   │   │   │   ├── scroll_bar.png
+│   │   │   │   ├── scroll_bar_2.png
+│   │   │   │   └── sfx.png
+│   │   │   ├── bow.png
+│   │   │   ├── fire_book.png
+│   │   │   ├── harpoon.png
+│   │   │   ├── health_pot.png
+│   │   │   ├── ice_book.png
+│   │   │   └── sword.png
+│   │   ├── menu/
+│   │   │   ├── combat_summary_menu_2.png
+│   │   │   ├── menu.png
+│   │   │   ├── options_menu.png
+│   │   │   ├── stats_menu.png
+│   │   │   ├── stats_menu_2.png
+│   │   │   ├── stats_menu_enemy.png
+│   │   │   └── stats_menu_player.png
+│   │   ├── movement_arrows/
+│   │   │   └── Arrows.png
+│   │   ├── ribbons/
+│   │   │   └── BigRibbons.png
+│   │   └── swords/
+│   │       └── Swords.png
+│   └── units/
+│       ├── archer/
+│       │   ├── avatars/
+│       │   │   └── Avatars_03.png
+│       │   ├── base/
+│       │   │   ├── Archer_Idle.png
+│       │   │   ├── Archer_Run.png
+│       │   │   ├── Archer_Shoot.png
+│       │   │   └── Arrow.png
+│       │   └── palettes/
+│       │       ├── Archer_Avatar_Swap.json
+│       │       ├── Archer_Main_swap.json
+│       │       ├── archer_avatar_swap.lua
+│       │       └── archer_main_swap.lua
+│       ├── harpoon_fish/
+│       │   ├── avatars/
+│       │   │   └── Harpoon_Fish.png
+│       │   ├── base/
+│       │   │   ├── Harpoon.png
+│       │   │   ├── HarpoonFish_Idle.png
+│       │   │   ├── HarpoonFish_Run.png
+│       │   │   └── HarpoonFish_Throw.png
+│       │   └── palettes/
+│       │       ├── EnemyPack_to_Enemy.json
+│       │       ├── EnemyPack_to_Player.json
+│       │       ├── HarpoonFish_Main_Swap.json
+│       │       ├── enemy_pack_to_enemy.lua
+│       │       ├── enemy_pack_to_player.lua
+│       │       └── harpoon_fish_main_swap.lua
+│       ├── monk/
+│       │   ├── avatars/
+│       │   │   └── Avatars_04.png
+│       │   ├── base/
+│       │   │   ├── Fire_attack.png
+│       │   │   ├── Monk_Heal.png
+│       │   │   ├── Monk_Heal_Effect.png
+│       │   │   ├── Monk_Idle.png
+│       │   │   ├── Monk_Run.png
+│       │   │   ├── fireball.png
+│       │   │   └── ice_shard_attack.png
+│       │   └── palettes/
+│       │       ├── Fire_Preset.json
+│       │       ├── Ice_Preset.json
+│       │       ├── Monk_Avatar_Swap.json
+│       │       ├── Monk_Main_Swap.json
+│       │       ├── fire_preset.lua
+│       │       ├── ice_preset.lua
+│       │       ├── monk_avatar_swap.lua
+│       │       └── monk_main_swap.lua
+│       └── soldier/
+│           ├── avatars/
+│           │   ├── Avatars_01.png
+│           │   └── Avatars_06.png
+│           ├── base/
+│           │   ├── Warrior_Attack1.png
+│           │   ├── Warrior_Attack2.png
+│           │   ├── Warrior_Guard.png
+│           │   ├── Warrior_Idle.png
+│           │   └── Warrior_Run.png
+│           └── variants/
+│               └── enemy/
+│                   ├── Warrior_Attack1.png
+│                   ├── Warrior_Attack2.png
+│                   ├── Warrior_Guard.png
+│                   ├── Warrior_Idle.png
+│                   └── Warrior_Run.png
+├── map/
+│   ├── clouds/
+│   │   ├── Clouds_01.png
+│   │   ├── Clouds_02.png
+│   │   ├── Clouds_03.png
+│   │   ├── Clouds_04.png
+│   │   ├── Clouds_05.png
+│   │   └── Clouds_06.png
+│   ├── config/
+│   │   └── map_1_units.lua
+│   ├── decoration/
+│   │   ├── rocks/
+│   │   │   ├── Water Rocks_01.png
+│   │   │   ├── Water Rocks_02.png
+│   │   │   ├── Water Rocks_03.png
+│   │   │   └── Water Rocks_04.png
+│   │   └── rubber_duck/
+│   │       └── Rubber duck.png
+│   ├── leaf/
+│   │   └── SpringLeaf.png
+│   ├── trees/
+│   │   ├── Tree1.png
+│   │   ├── Tree2.png
+│   │   ├── Tree3.png
+│   │   └── Tree4.png
+│   ├── Shadow.png
+│   ├── Tilemap_color1.png
+│   ├── Tilemap_color3.png
+│   ├── Water Background color.png
+│   ├── Water Foam.png
+│   ├── animated_water_bg.png
+│   ├── map.tmx
+│   ├── map_1.lua
+│   ├── map_2.lua
+│   └── map_2.tmx
+├── modules/
+│   ├── audio/
+│   │   ├── music.lua
+│   │   ├── sfx.lua
+│   │   └── sound_effects.lua
+│   ├── combat/
+│   │   ├── draw/
+│   │   │   ├── progression/
+│   │   │   │   ├── exp_bar.lua
+│   │   │   │   ├── level_up_menu.lua
+│   │   │   │   ├── level_up_stats.lua
+│   │   │   │   └── utils.lua
+│   │   │   ├── progression.lua
+│   │   │   ├── scene.lua
+│   │   │   └── unit.lua
+│   │   ├── battle.lua
+│   │   ├── battle_anim.lua
+│   │   ├── battle_assets.lua
+│   │   ├── battle_attack_helpers.lua
+│   │   ├── battle_config.lua
+│   │   ├── battle_draw.lua
+│   │   ├── battle_effects.lua
+│   │   ├── battle_frame_draw.lua
+│   │   ├── battle_helpers.lua
+│   │   ├── battle_lifecycle.lua
+│   │   ├── battle_movement_effects.lua
+│   │   ├── battle_phase_manager.lua
+│   │   ├── battle_projectile.lua
+│   │   ├── battle_state.lua
+│   │   ├── battle_transition_draw.lua
+│   │   ├── battle_ui_draw.lua
+│   │   ├── battle_visual_effects.lua
+│   │   └── combat_system.lua
+│   ├── engine/
+│   │   ├── attack.lua
+│   │   ├── camera.lua
+│   │   ├── camera_manager.lua
+│   │   ├── input.lua
+│   │   ├── mouse.lua
+│   │   ├── movement.lua
+│   │   ├── movement_range.lua
+│   │   ├── pathfinding.lua
+│   │   ├── turn.lua
+│   │   └── turn_ai.lua
+│   ├── manager/
+│   │   ├── combat.lua
+│   │   ├── core.lua
+│   │   ├── damage.lua
+│   │   ├── movement.lua
+│   │   ├── ui.lua
+│   │   ├── update.lua
+│   │   └── utils.lua
+│   ├── ui/
+│   │   ├── item_selector/
+│   │   │   ├── config.lua
+│   │   │   ├── draw.lua
+│   │   │   ├── init.lua
+│   │   │   ├── input.lua
+│   │   │   ├── options.lua
+│   │   │   └── state.lua
+│   │   ├── unit_stats/
+│   │   │   ├── animation_draw.lua
+│   │   │   ├── avatar_draw.lua
+│   │   │   ├── config.lua
+│   │   │   ├── draw.lua
+│   │   │   ├── header_arrows_draw.lua
+│   │   │   ├── hp_level_draw.lua
+│   │   │   ├── init.lua
+│   │   │   ├── name_type_draw.lua
+│   │   │   ├── resources.lua
+│   │   │   ├── stat_bar.lua
+│   │   │   ├── state.lua
+│   │   │   └── stats_draw.lua
+│   │   ├── weapon_selector/
+│   │   │   ├── config.lua
+│   │   │   ├── draw.lua
+│   │   │   ├── init.lua
+│   │   │   ├── input.lua
+│   │   │   ├── options.lua
+│   │   │   └── state.lua
+│   │   ├── attack_indicator.lua
+│   │   ├── banner.lua
+│   │   ├── banner_controller.lua
+│   │   ├── battle.lua
+│   │   ├── bigbar.lua
+│   │   ├── combat_summary.lua
+│   │   ├── cursor.lua
+│   │   ├── grid.lua
+│   │   ├── menu.lua
+│   │   ├── movement_arrows.lua
+│   │   ├── options.lua
+│   │   ├── turn_counter.lua
+│   │   └── turn_overlay.lua
+│   ├── units/
+│   │   ├── base/
+│   │   │   ├── animation.lua
+│   │   │   ├── draw.lua
+│   │   │   ├── init.lua
+│   │   │   ├── interaction.lua
+│   │   │   ├── movement.lua
+│   │   │   └── stats.lua
+│   │   ├── archer.lua
+│   │   ├── enemy_soldier.lua
+│   │   ├── harpoon_fish.lua
+│   │   ├── manager.lua
+│   │   ├── monk.lua
+│   │   ├── soldier.lua
+│   │   ├── unit_factory.lua
+│   │   └── unit_spawner.lua
+│   └── world/
+│       ├── clouds.lua
+│       ├── foam.lua
+│       ├── leaf.lua
+│       └── map.lua
+├── .gitignore
+├── PROJECT_SUMMARY.txt
+├── combat_sys.txt
+├── config.lua
+├── generate_summary.py
+├── main.lua
+└── things_to_do.txt
+
+================================================================================
+FILE OVERVIEWS
+================================================================================
+
+FILE: assets\units\archer\palettes\archer_avatar_swap.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Archer Avatar (enemy variant)
+
+FILE: assets\units\archer\palettes\archer_main_swap.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Archer Main (enemy variant)
+
+FILE: assets\units\harpoon_fish\palettes\enemy_pack_to_enemy.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Enemy Pack to Enemy
+
+FILE: assets\units\harpoon_fish\palettes\enemy_pack_to_player.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Enemy Pack to Player
+
+FILE: assets\units\harpoon_fish\palettes\harpoon_fish_main_swap.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Harpoon Fish Main Swap (blue to red)
+
+FILE: assets\units\monk\palettes\fire_preset.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Monk fire casting preset
+
+FILE: assets\units\monk\palettes\ice_preset.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Monk ice casting preset
+
+FILE: assets\units\monk\palettes\monk_avatar_swap.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Monk Avatar (enemy variant)
+
+FILE: assets\units\monk\palettes\monk_main_swap.lua
+--------------------------------------------------------------------------------
+-- Colour palette swap data for Monk animations (enemy variant)
+
+FILE: config.lua
+--------------------------------------------------------------------------------
+GRID_WIDTH = 15
+GRID_HEIGHT = 12
+TILE_SIZE = 64
+WINDOW_WIDTH = GRID_WIDTH * TILE_SIZE
+WINDOW_HEIGHT = GRID_HEIGHT * TILE_SIZE
+
+FILE: main.lua
+--------------------------------------------------------------------------------
+-- main.lua
+-- Core systems
+Input = require("modules.engine.input")
+Mouse = require("modules.engine.mouse")
+Map = require("modules.world.map")
+Grid = require("modules.ui.grid")
+Cursor = require("modules.ui.cursor")
+Banner = require("modules.ui.banner")
+BannerController = require("modules.ui.banner_controller")
+Arrows = require("modules.ui.movement_arrows")
+Menu = require("modules.ui.menu")
+WeaponSelect = require("modules.ui.weapon_selector")
+
+FILE: map\config\map_1_units.lua
+--------------------------------------------------------------------------------
+-- map/config/map_1_units.lua
+-- Unit spawn configuration for Map 1
+-- Helper function to easily spawn enemy units
+local function spawnEnemy(unitClass, x, y)
+
+FILE: map\map_1.lua
+--------------------------------------------------------------------------------
+[No extractable overview]
+
+FILE: map\map_2.lua
+--------------------------------------------------------------------------------
+[No extractable overview]
+
+FILE: modules\audio\music.lua
+--------------------------------------------------------------------------------
+-- modules/audio/music.lua
+local Music = {}
+function Music.load()
+
+FILE: modules\audio\sfx.lua
+--------------------------------------------------------------------------------
+-- modules/audio/sfx.lua
+local Sfx = {}
+function Sfx.load()
+
+FILE: modules\audio\sound_effects.lua
+--------------------------------------------------------------------------------
+-- modules/audio/sound_effects.lua
+local Effects = {}
+local Music = require("modules.audio.music")
+local Sfx = require("modules.audio.sfx")
+function Effects.load()
+
+FILE: modules\combat\battle.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle.lua
+-- Main battle orchestrator that delegates to specialized modules
+local State = require("modules.combat.battle_state")
+local Assets = require("modules.combat.battle_assets")
+local VisualEffects = require("modules.combat.battle_visual_effects")
+local MovementEffects = require("modules.combat.battle_movement_effects")
+local Anim = require("modules.combat.battle_anim")
+local Draw = require("modules.combat.battle_draw")
+local Lifecycle = require("modules.combat.battle_lifecycle")
+local AttackHelpers = require("modules.combat.battle_attack_helpers")
+local PhaseManager = require("modules.combat.battle_phase_manager")
+local Battle = State
+
+FILE: modules\combat\battle_anim.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_anim.lua
+local Anim = {}
+local function clamp(value, minValue, maxValue)
+function Anim.getAttackAnimName(unit)
+
+FILE: modules\combat\battle_assets.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_assets.lua
+local Assets = {}
+function Assets.load(state)
+
+FILE: modules\combat\battle_attack_helpers.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_attack_helpers.lua
+-- Handles attack sounds, damage calculations, and health animations
+local Helpers = {}
+function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, projectileHit)
+
+FILE: modules\combat\battle_config.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_config.lua
+-- Configuration constants for the battle system
+local Config = {}
+-- Phase durations (in seconds)
+-- Bar configuration
+-- Preview indicators configuration
+
+FILE: modules\combat\battle_draw.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_draw.lua
+local SceneDraw = require("modules.combat.draw.scene")
+local UnitDraw = require("modules.combat.draw.unit")
+local Draw = {}
+function Draw.draw(state)
+return Draw
+
+FILE: modules\combat\battle_effects.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_effects.lua
+-- Re-exports effects from specialized modules for backward compatibility
+-- Two parts to battle effects:
+--   - battle_movement_effects.lua (shake, slide-back)
+--   - battle_visual_effects.lua (hit, miss effects)
+local MovementEffects = require("modules.combat.battle_movement_effects")
+local VisualEffects = require("modules.combat.battle_visual_effects")
+local Effects = {}
+-- Movement Effects Re-exports
+function Effects.getOverlayShake(state)
+function Effects.startOverlayShake(state)
+function Effects.startSlideBack(state, target)
+
+FILE: modules\combat\battle_frame_draw.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_frame_draw.lua
+-- Handles drawing UI elements on the battle frame
+local FrameDraw = {}
+local WEAPON_NAMES = {
+local PREVIEW_CONFIG = {
+local WEAPON_CONFIG = {
+
+FILE: modules\combat\battle_helpers.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_helpers.lua
+-- Shared utility functions for battle system
+local Helpers = {}
+function Helpers.clamp(value, minValue, maxValue)
+function Helpers.easeOutQuad(t)
+function Helpers.getPlayerUnit(attacker, defender)
+function Helpers.isMonkCaster(unit)
+
+FILE: modules\combat\battle_lifecycle.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_lifecycle.lua
+-- Handles battle initialization and lifecycle management
+local Lifecycle = {}
+function Lifecycle.load(battle, battleAssets)
+function Lifecycle.startBattle(battle, attacker, defender)
+
+FILE: modules\combat\battle_movement_effects.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_movement_effects.lua
+-- Handles screen shake and unit slide-back effects
+local MovementEffects = {}
+function MovementEffects.getOverlayShake(state)
+
+FILE: modules\combat\battle_phase_manager.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_phase_manager.lua
+-- Manages different battle phases: initial_attack, counterattack, death_anim, done
+local PhaseManager = {}
+local LEVEL_VALUE_UPDATE_DELAY = 0.7
+local LEVEL_LIGHT_RECT_DURATION = 0.42
+local STAR_ANIM_FRAME_COUNT = 11
+local STAR_ANIM_FRAME_DURATION = 0.06
+local LEVEL_TO_STATS_DELAY = 0.10
+local STAT_ANIM_GAP = 0.08
+local STAT_ANIM_OVERLAP = 0.45
+local recordResolvedAttack
+local function captureLevelUpStats(unit)
+
+FILE: modules\combat\battle_projectile.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_projectile.lua
+-- Handles projectile animations for ranged attacks
+local Projectile = {}
+local function buildQuads(image, frameWidth, frameHeight, columns, rows)
+local function lerp(a, b, t)
+local function getFrameFromRange(startIndex, endIndex, progress)
+
+FILE: modules\combat\battle_state.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_state.lua
+local State = {}
+
+FILE: modules\combat\battle_transition_draw.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_transition_draw.lua
+local TransitionDraw = {}
+local UiDraw = require("modules.combat.battle_ui_draw")
+local Helpers = require("modules.combat.battle_helpers")
+local function clamp(value, minValue, maxValue)
+local function lerp(startValue, endValue, t)
+local function smoothstep(t)
+local whiteMixShader = nil
+local function getWhiteMixShader()
+
+FILE: modules\combat\battle_ui_draw.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_ui_draw.lua
+local Helpers = require("modules.combat.battle_helpers")
+local UiDraw = {}
+local BAR_W = 320
+local BAR_H = 64
+local LEFT_W = 64
+local MID_W = 64
+local RIGHT_W = 64
+local LEFT_X = 0
+local MID_X = 128
+local RIGHT_X = 256
+local MID_TARGET_W = BAR_W - LEFT_W - RIGHT_W
+
+FILE: modules\combat\battle_visual_effects.lua
+--------------------------------------------------------------------------------
+-- modules/combat/battle_visual_effects.lua
+-- Handles hit and miss visual effects animations
+local UnitAnimation = require("modules.units.base.animation")
+local VisualEffects = {}
+local function isMonkFireCast(attacker)
+local function maybeStartMonkFire(state, attackFrameIndex, attacker)
+
+FILE: modules\combat\combat_system.lua
+--------------------------------------------------------------------------------
+-- modules/combat/combat_system.lua
+-- Handles all combat calculations: damage, hit chance, crit chance, avoid
+local CombatSystem = {}
+-- Weapon definitions with might values and range
+local weapons = {
+
+FILE: modules\combat\draw\progression.lua
+--------------------------------------------------------------------------------
+local ExpBarDraw = require("modules.combat.draw.progression.exp_bar")
+local LevelUpStatsDraw = require("modules.combat.draw.progression.level_up_stats")
+local ProgressionDraw = {}
+function ProgressionDraw.drawExpBar(state, screenW, screenH)
+function ProgressionDraw.drawLevelUpStats(state, screenW, screenH)
+return ProgressionDraw
+
+FILE: modules\combat\draw\progression\exp_bar.lua
+--------------------------------------------------------------------------------
+local Utils = require("modules.combat.draw.progression.utils")
+local LevelUpMenu = require("modules.combat.draw.progression.level_up_menu")
+local ExpBarDraw = {}
+local function getLevelUpMenuDelay(state)
+local function getFillAndDisplayedExp(state, animProgress, barScaleX)
+
+FILE: modules\combat\draw\progression\level_up_menu.lua
+--------------------------------------------------------------------------------
+local Helpers = require("modules.combat.battle_helpers")
+local Utils = require("modules.combat.draw.progression.utils")
+local Audio = require("modules.audio.sound_effects")
+local LevelUpMenu = {}
+local LEVEL_UP_STATS_PANEL_W = 480
+local LEVEL_UP_STATS_PANEL_H = 360
+local LEVEL_UP_HEADER_PANEL_W = 500
+local LEVEL_UP_HEADER_PANEL_H = 140
+
+FILE: modules\combat\draw\progression\level_up_stats.lua
+--------------------------------------------------------------------------------
+local Utils = require("modules.combat.draw.progression.utils")
+local LevelUpStatsDraw = {}
+local function getStatAnimationElapsed(state)
+function LevelUpStatsDraw.draw(state, screenW, screenH)
+
+FILE: modules\combat\draw\progression\utils.lua
+--------------------------------------------------------------------------------
+local Utils = {}
+function Utils.getAnimationFrame(timer, frameDuration, totalFrames)
+function Utils.getExpAnimProgress(state)
+function Utils.drawStatAnimation(state, animImage, frameW, frameH, frameCount, frameDuration, x, y, scale)
+
+FILE: modules\combat\draw\scene.lua
+--------------------------------------------------------------------------------
+local Anim = require("modules.combat.battle_anim")
+local Effects = require("modules.combat.battle_effects")
+local TransitionDraw = require("modules.combat.battle_transition_draw")
+local UiDraw = require("modules.combat.battle_ui_draw")
+local Helpers = require("modules.combat.battle_helpers")
+local FrameDraw = require("modules.combat.battle_frame_draw")
+local Projectile = require("modules.combat.battle_projectile")
+local ProgressionDraw = require("modules.combat.draw.progression")
+
+FILE: modules\combat\draw\unit.lua
+--------------------------------------------------------------------------------
+local Anim = require("modules.combat.battle_anim")
+local UnitAnimation = require("modules.units.base.animation")
+local UnitDraw = {}
+local whiteSpriteShader
+local function getWhiteSpriteShader()
+local function getDeathAnimVisual(state, unit)
+
+FILE: modules\engine\attack.lua
+--------------------------------------------------------------------------------
+-- modules/engine/attack.lua
+local Attack = {}
+local function getEnemiesInRange(attacker)
+function Attack.canAttack(unit)
+function Attack.getEnemiesInRange(unit)
+
+FILE: modules\engine\camera.lua
+--------------------------------------------------------------------------------
+--[[
+local _PATH = (...):match('^(.*[%./])[^%.%/]+$') or ''
+local cos, sin = math.cos, math.sin
+local camera = {}
+
+FILE: modules\engine\camera_manager.lua
+--------------------------------------------------------------------------------
+-- modules/engine/camera_manager.lua
+-- Responsible for: camera positioning, zooming, viewport management, and coordinate conversion
+local CameraManager = {}
+local Camera = require("libs.camera")
+-- Camera instance
+-- Configuration
+-- Zoom settings
+-- Drag settings
+function CameraManager.init(mapWidthTiles, mapHeightTiles, tileSize, viewportWidthTiles, viewportHeightTiles)
+
+FILE: modules\engine\input.lua
+--------------------------------------------------------------------------------
+-- modules/engine/input.lua
+-- Handles all LÖVE input callbacks (mouse, keyboard, etc.)
+local Input = {}
+local Mouse = require("modules.engine.mouse")
+local CameraManager = require("modules.engine.camera_manager")
+local TurnManager = require("modules.engine.turn")
+local UnitStats = require("modules.ui.unit_stats")
+function Input.mousepressed(x, y, button)
+function Input.mousereleased(x, y, button)
+function Input.wheelmoved(x, y)
+
+FILE: modules\engine\mouse.lua
+--------------------------------------------------------------------------------
+-- modules/engine/mouse.lua
+local Mouse = {}
+local Cursor = require("modules.ui.cursor")
+local UnitManager = require("modules.units.manager")
+local MovementRange = require("modules.engine.movement_range")
+local Menu = require("modules.ui.menu")
+local Effects = require("modules.audio.sound_effects")
+local TurnManager = require("modules.engine.turn")
+local Options = require("modules.ui.options")
+local UnitStats = require("modules.ui.unit_stats")
+local Attack = require("modules.engine.attack")
+local WeaponSelect = require("modules.ui.weapon_selector")
+
+FILE: modules\engine\movement.lua
+--------------------------------------------------------------------------------
+local Movement = {}
+local Map = require("modules.world.map")
+function Movement.start(unit, path)
+function Movement._startNextStep(unit)
+
+FILE: modules\engine\movement_range.lua
+--------------------------------------------------------------------------------
+-- modules/engine/movement_range.lua
+local MovementRange = {}
+local Grid = require("modules.ui.grid")
+local Map  = require("modules.world.map")
+local function key(x, y)
+function MovementRange.show(unit)
+
+FILE: modules\engine\pathfinding.lua
+--------------------------------------------------------------------------------
+local Pathfinding = {}
+local directions = {
+function Pathfinding.findPath(startX, startY, goalX, goalY, checkFunc)
+
+FILE: modules\engine\turn.lua
+--------------------------------------------------------------------------------
+-- modules/engine/turn.lua
+local TurnManager = {}
+local TurnAI = require("modules.engine.turn_ai")
+local TurnOverlay = require("modules.ui.turn_overlay")
+local Attack = require("modules.engine.attack")
+local function getAvailableUnits()
+
+FILE: modules\engine\turn_ai.lua
+--------------------------------------------------------------------------------
+local TurnAI = {}
+local Pathfinding = require("modules.engine.pathfinding")
+local Map = require("modules.world.map")
+local MovementEngine = require("modules.engine.movement")
+local function getUnitAtTile(toX, toY, excludeUnit)
+local function manhattanDistance(x1, y1, x2, y2)
+function TurnAI.findNearestEnemyUnit(enemyUnit)
+
+FILE: modules\manager\combat.lua
+--------------------------------------------------------------------------------
+-- modules/manager/combat.lua
+local function attach(UnitManager)
+
+FILE: modules\manager\core.lua
+--------------------------------------------------------------------------------
+-- modules/manager/core.lua
+local function attach(UnitManager)
+
+FILE: modules\manager\damage.lua
+--------------------------------------------------------------------------------
+-- modules/manager/damage.lua
+local function attach(UnitManager)
+
+FILE: modules\manager\movement.lua
+--------------------------------------------------------------------------------
+-- modules/manager/movement.lua
+local function attach(UnitManager)
+
+FILE: modules\manager\ui.lua
+--------------------------------------------------------------------------------
+-- modules/manager/ui.lua
+local function attach(UnitManager)
+
+FILE: modules\manager\update.lua
+--------------------------------------------------------------------------------
+-- modules/manager/update.lua
+local function attach(UnitManager)
+
+FILE: modules\manager\utils.lua
+--------------------------------------------------------------------------------
+-- modules/manager/utils.lua
+local Utils = {}
+function Utils.isUnitDead(unit)
+local function applySwapsToImageData(imageData, swaps)
+
+FILE: modules\ui\attack_indicator.lua
+--------------------------------------------------------------------------------
+-- modules/ui/attack_indicator.lua
+-- Displays a red highlight cursor on the enemy's attack target during enemy turns
+local AttackIndicator = {}
+function AttackIndicator.draw()
+
+FILE: modules\ui\banner.lua
+--------------------------------------------------------------------------------
+local Banner = {}
+function Banner.load()
+
+FILE: modules\ui\banner_controller.lua
+--------------------------------------------------------------------------------
+local Banner = require("modules.ui.banner")
+local BigBar = require("modules.ui.bigbar")
+local UnitManager = require("modules.units.manager")
+local BannerController = {}
+function BannerController.update(mx, my)
+
+FILE: modules\ui\battle.lua
+--------------------------------------------------------------------------------
+-- modules/ui/battle.lua
+return require("modules.combat.battle")
+
+FILE: modules\ui\bigbar.lua
+--------------------------------------------------------------------------------
+-- modules/ui/bigbar.lua
+local BigBar = {}
+local BigBar_Base = love.graphics.newImage("assets/ui/bars/SmallBar_Base.png")
+local BigBar_Fill = love.graphics.newImage("assets/ui/bars/SmallBar_Fill.png")
+local PixelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
+local barQuads = {}
+local bw, bh = BigBar_Base:getDimensions()
+function BigBar.drawUnitName(x, y, maxWidth, unit)
+function BigBar.drawHealthText(x, y, maxWidth, anchor, hp, maxHp)
+
+FILE: modules\ui\combat_summary.lua
+--------------------------------------------------------------------------------
+-- modules/ui/combat_summary.lua
+-- Displays a combat preview menu before battle starts
+local CombatSummary = {}
+local CombatSystem = require("modules.combat.combat_system")
+-- State
+function CombatSummary.load()
+
+FILE: modules\ui\cursor.lua
+--------------------------------------------------------------------------------
+-- modules/world/cursor.lua
+local Cursor = {}
+local Map = require("modules.world.map")
+local MovementRange = require("modules.engine.movement_range")
+local Menu = require("modules.ui.menu")
+local Effects = require("modules.audio.sound_effects")
+local Options = require("modules.ui.options")
+local CameraManager = require("modules.engine.camera_manager")
+local Attack = require("modules.engine.attack")
+local WeaponSelect = require("modules.ui.weapon_selector")
+function Cursor.load()
+
+FILE: modules\ui\grid.lua
+--------------------------------------------------------------------------------
+-- modules.ui.grid.lua
+local Grid = {}
+function Grid.setSize(width, height, tileSize)
+function Grid.setScale(sx, sy)
+function Grid.highlightTile(x, y, color)
+
+FILE: modules\ui\item_selector\config.lua
+--------------------------------------------------------------------------------
+local Config = {}
+
+FILE: modules\ui\item_selector\draw.lua
+--------------------------------------------------------------------------------
+local Draw = {}
+local State = require("modules.ui.item_selector.state")
+local Config = require("modules.ui.item_selector.config")
+local Input = require("modules.ui.item_selector.input")
+local CombatSystem = require("modules.combat.combat_system")
+local function calculatePreviewStats(unit, itemId, itemType)
+
+FILE: modules\ui\item_selector\init.lua
+--------------------------------------------------------------------------------
+local ItemSelector = {}
+local State = require("modules.ui.item_selector.state")
+local Input = require("modules.ui.item_selector.input")
+local Draw = require("modules.ui.item_selector.draw")
+function ItemSelector.load()
+
+FILE: modules\ui\item_selector\input.lua
+--------------------------------------------------------------------------------
+local Input = {}
+local State = require("modules.ui.item_selector.state")
+local Config = require("modules.ui.item_selector.config")
+local function getHoveredIndex(mx, my)
+
+FILE: modules\ui\item_selector\options.lua
+--------------------------------------------------------------------------------
+local Options = {}
+local Config = require("modules.ui.item_selector.config")
+local function prettifyItemName(itemId)
+function Options.buildOptions(unit)
+
+FILE: modules\ui\item_selector\state.lua
+--------------------------------------------------------------------------------
+local State = {}
+function State.show(unit, onSelect, onCancel)
+
+FILE: modules\ui\menu.lua
+--------------------------------------------------------------------------------
+-- modules/ui/menu.lua
+local Effects = require("modules.audio.sound_effects")
+local Menu = {}
+function Menu.load()
+
+FILE: modules\ui\movement_arrows.lua
+--------------------------------------------------------------------------------
+-- modules/ui/movement_arrows
+local Arrows = {}
+local Grid = require("modules.ui.grid")
+function Arrows.load()
+
+FILE: modules\ui\options.lua
+--------------------------------------------------------------------------------
+local Effects = require("modules.audio.sound_effects")
+local Options = {}
+-- Back button bounds
+-- Scrollbar state
+local quadW = {left = 448, mid = 448, right = 448}
+local quadH = {top = 448, mid = 448, bot = 448}
+
+FILE: modules\ui\turn_counter.lua
+--------------------------------------------------------------------------------
+-- modules/ui/turn_counter.lua
+local TurnCounter = {}
+function TurnCounter.load()
+function TurnCounter.incrementTurn()
+
+FILE: modules\ui\turn_overlay.lua
+--------------------------------------------------------------------------------
+local TurnOverlay = {}
+-- Define sword segments
+local segments = {
+
+FILE: modules\ui\unit_stats\animation_draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/animation_draw.lua
+-- Animation drawing for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local State = require("modules.ui.unit_stats.state")
+local AnimationDraw = {}
+function AnimationDraw.draw(unit, panelX, padding, nameY, opacity)
+return AnimationDraw
+
+FILE: modules\ui\unit_stats\avatar_draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/avatar_draw.lua
+-- Avatar drawing for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local AvatarDraw = {}
+function AvatarDraw.draw(unit, panelX, panelY, padding, opacity)
+return AvatarDraw
+
+FILE: modules\ui\unit_stats\config.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/config.lua
+-- Layout and styling constants for unit stats screen
+local Config = {}
+-- Panel layout
+-- Avatar positioning
+-- Text positioning
+-- HP and Level display
+-- Animation positioning
+
+FILE: modules\ui\unit_stats\draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/draw.lua
+-- Drawing logic for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local Resources = require("modules.ui.unit_stats.resources")
+local State = require("modules.ui.unit_stats.state")
+local AvatarDraw = require("modules.ui.unit_stats.avatar_draw")
+local NameTypeDraw = require("modules.ui.unit_stats.name_type_draw")
+local HPLevelDraw = require("modules.ui.unit_stats.hp_level_draw")
+local AnimationDraw = require("modules.ui.unit_stats.animation_draw")
+local StatsDraw = require("modules.ui.unit_stats.stats_draw")
+local HeaderArrowsDraw = require("modules.ui.unit_stats.header_arrows_draw")
+local Draw = {}
+
+FILE: modules\ui\unit_stats\header_arrows_draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/header_arrows_draw.lua
+-- Header arrows drawing for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local Resources = require("modules.ui.unit_stats.resources")
+local State = require("modules.ui.unit_stats.state")
+local HeaderArrowsDraw = {}
+function HeaderArrowsDraw.draw(screenW, offset, opacity, isHorizontal)
+
+FILE: modules\ui\unit_stats\hp_level_draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/hp_level_draw.lua
+-- HP and level drawing for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local Resources = require("modules.ui.unit_stats.resources")
+local HPLevelDraw = {}
+function HPLevelDraw.draw(unit, panelX, padding, nameY, opacity)
+
+FILE: modules\ui\unit_stats\init.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/init.lua
+-- Main unit stats module
+local Resources = require("modules.ui.unit_stats.resources")
+local State = require("modules.ui.unit_stats.state")
+local Draw = require("modules.ui.unit_stats.draw")
+local UnitStats = {}
+-- Expose visible state for backwards compatibility
+function UnitStats.load()
+function UnitStats.show(unit)
+function UnitStats.hide()
+
+FILE: modules\ui\unit_stats\name_type_draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/name_type_draw.lua
+-- Name and type drawing for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local Resources = require("modules.ui.unit_stats.resources")
+local NameTypeDraw = {}
+function NameTypeDraw.draw(unit, panelX, panelY, padding, nameY, opacity)
+
+FILE: modules\ui\unit_stats\resources.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/resources.lua
+-- Font and image resource loading
+local Config = require("modules.ui.unit_stats.config")
+local Resources = {}
+function Resources.load()
+
+FILE: modules\ui\unit_stats\stat_bar.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/stat_bar.lua
+-- Stat bar rendering module
+local Config = require("modules.ui.unit_stats.config")
+local Resources = require("modules.ui.unit_stats.resources")
+local StatBar = {}
+-- Global stat maximums for bar scaling
+local STAT_MAX_VALUES = {
+-- Bar dimensions matching BigBar assets (320x64 total)
+local BAR_W = 320
+local BAR_H = 64
+local LEFT_W = 64
+local MID_W = 64
+
+FILE: modules\ui\unit_stats\state.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/state.lua
+-- State management for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local Effects = require("modules.audio.sound_effects")
+local State = {}
+-- Arrow pendulum animation
+-- Transition state
+function State.show(targetUnit)
+
+FILE: modules\ui\unit_stats\stats_draw.lua
+--------------------------------------------------------------------------------
+-- modules/ui/unit_stats/stats_draw.lua
+-- Stats drawing for unit stats screen
+local Config = require("modules.ui.unit_stats.config")
+local Resources = require("modules.ui.unit_stats.resources")
+local StatBar = require("modules.ui.unit_stats.stat_bar")
+local StatsDraw = {}
+function StatsDraw.draw(unit, panelX, padding, nameY, statsY, opacity)
+
+FILE: modules\ui\weapon_selector\config.lua
+--------------------------------------------------------------------------------
+local Config = {}
+
+FILE: modules\ui\weapon_selector\draw.lua
+--------------------------------------------------------------------------------
+local Draw = {}
+local State = require("modules.ui.weapon_selector.state")
+local Config = require("modules.ui.weapon_selector.config")
+local Input = require("modules.ui.weapon_selector.input")
+local CombatSystem = require("modules.combat.combat_system")
+local function calculatePreviewStats(unit, weaponId)
+
+FILE: modules\ui\weapon_selector\init.lua
+--------------------------------------------------------------------------------
+local WeaponSelector = {}
+local State = require("modules.ui.weapon_selector.state")
+local Input = require("modules.ui.weapon_selector.input")
+local Draw = require("modules.ui.weapon_selector.draw")
+function WeaponSelector.load()
+
+FILE: modules\ui\weapon_selector\input.lua
+--------------------------------------------------------------------------------
+local Input = {}
+local State = require("modules.ui.weapon_selector.state")
+local Config = require("modules.ui.weapon_selector.config")
+local function getHoveredIndex(mx, my)
+
+FILE: modules\ui\weapon_selector\options.lua
+--------------------------------------------------------------------------------
+local Options = {}
+local Config = require("modules.ui.weapon_selector.config")
+local function prettifyWeaponName(weaponId)
+function Options.buildOptions(unit)
+
+FILE: modules\ui\weapon_selector\state.lua
+--------------------------------------------------------------------------------
+local State = {}
+function State.show(unit, onSelect, onCancel)
+
+FILE: modules\units\archer.lua
+--------------------------------------------------------------------------------
+local UnitFactory = require("modules.units.unit_factory")
+local Utils = require("modules.manager.utils")
+local function loadAnimImage(imagePath, swapPath)
+local function createArcherConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
+
+FILE: modules\units\base\animation.lua
+--------------------------------------------------------------------------------
+local Animation = {}
+function Animation.init(self, animConfig)
+function Animation.getImage(unit, animName)
+
+FILE: modules\units\base\draw.lua
+--------------------------------------------------------------------------------
+local Animation = require("modules.units.base.animation")
+local Draw = {}
+function Draw.init(self) end
+function Draw.draw(self)
+
+FILE: modules\units\base\init.lua
+--------------------------------------------------------------------------------
+local BaseUnit = {}
+local Stats = require("modules.units.base.stats")
+local Animation = require("modules.units.base.animation")
+local Movement = require("modules.units.base.movement")
+local Draw = require("modules.units.base.draw")
+local Interaction = require("modules.units.base.interaction")
+function BaseUnit.new(config)
+function BaseUnit:update(dt)
+
+FILE: modules\units\base\interaction.lua
+--------------------------------------------------------------------------------
+local Interaction = {}
+function Interaction.init(self) end
+function Interaction.isHovered(self, mx, my)
+return Interaction
+
+FILE: modules\units\base\movement.lua
+--------------------------------------------------------------------------------
+local Movement = {}
+local Pathfinding = require("modules.engine.pathfinding")
+local MovementEngine = require("modules.engine.movement")
+local Map = require("modules.world.map")
+local Arrows = require("modules.ui.movement_arrows")
+local Effects = require("modules.audio.sound_effects")
+function Movement.init(self)
+function Movement.setPosition(self, x, y)
+
+FILE: modules\units\base\stats.lua
+--------------------------------------------------------------------------------
+local Stats = {}
+local DEFAULT_GROWTH_RATES = {
+function Stats.init(self, config)
+
+FILE: modules\units\enemy_soldier.lua
+--------------------------------------------------------------------------------
+local UnitFactory = require("modules.units.unit_factory")
+local EnemyConfig = {
+
+FILE: modules\units\harpoon_fish.lua
+--------------------------------------------------------------------------------
+local UnitFactory = require("modules.units.unit_factory")
+local Utils = require("modules.manager.utils")
+local function loadAnimImage(imagePath, swapPath)
+local function createHarpoonFishConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
+
+FILE: modules\units\manager.lua
+--------------------------------------------------------------------------------
+-- modules/units/manager.lua
+local UnitManager = {
+local Utils = require("modules.manager.utils")
+return UnitManager
+
+FILE: modules\units\monk.lua
+--------------------------------------------------------------------------------
+local UnitFactory = require("modules.units.unit_factory")
+local Utils = require("modules.manager.utils")
+local function loadAnimImage(imagePath, swapPath)
+local function loadWeaponAnimImages(imagePath, baseSwapPath, weaponSwapPaths)
+local function createMonkConfig(isPlayer, colourSwapPath, animSwapPath, overrides)
+
+FILE: modules\units\soldier.lua
+--------------------------------------------------------------------------------
+local UnitFactory = require("modules.units.unit_factory")
+local SoldierConfig = {
+
+FILE: modules\units\unit_factory.lua
+--------------------------------------------------------------------------------
+local BaseUnit = require("modules.units.base")
+local UnitFactory = {}
+function UnitFactory.create(config)
+return UnitFactory
+
+FILE: modules\units\unit_spawner.lua
+--------------------------------------------------------------------------------
+-- modules/units/unit_spawner.lua
+-- Handles spawning units based on map configuration
+local UnitSpawner = {}
+-- Cache for unit module definitions
+local unitModules = {}
+-- Load a unit module by name (e.g., "archer", "soldier")
+local function loadUnitModule(unitType)
+-- Helper to get unit and setPosition functions from module with variant
+local function getUnitAndSetPosition(unitModule, variant)
+
+FILE: modules\world\clouds.lua
+--------------------------------------------------------------------------------
+local Clouds = {}
+-- Map bounds (in world pixels)
+function Clouds.load()
+function Clouds.spawn()
+
+FILE: modules\world\foam.lua
+--------------------------------------------------------------------------------
+-- modules/world/foam.lua
+local WaterFoam = {}
+local image
+local quads = {}
+local frameWidth, frameHeight = 192, 192
+local frameCount = 16
+local currentFrame = 1
+local timer = 0
+function WaterFoam.load()
+function WaterFoam.update(dt)
+
+FILE: modules\world\leaf.lua
+--------------------------------------------------------------------------------
+-- modules/world/leaf.lua
+local Leaf = {}
+local image
+local quads = {}
+local frameCount = 5
+local frameWidth = 16
+local frameHeight = 16
+local leaves = {}
+local maxLeaves = 25
+local frameDuration = 0.12
+-- Map bounds (in world pixels)
+local MAP_WIDTH = 18 * 64  -- 1152
+
+FILE: modules\world\map.lua
+--------------------------------------------------------------------------------
+-- modules/world/map.lua
+local Map = {}
+local sti = require("libs.sti")
+local map = nil
+local WaterFoam = require("modules.world.foam")
+local foamTiles = {}
+local blockedTiles = {}
+function Map.load(mapPath)
+
+================================================================================
+END OF SUMMARY
+================================================================================

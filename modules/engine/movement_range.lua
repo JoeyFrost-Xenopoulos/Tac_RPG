@@ -23,13 +23,16 @@ function MovementRange.show(unit)
     local visited = {}
     local moveQueue = {}
     local moveTiles = {}
+    local head, tail = 1, 1
 
-    table.insert(moveQueue, {x = startX, y = startY, dist = 0})
+    moveQueue[1] = {x = startX, y = startY, dist = 0}
+    tail = 2
     visited[key(startX, startY)] = true
     table.insert(moveTiles, {x = startX, y = startY})
 
-    while #moveQueue > 0 do
-        local node = table.remove(moveQueue, 1)
+    while head < tail do
+        local node = moveQueue[head]
+        head = head + 1
         local x, y, dist = node.x, node.y, node.dist
 
         if dist > 0 then
@@ -57,7 +60,8 @@ function MovementRange.show(unit)
                     
                     if not blocked then
                         visited[k] = true
-                        table.insert(moveQueue, {x = nx, y = ny, dist = dist + 1})
+                        moveQueue[tail] = {x = nx, y = ny, dist = dist + 1}
+                        tail = tail + 1
                         table.insert(moveTiles, {x = nx, y = ny})
                     end
                 end

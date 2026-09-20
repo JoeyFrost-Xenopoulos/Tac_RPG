@@ -83,6 +83,7 @@ local function findRetreatPosition(enemyUnit, targetUnit)
     local visited = {}
     local queue = {{x = enemyUnit.tileX, y = enemyUnit.tileY, dist = 0}}
     local reachableTiles = {}
+    local head, tail = 1, 2
     
     local function key(x, y)
         return x .. "," .. y
@@ -90,8 +91,9 @@ local function findRetreatPosition(enemyUnit, targetUnit)
     
     visited[key(enemyUnit.tileX, enemyUnit.tileY)] = true
     
-    while #queue > 0 do
-        local node = table.remove(queue, 1)
+    while head < tail do
+        local node = queue[head]
+        head = head + 1
         
         -- Only add to reachableTiles if the tile is not occupied by another unit
         local tileOccupant = getUnitAtTile(node.x, node.y, enemyUnit)
@@ -109,7 +111,8 @@ local function findRetreatPosition(enemyUnit, targetUnit)
                     -- Allow moving through allies (same team)
                     if not occupying or occupying.isPlayer == enemyUnit.isPlayer then
                         visited[k] = true
-                        table.insert(queue, {x = nx, y = ny, dist = node.dist + 1})
+                        queue[tail] = {x = nx, y = ny, dist = node.dist + 1}
+                        tail = tail + 1
                     end
                 end
             end

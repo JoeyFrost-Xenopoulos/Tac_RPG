@@ -83,31 +83,45 @@ local function attach(UnitManager)
         if MovementRange.canReach(tx, ty)
            and not (tx == unit.tileX and ty == unit.tileY) then
 
-            local function canMoveWithUnits(fromX, fromY, toX, toY)
-                if not Map.canMove(fromX, fromY, toX, toY) then
-                    return false
-                end
-                for _, otherUnit in ipairs(UnitManager.units) do
-                    if otherUnit ~= unit and otherUnit.tileX == toX and otherUnit.tileY == toY then
-                        if not otherUnit.isPlayer then
-                            return false
+            local path = nil
+            if tx ~= UnitManager._lastPathTileX or ty ~= UnitManager._lastPathTileY then
+                UnitManager._lastPathTileX = tx
+                UnitManager._lastPathTileY = ty
+
+                local function canMoveWithUnits(fromX, fromY, toX, toY)
+                    if not Map.canMove(fromX, fromY, toX, toY) then
+                        return false
+                    end
+                    for _, otherUnit in ipairs(UnitManager.units) do
+                        if otherUnit ~= unit and otherUnit.tileX == toX and otherUnit.tileY == toY then
+                            if not otherUnit.isPlayer then
+                                return false
+                            end
                         end
                     end
+                    return true
                 end
-                return true
+
+                path = Pathfinding.findPath(
+                    unit.tileX, unit.tileY, tx, ty, canMoveWithUnits
+                )
+                if path and unit.maxMoveRange and #path > unit.maxMoveRange + 1 then
+                    local trimmed = {}
+                    for i = 1, unit.maxMoveRange + 1 do
+                        trimmed[i] = path[i]
+                    end
+                    path = trimmed
+                end
+                UnitManager._lastPath = path
+            else
+                path = UnitManager._lastPath
             end
 
-            local path = Pathfinding.findPath(
-                unit.tileX, unit.tileY, tx, ty, canMoveWithUnits
-            )
-            if path and unit.maxMoveRange and #path > unit.maxMoveRange + 1 then
-                local trimmed = {}
-                for i = 1, unit.maxMoveRange + 1 do
-                    trimmed[i] = path[i]
-                end
-                path = trimmed
+            if path then
+                Arrows.setPath(path)
+            else
+                Arrows.clear()
             end
-            Arrows.setPath(path)
         else
             Arrows.clear()
         end

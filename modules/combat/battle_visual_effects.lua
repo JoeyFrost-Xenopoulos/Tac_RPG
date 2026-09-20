@@ -5,6 +5,9 @@ local UnitAnimation = require("modules.units.base.animation")
 
 local VisualEffects = {}
 
+local Projectile = require("modules.combat.battle_projectile")
+local MovementEffects = require("modules.combat.battle_movement_effects")
+
 local function isMonkFireCast(attacker)
     local Helpers = require("modules.combat.battle_helpers")
     return attacker
@@ -68,7 +71,6 @@ function VisualEffects.update(state, attackFrameIndex, attacker, projectileHit)
     end
     
     -- Check if this is a ranged attack with projectile
-    local Projectile = require("modules.combat.battle_projectile")
     if not shouldTrigger and attacker and Projectile.needsProjectile(attacker) then
         -- For ranged attacks, wait for projectile to hit
         if projectileHit then
@@ -91,7 +93,6 @@ function VisualEffects.update(state, attackFrameIndex, attacker, projectileHit)
         state.hitEffectStartTime = state.battleTimer - 0.1
         state.hitFrameStartTime = state.battleTimer - 0.1
         
-        local MovementEffects = require("modules.combat.battle_movement_effects")
         MovementEffects.startOverlayShake(state)
         
         -- Trigger slide-back for harpoon, sword, bow, and ice attacks (start earlier)
@@ -231,7 +232,6 @@ function VisualEffects.updateMiss(state, attackFrameIndex, attacker, projectileH
     end
     
     -- Check if this is a ranged attack with projectile
-    local Projectile = require("modules.combat.battle_projectile")
     if not shouldTrigger and attacker and Projectile.needsProjectile(attacker) then
         -- For ranged attacks, wait for projectile to hit
         if projectileHit then
@@ -314,7 +314,6 @@ function VisualEffects.updateCrit(state, attackFrameIndex, attacker, projectileH
     end
     
     -- Check if this is a ranged attack with projectile
-    local Projectile = require("modules.combat.battle_projectile")
     if not shouldTrigger and attacker and Projectile.needsProjectile(attacker) then
         -- For ranged attacks, wait for projectile to hit
         if projectileHit then

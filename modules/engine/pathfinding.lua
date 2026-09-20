@@ -9,6 +9,7 @@ local directions = {
 
 function Pathfinding.findPath(startX, startY, goalX, goalY, checkFunc)
     local queue = {}
+    local head, tail = 1, 1
     local visited = {}
     local cameFrom = {}
 
@@ -16,14 +17,15 @@ function Pathfinding.findPath(startX, startY, goalX, goalY, checkFunc)
         return x .. "," .. y
     end
 
-    table.insert(queue, {x = startX, y = startY})
+    queue[1] = {x = startX, y = startY}
+    tail = 2
     visited[key(startX, startY)] = true
 
-    while #queue > 0 do
-        local current = table.remove(queue, 1)
+    while head < tail do
+        local current = queue[head]
+        head = head + 1
 
         if current.x == goalX and current.y == goalY then
-            -- Reconstruct path
             local path = {}
             local k = key(goalX, goalY)
 
@@ -39,18 +41,18 @@ function Pathfinding.findPath(startX, startY, goalX, goalY, checkFunc)
 
             table.insert(path, {x = goalX, y = goalY})
             return path
-    end
+        end
 
-for _, d in ipairs(directions) do
+        for _, d in ipairs(directions) do
             local nx = current.x + d[1]
             local ny = current.y + d[2]
             local nk = key(nx, ny)
 
             if not visited[nk] and checkFunc(current.x, current.y, nx, ny) then
-                
                 visited[nk] = true
                 cameFrom[nk] = {x = current.x, y = current.y}
-                table.insert(queue, {x = nx, y = ny})
+                queue[tail] = {x = nx, y = ny}
+                tail = tail + 1
             end
         end
     end

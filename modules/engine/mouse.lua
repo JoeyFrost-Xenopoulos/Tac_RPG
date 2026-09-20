@@ -12,6 +12,7 @@ local Attack = require("modules.engine.attack")
 local WeaponSelect = require("modules.ui.weapon_selector")
 local ItemSelector = require("modules.ui.item_selector")
 local CombatSummary = require("modules.ui.combat_summary")
+local Battle = require("modules.combat.battle")
 
 function Mouse.pressed(x, y, button)
     if Options.visible then
@@ -49,7 +50,6 @@ function Mouse.pressed(x, y, button)
         return
     end
     
-    local Battle = require("modules.combat.battle")
     if Battle.visible then
         if button == 1 then
             Battle.clicked(x, y)

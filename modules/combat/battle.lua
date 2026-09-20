@@ -9,6 +9,7 @@ local Draw = require("modules.combat.battle_draw")
 local Lifecycle = require("modules.combat.battle_lifecycle")
 local AttackHelpers = require("modules.combat.battle_attack_helpers")
 local PhaseManager = require("modules.combat.battle_phase_manager")
+local Projectile = require("modules.combat.battle_projectile")
 
 local Battle = State
 
@@ -53,10 +54,10 @@ function Battle.update(dt)
 
     if Battle.battlePhase == "initial_attack" then
         PhaseManager.updateInitialAttack(Battle, Anim, VisualEffects, 
-            require("modules.combat.battle_projectile"))
+            Projectile)
     elseif Battle.battlePhase == "counterattack" then
         PhaseManager.updateCounterattack(Battle, Anim, VisualEffects, 
-            require("modules.combat.battle_projectile"))
+            Projectile)
     elseif Battle.battlePhase == "death_anim" then
         AttackHelpers.updateDeathAnimation(Battle)
     elseif Battle.battlePhase == "done" then
