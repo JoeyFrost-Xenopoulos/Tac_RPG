@@ -1,0 +1,463 @@
+Comprehensive Code Review: my_game_2 (LÖVE2D / Fire Emblem: Sacred Stones Replica)
+Scope reviewed: main.lua, config.lua, engine modules, combat modules, unit system, UI modules, world/map modules, audio, manager mixins, and unit definitions. ~3,500 lines across ~50 files.
+
+1.7 Color swap pixel-by-pixel on every load
+File/Line: modules/manager/utils.lua:8-35
+
+applySwapsToImageData iterates every pixel with nested loops and per-pixel getPixel/setPixel. For 192×192 sprites this runs ~37K iterations per swap. Multiple units × multiple swaps = noticeable hitch on love.load.
+
+Fix: Pre-process all palette swaps during load, cache the resulting Image objects, and never regenerate them per-instance. Consider using a shader for runtime palette swaps instead.
+
+1.8 getEnemiesInRange O(n) with no spatial index
+File/Line: modules/engine/attack.lua:4-22
+
+Linear scan of all units every time. For a full Fire Emblem map (30+ units), this runs dozens of times per turn.
+
+Fix: Maintain a spatial hash or 2D grid of units:
+
+UnitManager.unitGrid = {}  -- keyed by "x,y"
+-- populate on add/remove/move
+-- then look up by tile range instead of iterating all units
+1.9 MovementRange.show attack-range highlighting is O(moves × range²)
+File/Line: modules/engine/movement_range.lua:68-84
+
+For each reachable tile (up to ~50), it iterates attackRange*2+1 squared. With attackRange=3, that's ~7×7=49 per tile → ~2,450 iterations per call. Called on every unit selection.
+
+Fix: Pre-compute attack offsets once and use a set intersection:
+
+local attackOffsets = {}
+for dx = -attackRange, attackRange do
+    for dy = -attackRange, attackRange do
+        if math.abs(dx) + math.abs(dy) >= minRange
+           and math.abs(dx) + math.abs(dy) <= attackRange then
+            table.insert(attackOffsets, {dx, dy})
+        end
+    end
+end
+-- then: for each reachable tile, apply offsets and check bounds
+
+2. Redundancy
+2.1 Duplicate clamp / lerp helpers
+Files:
+
+modules/combat/battle_helpers.lua:6-10 (Helpers.clamp)
+modules/combat/battle_transition_draw.lua:6-10 (local clamp)
+modules/combat/battle_projectile.lua:21-23 (local lerp)
+modules/combat/battle_ui_draw.lua:25-27 (local lerp)
+Fix: Move to modules/manager/utils.lua:
+
+function Utils.clamp(v, min, max) ... end
+function Utils.lerp(a, b, t) ... end
+2.2 Duplicate menu quad initialization
+Files:
+
+modules/ui/weapon_selector/init.lua:31-41
+modules/ui/item_selector/init.lua:34-44
+modules/ui/menu.lua:27-39
+All three define identical 9-quad tables from the same menu.png.
+
+Fix: Extract to modules/ui/menu_quads.lua:
+
+local MenuQuads = {}
+function MenuQuads.get(image)
+    local w, h = image:getDimensions()
+    return { topLeft = ..., topMid = ..., ... }
+end
+return MenuQuads
+2.3 Duplicate weapon icon loading
+Files:
+
+modules/combat/battle_assets.lua:51-64
+modules/ui/weapon_selector/init.lua:12-24
+Same 6 icons loaded twice.
+
+Fix: Centralize in modules/combat/battle_assets.lua and expose via Battle.weaponIcons, or load once in a shared modules/ui/icons.lua.
+
+2.4 Duplicate "wait menu" construction
+Files:
+
+modules/manager/update.lua:42-64
+modules/manager/ui.lua:11-52
+Both build identical {Attack, Wait, Item, Cancel} option tables.
+
+Fix: Extract to UnitManager.buildWaitMenuOptions(unit) returning the options array.
+
+2.5 Duplicate facing-direction logic
+Files:
+
+modules/engine/turn.lua:175-185
+modules/manager/combat.lua:49-59
+Identical if target.tileX > attacker.tileX then ... blocks.
+
+Fix: UnitManager.setFacing(attacker, target).
+
+2.6 Legacy singleton wrappers in unit files
+Files:
+
+modules/units/soldier.lua:128-147
+modules/units/archer.lua:129-180
+Each file creates singleton .unit / .unit2 tables with manually delegated methods, duplicating the factory pattern.
+
+Fix: Remove the singleton layer entirely. UnitSpawner already uses createInstance. Delete lines 128-147 in soldier.lua and 129-180 in archer.lua, and update any callers to use the factory.
+
+2.7 Duplicate hasMoved checks
+Files:
+
+modules/manager/movement.lua:23
+modules/manager/ui.lua:59
+modules/manager/ui.lua:170
+Fix: UnitManager.hasUnitMoved(unit).
+
+2.8 Duplicate isMonkCaster checks
+Files:
+
+modules/combat/battle_helpers.lua:26-30
+modules/combat/battle_phase_manager.lua:88
+modules/combat/battle_visual_effects.lua:8-15
+modules/combat/battle_attack_helpers.lua:10-11
+modules/combat/battle_transition_draw.lua:162
+Already centralized in battle_helpers.lua, but battle_attack_helpers.lua:10-11 re-checks inline instead of calling it.
+
+3. Code Quality & Best Practices
+3.1 Global mutable state
+Every module.
+
+Input = require(...), Mouse = require(...), etc., all mutate module-level tables. This creates implicit coupling, makes tests impossible without global mocking, and risks name collisions.
+
+Fix: Adopt a consistent pattern. Either:
+
+Pure modules returning tables (local M = {}; return M)
+Or an explicit Context object passed to init:
+local Input = {}
+function Input.init(ctx) ctx.input = Input end
+return Input
+3.2 Inconsistent return patterns
+modules/engine/input.lua returns Input table
+modules/engine/mouse.lua returns Mouse table
+modules/manager/core.lua returns attach function
+modules/units/base/init.lua returns BaseUnit class
+modules/units/soldier.lua returns a hybrid table + singleton
+Fix: Standardize on one pattern. Given the existing mixin architecture, returning attach functions for mixins and tables for standalone modules is acceptable, but it should be documented and consistent.
+
+3.3 Magic numbers
+Examples:
+
+modules/engine/camera_manager.lua:48 — panSpeed = 400
+modules/engine/camera_manager.lua:21 — zoomSpeed = 0.1
+modules/engine/movement.lua:27 — moveDuration = 0.25
+modules/combat/battle_state.lua:11-13 — runDuration = 0.8, etc.
+modules/world/clouds.lua:13-14 — 18 * 64, 15 * 64
+Fix: Group into a Config table or named constants:
+
+local CONFIG = {
+    PAN_SPEED = 400,
+    ZOOM_SPEED = 0.1,
+    MOVE_DURATION = 0.25,
+    MAP_WIDTH_TILES = 18,
+    MAP_HEIGHT_TILES = 15,
+}
+3.4 Long functions with deep nesting
+File/Line: modules/engine/mouse.lua:16-148 — 132-line Mouse.pressed with 7 levels of nesting.
+
+Fix: Decompose into state handler functions:
+
+local stateHandlers = {
+    idle = function(...) ... end,
+    selectingAttack = function(...) ... end,
+    menu = function(...) ... end,
+}
+function Mouse.pressed(x, y, button)
+    local handler = stateHandlers[UnitManager.state] or stateHandlers.idle
+    handler(x, y, button)
+end
+3.5 String-based state machine
+File/Line: modules/units/manager.lua:5 — state = "idle"
+
+A bare string with no enum or validation. Typos like "idel" silently break behavior.
+
+Fix:
+
+local UnitState = { IDLE="idle", MOVING="moving", MENU="menu", ... }
+UnitManager.state = UnitState.IDLE
+3.6 goto usage
+Files/Lines:
+
+modules/ui/menu.lua:149 (goto continue)
+modules/world/leaf.lua:124 (goto continue)
+Lua 5.2+ supports goto, but it's an anti-pattern for loop control.
+
+Fix: Extract the loop body into a function or use if not shouldRemove then ... end guard clauses.
+
+3.7 Dead code
+modules/engine/camera_manager.lua:110-117 — empty mousepressed/mousereleased
+modules/units/base/interaction.lua:3 — empty Interaction.init
+modules/units/base/draw.lua:5 — empty Draw.init
+modules/units/archer.lua:130-142 — ArcherPlayer singleton (already covered in 2.6)
+Fix: Delete dead code. If stubs are needed for interface compliance, document why.
+
+3.8 Inconsistent naming
+isUnitDead vs isDead (set on unit in battle_attack_helpers.lua:123, checked via Utils.isUnitDead)
+hasActed vs hasMoveOrderQueued
+selectingAttack vs combatSummary
+Fix: Adopt a naming convention (e.g., isX for booleans, hasX for state flags).
+
+3.9 Battle inherits from State via alias
+File/Line: modules/combat/battle.lua:13 — local Battle = State
+
+This makes Battle literally the same table as State, so any mutation to Battle.visible mutates State.visible globally. If State is ever reloaded, Battle breaks.
+
+Fix: Use composition or proper inheritance:
+
+local Battle = setmetatable({}, {__index = State})
+3.10 Inconsistent error handling
+File/Line: modules/units/unit_spawner.lua:42,54 — error("Variant '" .. variant .. "' not found")
+
+Hard crashes on config typos. A malformed map config should log a warning and skip the unit, not crash the game.
+
+Fix:
+
+print("[UnitSpawner] Warning: variant '" .. variant .. "' not found, skipping")
+return nil, function() end
+4. Bug Detection
+4.1 Attack.performAttack counterattack logic is split and confusing
+File/Line: modules/engine/attack.lua:33-71
+
+performAttack applies damage and then checks canBeDoubleAttacked for a counterattack, but turn.lua:169-188 also initiates Battle.startBattle for enemy attacks. This means counterattacks can fire twice or be skipped depending on code path.
+
+Fix: Centralize all combat resolution in CombatSystem or Battle. Attack.performAttack should only calculate and apply damage; battle orchestration belongs in Battle.
+
+4.2 getEnemiesInRange ignores minRange
+File/Line: modules/engine/attack.lua:14-16
+
+local dist = math.abs(unit.tileX - attacker.tileX) + math.abs(unit.tileY - attacker.tileY)
+if dist >= minRange and dist <= attackRange then
+Wait — this actually does check minRange (line 15: dist >= minRange). However, Attack.canAttack and Mouse.pressed both call getEnemiesInRange which correctly uses minRange. No bug here — this was already correct.
+
+4.3 TurnAI.findNearestEnemyUnit is misnamed / wrong scope
+File/Line: modules/engine/turn_ai.lua:21-37
+
+for _, unit in ipairs(UnitManager.units) do
+    if unit.isPlayer then
+The function name says "find nearest enemy" but it finds the nearest player unit. If called from a player unit context, it would return the nearest player (self/allies), not an enemy.
+
+Fix: Rename to findNearestTarget or make the filter parameterized:
+
+function TurnAI.findNearestUnit(fromUnit, predicate)
+    local best, bestDist = nil, math.huge
+    for _, unit in ipairs(UnitManager.units) do
+        if unit ~= fromUnit and predicate(unit) then
+            local d = manhattanDistance(...)
+            if d < bestDist then best, bestDist = unit, d end
+        end
+    end
+    return best
+end
+4.4 Map.canMove slope logic may be inverted
+File/Line: modules/world/map.lua:109-116
+
+if fromHeight == 0.5 or toHeight == 0.5 then
+    return true
+end
+if (fromHeight == 0 and toHeight == 1) or (fromHeight == 1 and toHeight == 0) then
+    return false
+end
+return false
+Bot_Slope (height 0.5) is the bottom of a hill. In Fire Emblem, you can only traverse slopes in one direction (up). This code allows movement from a slope tile unconditionally, which could let units walk off the back of a hill.
+
+Fix: Validate slope direction explicitly:
+
+if fromHeight == 0.5 then
+    return toHeight == 0  -- can only go down from bot slope
+end
+if toHeight == 0.5 then
+    return fromHeight == 1  -- can only go onto bot slope from top
+end
+4.5 Cursor bounds hardcoded to map size
+File/Line: modules/ui/cursor.lua:91-92
+
+Cursor.tileX = math.max(1, math.min(Cursor.tileX, 18))
+Cursor.tileY = math.max(1, math.min(Cursor.tileY, 15))
+Hardcoded 18 and 15 instead of using Map.width / Map.height or config values. If the map changes, the cursor breaks.
+
+Fix:
+
+Cursor.tileX = math.max(1, math.min(Cursor.tileX, Map.width))
+Cursor.tileY = math.max(1, math.min(Cursor.tileY, Map.height))
+4.6 UnitStats.hide clears selectedUnit
+File/Line: modules/ui/unit_stats/init.lua:29-33
+
+function UnitStats.hide()
+    State.hide()
+    UnitManager.selectedUnit = nil
+    Cursor.setMouse("default")
+end
+When pressing backspace to close unit stats, the selected unit is lost. If the player re-opens stats on the same unit, the highlight/movement range won't restore.
+
+Fix: Preserve the selected unit and restore selection state:
+
+function UnitStats.hide()
+    State.hide()
+    Cursor.setMouse("default")
+    -- Do NOT clear selectedUnit; let UnitManager handle deselection
+end
+4.7 TurnManager.endTurn mutates state mid-update
+File/Line: modules/engine/turn.lua:211-224
+
+function TurnManager.endTurn()
+    ...
+    if TurnManager.currentTurn == "player" then
+        TurnManager.currentTurn = "enemy"
+        TurnManager.startTurn()
+    else
+        TurnManager.currentTurn = "player"
+        TurnManager.startTurn()
+        TurnCounter.incrementTurn()
+    end
+end
+endTurn → startTurn → show("Player Turn") → which may trigger update callbacks. This can cause nested update cycles or missed input events.
+
+Fix: Make endTurn and startTurn idempotent and defer overlay display to the next frame:
+
+function TurnManager.endTurn()
+    TurnManager.pendingTurnSwitch = true
+end
+
+function TurnManager.update(dt)
+    if TurnManager.pendingTurnSwitch then
+        TurnManager.pendingTurnSwitch = false
+        TurnManager._executeTurnSwitch()
+    end
+end
+4.8 MovementRange.canReach creates string garbage
+File/Line: modules/engine/movement_range.lua:9-11, 114
+
+local function key(x, y)
+    return x .. "," .. y
+end
+Every BFS node creation concatenates a new string. For a 18×15 map, this is hundreds of short-lived strings per call, creating GC pressure.
+
+Fix: Use a 2D boolean table:
+
+local visited = {}
+visited[x] = visited[x] or {}
+visited[x][y] = true
+4.9 CameraManager.screenToWorld ignores rotation
+File/Line: modules/engine/camera_manager.lua:160-170
+
+function CameraManager.screenToWorld(screenX, screenY)
+    local cx, cy = CameraManager.camera:position()
+    local worldX = (screenX - screenW/2) / CameraManager.zoom + cx
+    local worldY = (screenY - screenH/2) / CameraManager.zoom + cy
+    return worldX, worldY
+end
+This manually implements screen-to-world but omits rotation, while libs/camera.lua:158-167 correctly handles rotation. If rotation is ever used, this gives wrong coordinates.
+
+Fix: Delegate to the camera library:
+
+function CameraManager.screenToWorld(screenX, screenY)
+    return CameraManager.camera:worldCoords(screenX, screenY)
+end
+4.10 Map.canMove reads Bot_Slope without nil guard
+File/Line: modules/world/map.lua:103-104
+
+local fromBot = map.layers["Bot_Slope"].data[fromY] and map.layers["Bot_Slope"].data[fromY][fromX] or 0
+local toBot   = map.layers["Bot_Slope"].data[toY]   and map.layers["Bot_Slope"].data[toY][toX]   or 0
+fromBot and toBot are computed but never used in the function. Dead code that also risks nil errors if the layer exists but data[fromY] is nil.
+
+Fix: Remove the unused locals, or use them in slope logic (see 4.4).
+
+4.11 Battle.visible check is scattered
+File/Line: modules/combat/battle.lua:36, 76, modules/engine/turn.lua:129, modules/engine/input.lua:63
+
+Multiple modules check Battle.visible independently, creating tight coupling. If battle visibility state changes location, all callers break.
+
+Fix: Use an event or query method:
+
+function Battle.isActive() return Battle.visible end
+-- then guard: if Battle.isActive() then return end
+4.12 Leaf uses goto in update loop
+File/Line: modules/world/leaf.lua:124, 134
+
+if leaf.life >= leaf.landedLife then
+    table.remove(leaves, i)
+    Leaf.spawnLeaf(false)
+    goto continue
+end
+...
+::continue::
+Removing from an array while iterating forward is already risky; combined with goto, it obscures control flow.
+
+Fix: Iterate backwards (already done for removal) and eliminate the goto:
+
+if leaf.life >= leaf.landedLife then
+    table.remove(leaves, i)
+    Leaf.spawnLeaf(false)
+elseif leaf.y > MAP_HEIGHT + 20 or leaf.x > MAP_WIDTH + 20 or leaf.x < -40 then
+    table.remove(leaves, i)
+    Leaf.spawnLeaf(false)
+end
+4.13 Attack.performAttack can apply double-attack damage without checking if first hit killed
+File/Line: modules/engine/attack.lua:49-57
+
+if CombatSystem.canDoubleAttack(attacker, target) then
+    if CombatSystem.doesHit(attacker, target) then
+        ...
+        target.health = math.max(0, target.health - damage2)
+If the first attack kills (target.health == 0), the double attack still fires. In Fire Emblem, a dead unit can't be struck again.
+
+Fix:
+
+if CombatSystem.canDoubleAttack(attacker, target) and target.health > 0 then
+    ...
+end
+4.14 Menu.clicked always returns true when visible
+File/Line: modules/ui/menu.lua:100
+
+return true
+-- inside: if mx >= Menu.x and mx <= Menu.x + Menu.width and my >= Menu.y and my <= Menu.y + Menu.currentHeight then
+If the mouse is inside the menu bounding box but not on any option, it still returns true, swallowing the click. Callers expecting false for non-option clicks will misbehave.
+
+Fix: Return false when no option was clicked:
+
+if my >= optY and my < optY + 30 then
+    if opt.callback then opt.callback() end
+    return true
+end
+-- after loop:
+return false
+4.15 turn_ai.lua moveEnemyToward uses getUnitAtTile inconsistently
+File/Line: modules/engine/turn_ai.lua:214-222
+
+local occupying = getUnitAtTile(finalPos.x, finalPos.y, enemyUnit)
+while occupying do
+    bestStep = bestStep - 1
+    ...
+    occupying = getUnitAtTile(finalPos.x, finalPos.y, enemyUnit)
+end
+The while occupying loop can decrement bestStep to 0 and then access path[1], which is the starting tile. The unit would try to "move" to its own position, which MovementEngine may not handle gracefully.
+
+Fix: Break before bestStep <= 0:
+
+while occupying and bestStep > 0 do
+    bestStep = bestStep - 1
+    ...
+end
+if bestStep <= 0 then return false end
+Summary of High-Priority Actions
+Priority	Issue	Files
+P0	require() inside love.update / love.draw	6+ files
+P0	Font/Quad creation inside draw loops	damage.lua, battle_visual_effects.lua
+P1	BFS table.remove(queue,1) O(n²)	pathfinding.lua, turn_ai.lua, movement_range.lua
+P1	Pathfinding on every cursor frame	manager/update.lua
+P1	goto in leaf.lua and menu.lua	leaf.lua, menu.lua
+P1	CameraManager.screenToWorld ignores rotation	camera_manager.lua
+P2	Duplicate clamp/lerp/menu-quad/icon code	6+ files
+P2	Legacy singleton wrappers in unit files	soldier.lua, archer.lua
+P2	String-based state machine	manager.lua
+P2	Hardcoded cursor bounds	cursor.lua
+P3	Attack.performAttack double-attack on dead target	attack.lua
+P3	Menu.clicked swallows clicks	menu.lua
+P3	Map.canMove slope direction bug	map.lua
+P3	UnitStats.hide clears selectedUnit	unit_stats/init.lua
+The codebase is functional and shows clear architectural intent (mixin managers, state machines, BFS pathfinding), but the hot-path performance issues and scattered global state will become blockers as the unit count and map size grow. The most impactful single change is hoisting all require() calls out of update/draw, followed by fixing the BFS queue implementation.
+
