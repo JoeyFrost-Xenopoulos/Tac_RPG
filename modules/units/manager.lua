@@ -3,7 +3,8 @@ local UnitManager = {
     units = {},
     selectedUnit = nil,
     state = "idle",
-    damageDisplays = {}
+    damageDisplays = {},
+    needsSort = false
 }
 
 local Utils = require("modules.manager.utils")

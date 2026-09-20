@@ -29,6 +29,9 @@ function Movement._startNextStep(unit)
 
     if unit.targetX > unit.tileX then unit.facingX = 1 end
     if unit.targetX < unit.tileX then unit.facingX = -1 end
+
+    local UnitManager = require("modules.units.manager")
+    UnitManager.needsSort = true
 end
 
 function Movement.update(unit, dt)
@@ -39,6 +42,9 @@ function Movement.update(unit, dt)
         unit.tileX = unit.targetX
         unit.tileY = unit.targetY
         unit.isMoving = false
+
+        local UnitManager = require("modules.units.manager")
+        UnitManager.needsSort = true
 
         unit.pathIndex = unit.pathIndex + 1
         Movement._startNextStep(unit)

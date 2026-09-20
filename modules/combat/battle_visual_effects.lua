@@ -167,13 +167,16 @@ function VisualEffects.drawBreak(state, targetX, targetY, attacker)
     if frameIndex < 0 then return end
     if frameIndex >= frameCount then return end
 
-    -- Calculate frame position in sprite sheet
-    local col = frameIndex % cols
-    local row = math.floor(frameIndex / cols)
-    local frameX = col * frameWidth
-    local frameY = row * frameHeight
-    
-    local quad = love.graphics.newQuad(frameX, frameY, frameWidth, frameHeight, effectImage:getDimensions())
+    local hitQuads
+    if weaponType == "harpoon" or weaponType == "ice" then
+        hitQuads = state.hitQuads.harpoon
+    elseif weaponType == "sword" or weaponType == "bow" then
+        hitQuads = state.hitQuads.melee
+    else
+        hitQuads = state.hitQuads.default
+    end
+    local quad = hitQuads and hitQuads[frameIndex + 1]
+    if not quad then return end
 
     local offsetX = frameWidth / 2
     local offsetY = frameHeight / 2
@@ -288,8 +291,8 @@ function VisualEffects.drawMiss(state, targetX, targetY, missSourceUnit)
     local frameIndex = math.floor(timeSinceMiss / animSpeed)
     if frameIndex >= frameCount then return end
 
-    local frameX = frameIndex * frameWidth
-    local quad = love.graphics.newQuad(frameX, 0, frameWidth, frameHeight, missImage:getDimensions())
+    local quad = state.missQuads and state.missQuads[frameIndex + 1]
+    if not quad then return end
 
     local offsetX = frameWidth / 2
     local offsetY = frameHeight / 2
@@ -399,8 +402,8 @@ function VisualEffects.drawCrit(state, targetX, targetY)
     local frameIndex = math.floor(timeSinceCrit / animSpeed)
     if frameIndex >= frameCount then return end
 
-    local frameX = frameIndex * frameWidth
-    local quad = love.graphics.newQuad(frameX, 0, frameWidth, frameHeight, critImage:getDimensions())
+    local quad = state.critQuads and state.critQuads[frameIndex + 1]
+    if not quad then return end
 
     local offsetX = frameWidth / 2
     local offsetY = frameHeight / 2

@@ -41,6 +41,41 @@ function Assets.load(state)
         state.expBarBaseQuad = love.graphics.newQuad(0, 0, frameW, frameH, imageW, imageH)
         state.expBarFullFillQuad = love.graphics.newQuad(frameW, 0, frameW, frameH, imageW, imageH)
     end
+
+    state.hitQuads = {
+        default = {},
+        harpoon = {},
+        melee = {}
+    }
+    local function buildHitQuads(quads, frameCount, cols, rows, frameWidth, frameHeight, image)
+        local imageW, imageH = image:getDimensions()
+        for i = 0, frameCount - 1 do
+            local col = i % cols
+            local row = math.floor(i / cols)
+            quads[i + 1] = love.graphics.newQuad(col * frameWidth, row * frameHeight, frameWidth, frameHeight, imageW, imageH)
+        end
+    end
+    buildHitQuads(state.hitQuads.default, 7, 7, 1, 96, 96, state.hitEffectImage)
+    buildHitQuads(state.hitQuads.harpoon, 10, 5, 2, 128, 64, state.harpoonHitEffectImage)
+    buildHitQuads(state.hitQuads.melee, 10, 5, 2, 128, 64, state.meleeHitEffectImage)
+
+    state.missQuads = {}
+    local missImage = state.missEffectPlayerImage or state.missEffectEnemyImage
+    if missImage then
+        local missW, missH = missImage:getDimensions()
+        for i = 0, 15 do
+            state.missQuads[i + 1] = love.graphics.newQuad(i * 100, 0, 100, 100, missW, missH)
+        end
+    end
+
+    state.critQuads = {}
+    if state.critEffectImage then
+        local critW, critH = state.critEffectImage:getDimensions()
+        for i = 0, 15 do
+            state.critQuads[i + 1] = love.graphics.newQuad(i * 100, 0, 100, 100, critW, critH)
+        end
+    end
+
     state.pixelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
     state.weaponFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
     state.previewFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 30)

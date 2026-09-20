@@ -8,6 +8,7 @@ local function attach(UnitManager)
 
     function UnitManager.add(unit)
         table.insert(UnitManager.units, unit)
+        UnitManager.needsSort = true
     end
 
     local function getDrawY(unit)
@@ -20,19 +21,22 @@ local function attach(UnitManager)
     end
 
     function UnitManager.draw()
-        table.sort(UnitManager.units, function(a, b)
-            local ay = getDrawY(a)
-            local by = getDrawY(b)
-            if ay ~= by then
-                return ay < by
-            end
+        if UnitManager.needsSort then
+            table.sort(UnitManager.units, function(a, b)
+                local ay = getDrawY(a)
+                local by = getDrawY(b)
+                if ay ~= by then
+                    return ay < by
+                end
 
-            if a.isMoving ~= b.isMoving then
-                return not a.isMoving
-            end
+                if a.isMoving ~= b.isMoving then
+                    return not a.isMoving
+                end
 
-            return (a.tileX or 0) < (b.tileX or 0)
-        end)
+                return (a.tileX or 0) < (b.tileX or 0)
+            end)
+            UnitManager.needsSort = false
+        end
         for _, unit in ipairs(UnitManager.units) do
             if not UnitManager._isUnitDead(unit) then
                 unit:draw()
@@ -45,11 +49,16 @@ local function attach(UnitManager)
             UnitManager.deselectAll()
         end
 
+        local removed = false
         for i = #UnitManager.units, 1, -1 do
             local unit = UnitManager.units[i]
             if UnitManager._isUnitDead(unit) then
                 table.remove(UnitManager.units, i)
+                removed = true
             end
+        end
+        if removed then
+            UnitManager.needsSort = true
         end
 
         if UnitManager.battleAttacker and UnitManager._isUnitDead(UnitManager.battleAttacker) then

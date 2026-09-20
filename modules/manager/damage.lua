@@ -26,7 +26,10 @@ local function attach(UnitManager)
     function UnitManager.drawDamageDisplays()
         if #UnitManager.damageDisplays == 0 then return end
 
-        love.graphics.setFont(love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48))
+        if not UnitManager.damageFont then
+            UnitManager.damageFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 48)
+        end
+        love.graphics.setFont(UnitManager.damageFont)
         love.graphics.setColor(1, 0, 0, 1)
 
         for _, display in ipairs(UnitManager.damageDisplays) do

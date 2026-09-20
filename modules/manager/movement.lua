@@ -26,6 +26,7 @@ local function attach(UnitManager)
                 unit.tileX = unit.prevX
                 unit.tileY = unit.prevY
                 unit.isMoving = false
+                UnitManager.needsSort = true
             end
         end
 
