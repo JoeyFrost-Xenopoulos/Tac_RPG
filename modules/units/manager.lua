@@ -8,6 +8,20 @@ local UnitManager = {
     needsSort = false
 }
 
+function UnitManager.setFacing(attacker, target)
+    if target.tileX > attacker.tileX then
+        attacker.facingX = 1
+    elseif target.tileX < attacker.tileX then
+        attacker.facingX = -1
+    end
+
+    if attacker.tileX > target.tileX then
+        target.facingX = 1
+    elseif attacker.tileX < target.tileX then
+        target.facingX = -1
+    end
+end
+
 local Utils = require("modules.manager.utils")
 UnitManager._isUnitDead = Utils.isUnitDead
 

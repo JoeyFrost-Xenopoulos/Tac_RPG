@@ -46,17 +46,7 @@ local function attach(UnitManager)
     function UnitManager.performAttack(attacker, target)
         if not attacker or not target then return end
 
-        if target.tileX > attacker.tileX then
-            attacker.facingX = 1
-        elseif target.tileX < attacker.tileX then
-            attacker.facingX = -1
-        end
-
-        if attacker.tileX > target.tileX then
-            target.facingX = 1
-        elseif attacker.tileX < target.tileX then
-            target.facingX = -1
-        end
+        UnitManager.setFacing(attacker, target)
 
         Effects.playSelect()
 

@@ -172,17 +172,7 @@ function TurnManager.updateEnemyTurn(dt)
                         local target = enemies[1]
                         TurnManager.enemyAttackTarget = target  -- Update to the actual target being attacked
                         -- Make attacker face the target
-                        if target.tileX > currentUnit.tileX then
-                            currentUnit.facingX = 1
-                        elseif target.tileX < currentUnit.tileX then
-                            currentUnit.facingX = -1
-                        end
-                        -- Make defender face the attacker
-                        if currentUnit.tileX > target.tileX then
-                            target.facingX = 1
-                        elseif currentUnit.tileX < target.tileX then
-                            target.facingX = -1
-                        end
+                        UnitManager.setFacing(currentUnit, target)
                         -- Show battle screen instead of direct damage
                         Battle.startBattle(currentUnit, target)
                         TurnManager.enemyBattleInProgress = true
