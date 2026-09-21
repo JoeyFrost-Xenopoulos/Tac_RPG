@@ -102,7 +102,7 @@ function Cursor.update()
             and not Menu.visible
             and not Options.visible
             and UnitManager.state ~= UnitManager.UnitState.SELECTING_ATTACK
-            and UnitManager.state ~= UnitManager.UnitState.COMBAT_SUMMARY then
+            and UnitManager.state ~= UnitManager.UnitState.VIEWING_COMBAT_SUMMARY then
             Effects.playSelect()
             Cursor.selectTimer = Cursor.selectCooldown
         end
@@ -110,7 +110,7 @@ function Cursor.update()
     local tx, ty = Cursor.tileX, Cursor.tileY
     local selectedUnit = UnitManager.selectedUnit
 
-    if selectedUnit and (UnitManager.state == UnitManager.UnitState.SELECTING_ATTACK or UnitManager.state == UnitManager.UnitState.COMBAT_SUMMARY) then
+    if selectedUnit and (UnitManager.state == UnitManager.UnitState.SELECTING_ATTACK or UnitManager.state == UnitManager.UnitState.VIEWING_COMBAT_SUMMARY) then
         local enemies = Attack.getEnemiesInRange(selectedUnit)
         
         -- Force cursor to snap to nearest enemy in range
@@ -127,7 +127,7 @@ function Cursor.update()
             end
             
             -- Keep cursor on the last selected enemy during combat summary
-            if UnitManager.state == UnitManager.UnitState.COMBAT_SUMMARY then
+            if UnitManager.state == UnitManager.UnitState.VIEWING_COMBAT_SUMMARY then
                 -- Keep cursor locked on the target enemy
                 if UnitManager.battleTarget then
                     Cursor.tileX = UnitManager.battleTarget.tileX
@@ -189,7 +189,7 @@ function Cursor.draw()
 
     -- Check if we're in attack selection mode for red highlight
     local UnitManager = require("modules.units.manager")
-    if UnitManager.state == UnitManager.UnitState.SELECTING_ATTACK or UnitManager.state == UnitManager.UnitState.COMBAT_SUMMARY then
+    if UnitManager.state == UnitManager.UnitState.SELECTING_ATTACK or UnitManager.state == UnitManager.UnitState.VIEWING_COMBAT_SUMMARY then
         love.graphics.setColor(1, 0.2, 0.2, 1)  -- Red color for attack targeting
     else
         love.graphics.setColor(1, 1, 1, 1)

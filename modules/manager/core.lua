@@ -41,21 +41,21 @@ local function attach(UnitManager)
             UnitManager.needsSort = false
         end
         for _, unit in ipairs(UnitManager.units) do
-            if not UnitManager._isUnitDead(unit) then
+            if not UnitManager._isDead(unit) then
                 unit:draw()
             end
         end
     end
 
     function UnitManager.removeDeadUnits()
-        if UnitManager.selectedUnit and UnitManager._isUnitDead(UnitManager.selectedUnit) then
+        if UnitManager.selectedUnit and UnitManager._isDead(UnitManager.selectedUnit) then
             UnitManager.deselectAll()
         end
 
         local removed = false
         for i = #UnitManager.units, 1, -1 do
             local unit = UnitManager.units[i]
-            if UnitManager._isUnitDead(unit) then
+            if UnitManager._isDead(unit) then
                 UnitManager._removeFromGrid(unit)
                 table.remove(UnitManager.units, i)
                 removed = true
@@ -65,10 +65,10 @@ local function attach(UnitManager)
             UnitManager.needsSort = true
         end
 
-        if UnitManager.battleAttacker and UnitManager._isUnitDead(UnitManager.battleAttacker) then
+        if UnitManager.battleAttacker and UnitManager._isDead(UnitManager.battleAttacker) then
             UnitManager.battleAttacker = nil
         end
-        if UnitManager.battleTarget and UnitManager._isUnitDead(UnitManager.battleTarget) then
+        if UnitManager.battleTarget and UnitManager._isDead(UnitManager.battleTarget) then
             UnitManager.battleTarget = nil
         end
     end

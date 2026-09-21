@@ -30,7 +30,8 @@ local function getUnitInstance(unitModule, variant)
         elseif unitModule[variant] and unitModule[variant].unit then
             unitInstance = unitModule[variant].unit
         else
-            error("Variant '" .. variant .. "' not found in unit module")
+            print("[UnitSpawner] Warning: variant '" .. variant .. "' not found, skipping")
+            return nil
         end
     else
         if unitModule.unit then
@@ -38,7 +39,8 @@ local function getUnitInstance(unitModule, variant)
         elseif unitModule.player then
             unitInstance = unitModule.player.unit
         else
-            error("Could not find unit in module")
+            print("[UnitSpawner] Warning: could not find unit in module, skipping")
+            return nil
         end
     end
     
@@ -59,6 +61,10 @@ function UnitSpawner.spawnUnits(spawnConfig, UnitManager)
     for _, unitSpawn in ipairs(spawnConfig.units) do
         local unitModule = loadUnitModule(unitSpawn.type)
         local unitInstance = getUnitInstance(unitModule, unitSpawn.variant)
+        
+        if not unitInstance then
+            return
+        end
         
         unitInstance:setPosition(unitSpawn.x, unitSpawn.y)
         

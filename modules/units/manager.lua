@@ -6,7 +6,7 @@ local UnitState = {
     SELECTING_ATTACK = "selectingAttack",
     SELECTING_WEAPON = "selectingWeapon",
     SELECTING_ITEM = "selectingItem",
-    COMBAT_SUMMARY = "combatSummary",
+    VIEWING_COMBAT_SUMMARY = "viewingCombatSummary",
 }
 
 local UnitManager = {
@@ -37,7 +37,7 @@ function UnitManager.hasUnitMoved(unit)
 end
 
 local Utils = require("modules.manager.utils")
-UnitManager._isUnitDead = Utils.isUnitDead
+UnitManager._isDead = Utils.isDead
 
 require("modules.manager.core")(UnitManager)
 require("modules.manager.movement")(UnitManager)

@@ -13,7 +13,7 @@ local function attach(UnitManager)
 
     function UnitManager.update(dt)
         for _, unit in ipairs(UnitManager.units) do
-            if not UnitManager._isUnitDead(unit) then
+            if not UnitManager._isDead(unit) then
                 unit:update(dt)
             end
         end

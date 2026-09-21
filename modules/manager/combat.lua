@@ -56,7 +56,7 @@ local function attach(UnitManager)
         UnitManager.battleAttacker = attacker
         UnitManager.battleTarget = target
 
-        UnitManager.state = UnitManager.UnitState.COMBAT_SUMMARY
+        UnitManager.state = UnitManager.UnitState.VIEWING_COMBAT_SUMMARY
     end
 
     function UnitManager.returnToAttackSelection()

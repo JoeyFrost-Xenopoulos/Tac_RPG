@@ -24,21 +24,6 @@ Lua 5.2+ supports goto, but it's an anti-pattern for loop control.
 
 Fix: Extract the loop body into a function or use if not shouldRemove then ... end guard clauses.
 
-3.8 Inconsistent naming
-isUnitDead vs isDead (set on unit in battle_attack_helpers.lua:123, checked via Utils.isUnitDead)
-hasActed vs hasMoveOrderQueued
-selectingAttack vs combatSummary
-Fix: Adopt a naming convention (e.g., isX for booleans, hasX for state flags).
-
-3.10 Inconsistent error handling
-File/Line: modules/units/unit_spawner.lua:42,54 — error("Variant '" .. variant .. "' not found")
-
-Hard crashes on config typos. A malformed map config should log a warning and skip the unit, not crash the game.
-
-Fix:
-
-print("[UnitSpawner] Warning: variant '" .. variant .. "' not found, skipping")
-return nil, function() end
 4. Bug Detection
 4.1 Attack.performAttack counterattack logic is split and confusing
 File/Line: modules/engine/attack.lua:33-71
