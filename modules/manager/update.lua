@@ -39,27 +39,7 @@ local function attach(UnitManager)
                     mx = 60
                 end
 
-                local menuOptions = {}
-
-                if unit.isPlayer and Attack.canAttack(unit) then
-                    table.insert(menuOptions, { text = "Attack", callback = function()
-                        Effects.playConfirm()
-                        UnitManager.performAttackPrompt()
-                    end, playSound = false })
-                end
-
-                table.insert(menuOptions, { text = "Wait", callback = function()
-                    Effects.playConfirm()
-                    UnitManager.confirmMove()
-                end })
-                table.insert(menuOptions, { text = "Item", callback = function()
-                    Effects.playConfirm()
-                    UnitManager.showItemSelector()
-                end })
-                table.insert(menuOptions, { text = "Cancel", callback = function()
-                    Effects.playConfirm()
-                    UnitManager.cancelMove()
-                end })
+                local menuOptions = UnitManager.buildWaitMenuOptions(unit)
 
                 Menu.show(mx, my, menuOptions, 40)
             end

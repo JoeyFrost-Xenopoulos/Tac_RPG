@@ -8,23 +8,7 @@ local function attach(UnitManager)
     local WeaponSelect = require("modules.ui.weapon_selector")
     local MovementRange = require("modules.engine.movement_range")
 
-    function UnitManager.showWaitMenu()
-        local unit = UnitManager.selectedUnit
-        if not unit then return end
-
-        UnitManager.state = "menu"
-        local screenW = love.graphics.getWidth()
-        local unitPixelX = unit.tileX * Grid.tileSize
-
-        local mx
-        local my = 60
-
-        if unitPixelX < screenW / 2 then
-            mx = screenW - Menu.width - 100
-        else
-            mx = 60
-        end
-
+    function UnitManager.buildWaitMenuOptions(unit)
         local menuOptions = {}
 
         if unit.isPlayer and Attack.canAttack(unit) then
@@ -44,9 +28,30 @@ local function attach(UnitManager)
         end })
         table.insert(menuOptions, { text = "Cancel", callback = function()
             Effects.playConfirm()
-            UnitManager.state = "idle"
-            Menu.hide()
+            UnitManager.cancelMove()
         end })
+
+        return menuOptions
+    end
+
+    function UnitManager.showWaitMenu()
+        local unit = UnitManager.selectedUnit
+        if not unit then return end
+
+        UnitManager.state = "menu"
+        local screenW = love.graphics.getWidth()
+        local unitPixelX = unit.tileX * Grid.tileSize
+
+        local mx
+        local my = 60
+
+        if unitPixelX < screenW / 2 then
+            mx = screenW - Menu.width - 100
+        else
+            mx = 60
+        end
+
+        local menuOptions = UnitManager.buildWaitMenuOptions(unit)
 
         Menu.show(mx, my, menuOptions, 40)
     end

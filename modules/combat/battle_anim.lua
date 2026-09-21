@@ -12,9 +12,9 @@ function Anim.getAttackAnimName(unit)
         return "attack"
     end
 
+    local Helpers = require("modules.combat.battle_helpers")
     local weaponKey = unit.weapon
-    local unitType = type(unit.type) == "string" and unit.type:lower() or ""
-    if unitType == "monk" and weaponKey == "fire" and unit.animations.attack then
+    if Helpers.isMonkCaster(unit) and weaponKey == "fire" and unit.animations.attack then
         return "attack"
     end
 

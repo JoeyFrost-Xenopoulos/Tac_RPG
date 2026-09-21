@@ -21,25 +21,6 @@ Fix: Move to modules/manager/utils.lua:
 function Utils.clamp(v, min, max) ... end
 function Utils.lerp(a, b, t) ... end
 
-2.4 Duplicate "wait menu" construction
-Files:
-
-modules/manager/update.lua:42-64
-modules/manager/ui.lua:11-52
-Both build identical {Attack, Wait, Item, Cancel} option tables.
-
-Fix: Extract to UnitManager.buildWaitMenuOptions(unit) returning the options array.
-
-2.8 Duplicate isMonkCaster checks
-Files:
-
-modules/combat/battle_helpers.lua:26-30
-modules/combat/battle_phase_manager.lua:88
-modules/combat/battle_visual_effects.lua:8-15
-modules/combat/battle_attack_helpers.lua:10-11
-modules/combat/battle_transition_draw.lua:162
-Already centralized in battle_helpers.lua, but battle_attack_helpers.lua:10-11 re-checks inline instead of calling it.
-
 3. Code Quality & Best Practices
 3.1 Global mutable state
 Every module.
