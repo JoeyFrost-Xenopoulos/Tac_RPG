@@ -15,20 +15,6 @@ local Input = {}
 function Input.init(ctx) ctx.input = Input end
 return Input
 
-3.4 Long functions with deep nesting
-File/Line: modules/engine/mouse.lua:16-148 — 132-line Mouse.pressed with 7 levels of nesting.
-
-Fix: Decompose into state handler functions:
-
-local stateHandlers = {
-    idle = function(...) ... end,
-    selectingAttack = function(...) ... end,
-    menu = function(...) ... end,
-}
-function Mouse.pressed(x, y, button)
-    local handler = stateHandlers[UnitManager.state] or stateHandlers.idle
-    handler(x, y, button)
-end
 3.5 String-based state machine
 File/Line: modules/units/manager.lua:5 — state = "idle"
 
