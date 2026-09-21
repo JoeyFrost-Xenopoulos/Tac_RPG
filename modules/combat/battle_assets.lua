@@ -82,21 +82,8 @@ function Assets.load(state)
     state.levelUpHeaderFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 42)
     state.levelUpStatsFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 36)
     
-    -- Load weapon icons
-    state.weaponIcons = {}
-    state.weaponIcons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
-    state.weaponIcons.sword:setFilter("nearest", "nearest")
-    state.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
-    state.weaponIcons.harpoon:setFilter("nearest", "nearest")
-    state.weaponIcons.bow = love.graphics.newImage("assets/ui/icons/bow.png")
-    state.weaponIcons.bow:setFilter("nearest", "nearest")
-    state.weaponIcons.fire = love.graphics.newImage("assets/ui/icons/fire_book.png")
-    state.weaponIcons.fire:setFilter("nearest", "nearest")
-    state.weaponIcons.ice = love.graphics.newImage("assets/ui/icons/ice_book.png")
-    state.weaponIcons.ice:setFilter("nearest", "nearest")
-    -- Keep thunder mapped for compatibility with older spell ids.
-    state.weaponIcons.thunder = love.graphics.newImage("assets/ui/icons/ice_book.png")
-    state.weaponIcons.thunder:setFilter("nearest", "nearest")
+    local Icons = require("modules.ui.icons")
+    state.weaponIcons = Icons.getWeaponIcons()
     
     -- Load projectile images
     state.projectileImages = {}

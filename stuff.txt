@@ -20,30 +20,6 @@ Fix: Move to modules/manager/utils.lua:
 
 function Utils.clamp(v, min, max) ... end
 function Utils.lerp(a, b, t) ... end
-2.2 Duplicate menu quad initialization
-Files:
-
-modules/ui/weapon_selector/init.lua:31-41
-modules/ui/item_selector/init.lua:34-44
-modules/ui/menu.lua:27-39
-All three define identical 9-quad tables from the same menu.png.
-
-Fix: Extract to modules/ui/menu_quads.lua:
-
-local MenuQuads = {}
-function MenuQuads.get(image)
-    local w, h = image:getDimensions()
-    return { topLeft = ..., topMid = ..., ... }
-end
-return MenuQuads
-2.3 Duplicate weapon icon loading
-Files:
-
-modules/combat/battle_assets.lua:51-64
-modules/ui/weapon_selector/init.lua:12-24
-Same 6 icons loaded twice.
-
-Fix: Centralize in modules/combat/battle_assets.lua and expose via Battle.weaponIcons, or load once in a shared modules/ui/icons.lua.
 
 2.4 Duplicate "wait menu" construction
 Files:

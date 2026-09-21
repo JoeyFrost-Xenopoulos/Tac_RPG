@@ -19,7 +19,7 @@ CombatSummary.font = nil
 CombatSummary.hpFont = nil
 CombatSummary.critFont = nil
 CombatSummary.smallFont = nil
-CombatSummary.weaponIcons = {}
+CombatSummary.weaponIcons = require("modules.ui.icons").getWeaponIcons()
 CombatSummary.weaponIconScale = 0.8
 CombatSummary.attackerWeaponIconOffsetX = -100
 CombatSummary.defenderWeaponIconOffsetX = 60
@@ -37,18 +37,6 @@ function CombatSummary.load()
     CombatSummary.critLabelFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 40)
     CombatSummary.smallFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 18)
     CombatSummary.instructionFont = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 24)
-    CombatSummary.weaponIcons.sword = love.graphics.newImage("assets/ui/icons/sword.png")
-    CombatSummary.weaponIcons.sword:setFilter("nearest", "nearest")
-    CombatSummary.weaponIcons.bow = love.graphics.newImage("assets/ui/icons/bow.png")
-    CombatSummary.weaponIcons.bow:setFilter("nearest", "nearest")
-    CombatSummary.weaponIcons.harpoon = love.graphics.newImage("assets/ui/icons/harpoon.png")
-    CombatSummary.weaponIcons.harpoon:setFilter("nearest", "nearest")
-    CombatSummary.weaponIcons.fire = love.graphics.newImage("assets/ui/icons/fire_book.png")
-    CombatSummary.weaponIcons.fire:setFilter("nearest", "nearest")
-    CombatSummary.weaponIcons.ice = love.graphics.newImage("assets/ui/icons/ice_book.png")
-    CombatSummary.weaponIcons.ice:setFilter("nearest", "nearest")
-    CombatSummary.weaponIcons.thunder = love.graphics.newImage("assets/ui/icons/ice_book.png")
-    CombatSummary.weaponIcons.thunder:setFilter("nearest", "nearest")
 end
 
 function CombatSummary.show(attacker, defender)
