@@ -67,8 +67,8 @@ function BannerController.draw()
         local baseWidth = Banner.targetWidth * bannerProgress
 
         BigBar.draw(Banner.x, Banner.y, baseWidth, Banner.anchor, healthRatio)
-        BigBar.drawUnitName(Banner.x, Banner.y, Banner.targetWidth, unit)
-        BigBar.drawHealthText(Banner.x, Banner.y, Banner.targetWidth, Banner.anchor, unit.health, unit.maxHealth)
+        BigBar.drawUnitName(Banner.x, Banner.y, Banner.targetWidth, unit, bannerProgress)
+        BigBar.drawHealthText(Banner.x, Banner.y, Banner.targetWidth, Banner.anchor, unit.health, unit.maxHealth, bannerProgress)
     end
 end
 

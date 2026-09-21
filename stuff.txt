@@ -1,29 +1,6 @@
 Comprehensive Code Review: my_game_2 (LÖVE2D / Fire Emblem: Sacred Stones Replica)
 Scope reviewed: main.lua, config.lua, engine modules, combat modules, unit system, UI modules, world/map modules, audio, manager mixins, and unit definitions. ~3,500 lines across ~50 files.
 
-3. Code Quality & Best Practices
-3.1 Global mutable state
-Every module.
-
-Input = require(...), Mouse = require(...), etc., all mutate module-level tables. This creates implicit coupling, makes tests impossible without global mocking, and risks name collisions.
-
-Fix: Adopt a consistent pattern. Either:
-
-Pure modules returning tables (local M = {}; return M)
-Or an explicit Context object passed to init:
-local Input = {}
-function Input.init(ctx) ctx.input = Input end
-return Input
-
-3.6 goto usage
-Files/Lines:
-
-modules/ui/menu.lua:149 (goto continue)
-modules/world/leaf.lua:124 (goto continue)
-Lua 5.2+ supports goto, but it's an anti-pattern for loop control.
-
-Fix: Extract the loop body into a function or use if not shouldRemove then ... end guard clauses.
-
 4. Bug Detection
 4.1 Attack.performAttack counterattack logic is split and confusing
 File/Line: modules/engine/attack.lua:33-71

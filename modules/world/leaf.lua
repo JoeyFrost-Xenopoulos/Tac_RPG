@@ -121,18 +121,16 @@ function Leaf.update(dt)
             if leaf.life >= leaf.landedLife then
                 table.remove(leaves, i)
                 Leaf.spawnLeaf(false)
-                goto continue
+            else
+                if leaf.y > MAP_HEIGHT + 20
+                or leaf.x > MAP_WIDTH + 20
+                or leaf.x < -40 then
+                    table.remove(leaves, i)
+                    Leaf.spawnLeaf(false)
+                end
             end
-        end
-
-        if leaf.y > MAP_HEIGHT + 20
-        or leaf.x > MAP_WIDTH + 20
-        or leaf.x < -40 then
-            table.remove(leaves, i)
-            Leaf.spawnLeaf(false)
-        end
-        ::continue::
     end
+end
 end
 
 function Leaf.draw()

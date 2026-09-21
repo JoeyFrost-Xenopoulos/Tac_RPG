@@ -12,9 +12,8 @@ barQuads.left  = love.graphics.newQuad(0,   0, 64,  bh, bw, bh)
 barQuads.mid   = love.graphics.newQuad(128, 0, 64,  bh, bw, bh)
 barQuads.right = love.graphics.newQuad(256, 0, 64,  bh, bw, bh)
 
-function BigBar.drawUnitName(x, y, maxWidth, unit)
+function BigBar.drawUnitName(x, y, maxWidth, unit, progress)
     local nameY = y + 30
-    local progress = Banner.currentWidth / Banner.targetWidth
     progress = math.min(1, math.max(0, progress))
 
     local eased = 1 - (1 - progress) * (1 - progress)
@@ -27,11 +26,10 @@ function BigBar.drawUnitName(x, y, maxWidth, unit)
     love.graphics.setColor(1, 1, 1, 1)
 end
 
-function BigBar.drawHealthText(x, y, maxWidth, anchor, hp, maxHp)
+function BigBar.drawHealthText(x, y, maxWidth, anchor, hp, maxHp, progress)
     local barY = y + 30
     local text = "HP:" .. hp .. " / " .. maxHp
 
-    local progress = Banner.currentWidth / Banner.targetWidth
     progress = math.min(1, math.max(0, progress))
 
     local eased = 1 - (1 - progress) * (1 - progress)
