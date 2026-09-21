@@ -32,7 +32,7 @@ local function attach(UnitManager)
             end
         end
 
-        UnitManager.state = "idle"
+        UnitManager.state = UnitManager.UnitState.IDLE
         if unit then
             MovementRange.show(unit)
         end

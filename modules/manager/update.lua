@@ -21,10 +21,10 @@ local function attach(UnitManager)
         UnitManager.updateDamageDisplays(dt)
 
         local unit = UnitManager.selectedUnit
-        if UnitManager.state == "moving" then
+        if UnitManager.state == UnitManager.UnitState.MOVING then
             MovementRange.clear()
             if unit and not unit.isMoving then
-                UnitManager.state = "menu"
+                UnitManager.state = UnitManager.UnitState.MENU
                 MovementRange.showAttackRange(unit)
                 local screenW = love.graphics.getWidth()
 
@@ -44,7 +44,7 @@ local function attach(UnitManager)
                 Menu.show(mx, my, menuOptions, 40)
             end
             return
-        elseif UnitManager.state == "menu" then
+        elseif UnitManager.state == UnitManager.UnitState.MENU then
             return
         end
 

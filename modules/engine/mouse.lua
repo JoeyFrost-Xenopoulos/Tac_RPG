@@ -41,7 +41,7 @@ local function handleIdle(x, y, button)
             if MovementRange.canReach(tx, ty) then
                 local success = currentSelected:tryMove(tx, ty)
                 if success then
-                    UnitManager.state = "moving"
+                    UnitManager.state = UnitManager.UnitState.MOVING
                 end
             else
                 Effects.backPlay()
@@ -89,9 +89,9 @@ local function handleMenu(x, y, button)
 end
 
 local stateHandlers = {
-    idle = handleIdle,
-    selectingAttack = handleSelectingAttack,
-    menu = handleMenu,
+    [UnitManager.UnitState.IDLE] = handleIdle,
+    [UnitManager.UnitState.SELECTING_ATTACK] = handleSelectingAttack,
+    [UnitManager.UnitState.MENU] = handleMenu,
 }
 
 function Mouse.pressed(x, y, button)
@@ -140,7 +140,7 @@ function Mouse.pressed(x, y, button)
         return
     end
 
-    if UnitManager.state == "moving" then
+    if UnitManager.state == UnitManager.UnitState.MOVING then
         return
     end
 

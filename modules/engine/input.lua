@@ -60,7 +60,7 @@ function Input.keypressed(key)
     -- Show unit stats page when 'E' is pressed and cursor is hovered over a unit
     if key == "e" then
         -- Only allow stats if not moving or in battle phase
-        if UnitManager.state ~= "idle" then return end
+        if UnitManager.state ~= UnitManager.UnitState.IDLE then return end
         if Battle.visible then return end
         local tx, ty = Cursor.getTile()
         for _, unit in ipairs(UnitManager.units or {}) do

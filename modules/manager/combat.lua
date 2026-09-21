@@ -13,7 +13,7 @@ local function attach(UnitManager)
         local enemies = Attack.getEnemiesInRange(unit)
         if #enemies == 0 then
             Menu.hide()
-            UnitManager.state = "idle"
+            UnitManager.state = UnitManager.UnitState.IDLE
             return
         end
 
@@ -30,11 +30,11 @@ local function attach(UnitManager)
 
         local enemies = Attack.getEnemiesInRange(unit)
         if #enemies == 0 then
-            UnitManager.state = "idle"
+            UnitManager.state = UnitManager.UnitState.IDLE
             return
         end
 
-        UnitManager.state = "selectingAttack"
+        UnitManager.state = UnitManager.UnitState.SELECTING_ATTACK
         MovementRange.clear()
         Grid.clearHighlights()
 
@@ -56,7 +56,7 @@ local function attach(UnitManager)
         UnitManager.battleAttacker = attacker
         UnitManager.battleTarget = target
 
-        UnitManager.state = "combatSummary"
+        UnitManager.state = UnitManager.UnitState.COMBAT_SUMMARY
     end
 
     function UnitManager.returnToAttackSelection()

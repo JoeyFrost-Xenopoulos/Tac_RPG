@@ -1,9 +1,19 @@
 -- modules/units/manager.lua
+local UnitState = {
+    IDLE = "idle",
+    MOVING = "moving",
+    MENU = "menu",
+    SELECTING_ATTACK = "selectingAttack",
+    SELECTING_WEAPON = "selectingWeapon",
+    SELECTING_ITEM = "selectingItem",
+    COMBAT_SUMMARY = "combatSummary",
+}
+
 local UnitManager = {
     units = {},
     unitGrid = {},
     selectedUnit = nil,
-    state = "idle",
+    state = UnitState.IDLE,
     damageDisplays = {},
     needsSort = false
 }
@@ -35,5 +45,7 @@ require("modules.manager.ui")(UnitManager)
 require("modules.manager.combat")(UnitManager)
 require("modules.manager.damage")(UnitManager)
 require("modules.manager.update")(UnitManager)
+
+UnitManager.UnitState = UnitState
 
 return UnitManager

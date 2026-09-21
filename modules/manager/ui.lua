@@ -38,7 +38,7 @@ local function attach(UnitManager)
         local unit = UnitManager.selectedUnit
         if not unit then return end
 
-        UnitManager.state = "menu"
+        UnitManager.state = UnitManager.UnitState.MENU
         local screenW = love.graphics.getWidth()
         local unitPixelX = unit.tileX * Grid.tileSize
 
@@ -73,12 +73,12 @@ local function attach(UnitManager)
             end
         end
 
-        UnitManager.state = "menu"
+        UnitManager.state = UnitManager.UnitState.MENU
         UnitManager.showWaitMenu()
     end
 
     function UnitManager.showEndTurnMenu(tx, ty)
-        UnitManager.state = "menu"
+        UnitManager.state = UnitManager.UnitState.MENU
         local screenW = love.graphics.getWidth()
 
         local clickPixelX = tx * Grid.tileSize
@@ -100,13 +100,13 @@ local function attach(UnitManager)
             { text = "Unit Stats", callback = function()
                 local UnitStats = require("modules.ui.unit_stats")
                 Effects.playConfirm()
-                UnitManager.state = "idle"
+                UnitManager.state = UnitManager.UnitState.IDLE
                 Menu.hide()
                 UnitStats.show()
             end },
             { text = "Options", callback = function()
                 Effects.playConfirm()
-                UnitManager.state = "idle"
+                UnitManager.state = UnitManager.UnitState.IDLE
                 Menu.hide()
                 Options.show()
             end },
@@ -117,7 +117,7 @@ local function attach(UnitManager)
             end },
             { text = "Cancel", callback = function()
                 Effects.playConfirm()
-                UnitManager.state = "idle"
+                UnitManager.state = UnitManager.UnitState.IDLE
                 Menu.hide()
             end }
         }, 40)
@@ -131,7 +131,7 @@ local function attach(UnitManager)
             unit:setSelected(true)
         end
 
-        UnitManager.state = "selectingWeapon"
+        UnitManager.state = UnitManager.UnitState.SELECTING_WEAPON
         Menu.hide(true)
 
         WeaponSelect.show(unit, function(option)
@@ -146,7 +146,7 @@ local function attach(UnitManager)
         local unit = UnitManager.selectedUnit
         if not unit then return end
 
-        UnitManager.state = "selectingItem"
+        UnitManager.state = UnitManager.UnitState.SELECTING_ITEM
         Menu.hide(true)
 
         local ItemSelector = require("modules.ui.item_selector")
@@ -175,7 +175,7 @@ local function attach(UnitManager)
         local hasMoved = UnitManager.hasUnitMoved(resolvedUnit)
 
         if not hasMoved then
-            UnitManager.state = "idle"
+            UnitManager.state = UnitManager.UnitState.IDLE
             UnitManager.selectedUnit = resolvedUnit
             resolvedUnit:setSelected(true)
             MovementRange.show(resolvedUnit)

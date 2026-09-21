@@ -15,15 +15,6 @@ local Input = {}
 function Input.init(ctx) ctx.input = Input end
 return Input
 
-3.5 String-based state machine
-File/Line: modules/units/manager.lua:5 — state = "idle"
-
-A bare string with no enum or validation. Typos like "idel" silently break behavior.
-
-Fix:
-
-local UnitState = { IDLE="idle", MOVING="moving", MENU="menu", ... }
-UnitManager.state = UnitState.IDLE
 3.6 goto usage
 Files/Lines:
 

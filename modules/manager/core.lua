@@ -130,7 +130,7 @@ local function attach(UnitManager)
             unit:setSelected(false)
         end
         UnitManager.selectedUnit = nil
-        UnitManager.state = "idle"
+        UnitManager.state = UnitManager.UnitState.IDLE
         Menu.hide()
         Arrows.clear()
         MovementRange.clear()
@@ -145,7 +145,7 @@ local function attach(UnitManager)
         UnitManager.selectedUnit = unit
         unit.prevX = unit.tileX
         unit.prevY = unit.tileY
-        UnitManager.state = "idle"
+        UnitManager.state = UnitManager.UnitState.IDLE
         MovementRange.show(unit)
         Effects.playConfirm()
     end
