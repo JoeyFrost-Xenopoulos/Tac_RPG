@@ -1,5 +1,6 @@
 -- modules/combat/battle_ui_draw.lua
 local Helpers = require("modules.combat.battle_helpers")
+local Utils = require("modules.manager.utils")
 
 local UiDraw = {}
 
@@ -22,13 +23,9 @@ local FILL_START_OFFSET = 0
 local HEALTH_TEXT_OFFSET_X = -20
 local HEALTH_TEXT_OFFSET_Y = 15
 
-local function lerp(startValue, endValue, t)
-    return startValue + (endValue - startValue) * t
-end
-
 local function getFillPercent(unit)
     if unit and unit.maxHealth and unit.maxHealth > 0 then
-        return Helpers.clamp(unit.health / unit.maxHealth, 0, 1)
+        return Utils.clamp(unit.health / unit.maxHealth, 0, 1)
     end
     return 1
 end
@@ -106,7 +103,7 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress, shakeX, shakeY)
     local offsetX = 0
     local offsetY = 0
     if progress ~= nil then
-        progress = Helpers.clamp(progress, 0, 1)
+        progress = Utils.clamp(progress, 0, 1)
         scale = 0.9 + 0.1 * progress
         alpha = progress
         offsetX = (1 - progress) * -20
@@ -119,7 +116,7 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress, shakeX, shakeY)
         local leftX = BAR_MARGIN + offsetX - 10 + shakeX
         local enemyDisplayHealth = state.defenderHealthDisplay or enemyUnit.health
         local fillPercent = enemyUnit.maxHealth and enemyUnit.maxHealth > 0
-            and Helpers.clamp(enemyDisplayHealth / enemyUnit.maxHealth, 0, 1) or 1
+            and Utils.clamp(enemyDisplayHealth / enemyUnit.maxHealth, 0, 1) or 1
             drawBarBase(state.bigBarBaseImage, leftX, baseY, scale, alpha, false)
             drawBarFill(state.bigBarFillImage, leftX, baseY, scale, alpha, false, fillPercent)
         
@@ -137,7 +134,7 @@ function UiDraw.drawBigBar(state, screenW, screenH, progress, shakeX, shakeY)
         local rightX = screenW - BAR_W * scale - (BAR_MARGIN + 10) - offsetX - 60 + shakeX
         local playerDisplayHealth = state.playerHealthDisplay or playerUnit.health
         local fillPercent = playerUnit.maxHealth and playerUnit.maxHealth > 0
-            and Helpers.clamp(playerDisplayHealth / playerUnit.maxHealth, 0, 1) or 1
+            and Utils.clamp(playerDisplayHealth / playerUnit.maxHealth, 0, 1) or 1
             drawBarBase(state.bigBarBaseImage, rightX, baseY, scale, alpha, true)
             drawBarFill(state.bigBarFillImage, rightX, baseY, scale, alpha, false, fillPercent)
         

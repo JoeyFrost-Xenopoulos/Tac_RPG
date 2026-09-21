@@ -5,6 +5,18 @@ function Utils.isUnitDead(unit)
     return unit and ((unit.health or 0) <= 0 or unit.isDead)
 end
 
+function Utils.clamp(v, min, max)
+    if v < min then return min end
+    if v > max then return max end
+    return v
+end
+
+function Utils.lerp(a, b, t)
+    return a + (b - a) * t
+end
+
+local colourSwapCache = {}
+
 local function applySwapsToImageData(imageData, swaps)
     local width, height = imageData:getDimensions()
     local newImageData = love.image.newImageData(width, height)
@@ -21,7 +33,6 @@ local function applySwapsToImageData(imageData, swaps)
                 local toG = swap.to[2] / 255
                 local toB = swap.to[3] / 255
 
-                -- Check if pixel matches (with small tolerance for floating point)
                 if math.abs(r - fromR) < 0.01 and math.abs(g - fromG) < 0.01 and math.abs(b - fromB) < 0.01 then
                     r, g, b = toR, toG, toB
                     break
@@ -36,6 +47,11 @@ local function applySwapsToImageData(imageData, swaps)
 end
 
 function Utils.applyColourSwaps(imagePath, swapsPath)
+    local cacheKey = imagePath .. "|" .. tostring(swapsPath)
+    if colourSwapCache[cacheKey] then
+        return colourSwapCache[cacheKey]
+    end
+
     local imageData = love.image.newImageData(imagePath)
     local swapPaths = swapsPath
 
@@ -44,7 +60,9 @@ function Utils.applyColourSwaps(imagePath, swapsPath)
     end
 
     if type(swapPaths) ~= "table" then
-        return love.graphics.newImage(imageData)
+        local img = love.graphics.newImage(imageData)
+        colourSwapCache[cacheKey] = img
+        return img
     end
 
     for _, path in ipairs(swapPaths) do
@@ -52,7 +70,9 @@ function Utils.applyColourSwaps(imagePath, swapsPath)
         imageData = applySwapsToImageData(imageData, swaps)
     end
 
-    return love.graphics.newImage(imageData)
+    local img = love.graphics.newImage(imageData)
+    colourSwapCache[cacheKey] = img
+    return img
 end
 
 return Utils

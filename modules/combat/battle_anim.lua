@@ -1,11 +1,6 @@
 -- modules/combat/battle_anim.lua
 local Anim = {}
-
-local function clamp(value, minValue, maxValue)
-    if value < minValue then return minValue end
-    if value > maxValue then return maxValue end
-    return value
-end
+local Utils = require("modules.manager.utils")
 
 function Anim.getAttackAnimName(unit)
     if not unit or not unit.animations then
@@ -113,7 +108,7 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW, animatingUni
     end
 
     if time <= runDuration then
-        local runProgress = clamp(time / runDuration, 0, 1)
+        local runProgress = Utils.clamp(time / runDuration, 0, 1)
         return startX + (endX - startX) * runProgress
     end
 
@@ -122,7 +117,7 @@ function Anim.getAttackerDisplayPosition(state, screenW, platformW, animatingUni
         return endX
     end
 
-    local returnProgress = clamp((time - attackEndTime) / returnDuration, 0, 1)
+    local returnProgress = Utils.clamp((time - attackEndTime) / returnDuration, 0, 1)
     return endX + (startX - endX) * returnProgress
 end
 

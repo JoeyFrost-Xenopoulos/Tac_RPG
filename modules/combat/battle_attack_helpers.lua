@@ -2,6 +2,7 @@
 -- Handles attack sounds, damage calculations, and health animations
 
 local Helpers = {}
+local Utils = require("modules.manager.utils")
 
 function Helpers.playAttackSounds(battleState, attackFrameIndex, attacker, projectileHit)
     local Audio = require("modules.audio.sound_effects")
@@ -145,7 +146,7 @@ function Helpers.updateHealthAnimation(battleState)
     local BattleHelpers = require("modules.combat.battle_helpers")
     
     local elapsedTime = battleState.battleTimer - battleState.healthAnimStartTime
-    local t = BattleHelpers.clamp(elapsedTime / battleState.healthAnimDurationActual, 0, 1)
+    local t = Utils.clamp(elapsedTime / battleState.healthAnimDurationActual, 0, 1)
     local eased = BattleHelpers.easeOutQuad(t)
     local playerUnit = BattleHelpers.getPlayerUnit(battleState.attacker, battleState.defender)
     local enemyUnit = BattleHelpers.getEnemyUnit(battleState.attacker, battleState.defender)

@@ -3,12 +3,6 @@
 
 local Helpers = {}
 
-function Helpers.clamp(value, minValue, maxValue)
-    if value < minValue then return minValue end
-    if value > maxValue then return maxValue end
-    return value
-end
-
 function Helpers.easeOutQuad(t)
     return 1 - (1 - t) * (1 - t)
 end

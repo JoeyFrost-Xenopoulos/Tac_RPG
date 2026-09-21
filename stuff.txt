@@ -1,26 +1,6 @@
 Comprehensive Code Review: my_game_2 (LÖVE2D / Fire Emblem: Sacred Stones Replica)
 Scope reviewed: main.lua, config.lua, engine modules, combat modules, unit system, UI modules, world/map modules, audio, manager mixins, and unit definitions. ~3,500 lines across ~50 files.
 
-1.7 Color swap pixel-by-pixel on every load
-File/Line: modules/manager/utils.lua:8-35
-
-applySwapsToImageData iterates every pixel with nested loops and per-pixel getPixel/setPixel. For 192×192 sprites this runs ~37K iterations per swap. Multiple units × multiple swaps = noticeable hitch on love.load.
-
-Fix: Pre-process all palette swaps during load, cache the resulting Image objects, and never regenerate them per-instance. Consider using a shader for runtime palette swaps instead.
-
-2. Redundancy
-2.1 Duplicate clamp / lerp helpers
-Files:
-
-modules/combat/battle_helpers.lua:6-10 (Helpers.clamp)
-modules/combat/battle_transition_draw.lua:6-10 (local clamp)
-modules/combat/battle_projectile.lua:21-23 (local lerp)
-modules/combat/battle_ui_draw.lua:25-27 (local lerp)
-Fix: Move to modules/manager/utils.lua:
-
-function Utils.clamp(v, min, max) ... end
-function Utils.lerp(a, b, t) ... end
-
 3. Code Quality & Best Practices
 3.1 Global mutable state
 Every module.

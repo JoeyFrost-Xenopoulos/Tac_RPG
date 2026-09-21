@@ -2,6 +2,7 @@
 -- Handles projectile animations for ranged attacks
 
 local Projectile = {}
+local Utils = require("modules.manager.utils")
 
 local function buildQuads(image, frameWidth, frameHeight, columns, rows)
     local quads = {}
@@ -16,10 +17,6 @@ local function buildQuads(image, frameWidth, frameHeight, columns, rows)
     end
 
     return quads
-end
-
-local function lerp(a, b, t)
-    return a + (b - a) * t
 end
 
 local function getFrameFromRange(startIndex, endIndex, progress)
@@ -243,8 +240,8 @@ function Projectile.draw(state)
         elseif elapsed < flightEnd then
             local progress = math.max(0, math.min(1, (elapsed - chargeDuration) / flightDuration))
             frameIndex = getFrameFromRange(5, 7, progress)
-            x = lerp(state.projectileStartX, state.projectileTargetX, progress)
-            y = lerp(state.projectileStartY, state.projectileTargetY, progress)
+            x = Utils.lerp(state.projectileStartX, state.projectileTargetX, progress)
+            y = Utils.lerp(state.projectileStartY, state.projectileTargetY, progress)
         elseif elapsed < impactEnd then
             local progress = math.max(0, math.min(1, (elapsed - flightEnd) / impactDuration))
             local lastFrameStart = math.max(1, #state.projectileQuads - 2)

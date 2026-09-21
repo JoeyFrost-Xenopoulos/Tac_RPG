@@ -2,22 +2,13 @@
 local TransitionDraw = {}
 local UiDraw = require("modules.combat.battle_ui_draw")
 local Helpers = require("modules.combat.battle_helpers")
+local Utils = require("modules.manager.utils")
 
-local function clamp(value, minValue, maxValue)
-    if value < minValue then return minValue end
-    if value > maxValue then return maxValue end
-    return value
-end
-
-local function lerp(startValue, endValue, t)
-    return startValue + (endValue - startValue) * t
-end
+local whiteMixShader = nil
 
 local function smoothstep(t)
     return t * t * (3 - 2 * t)
 end
-
-local whiteMixShader = nil
 
 local function getWhiteMixShader()
     if whiteMixShader then
@@ -93,9 +84,9 @@ local function drawFrameAt(state, screenW, screenH, progress)
     local targetX = (screenW - frameW) / 2
     local targetY = (screenH - frameH) / 2
     local startY = screenH + frameH * 0.2
-    local currentY = lerp(startY, targetY, progress)
-    local scale = lerp(0.9, 1.0, progress)
-    local alpha = lerp(0.0, 1.0, progress)
+    local currentY = Utils.lerp(startY, targetY, progress)
+    local scale = Utils.lerp(0.9, 1.0, progress)
+    local alpha = Utils.lerp(0.0, 1.0, progress)
 
     love.graphics.setColor(1, 1, 1, alpha)
     love.graphics.draw(state.battleFrameImage, targetX + frameW / 2, currentY + frameH / 2, 0, scale, scale, frameW / 2, frameH / 2)
@@ -112,10 +103,10 @@ function TransitionDraw.draw(state, screenW, screenH, drawUnit)
 
     local duration = state.transitionMoveDuration or 0
     local progress = duration > 0 and state.transitionTimer / duration or 1
-    progress = smoothstep(clamp(progress, 0, 1))
+    progress = smoothstep(Utils.clamp(progress, 0, 1))
 
     local startScale = 0.35
-    local currentScale = lerp(startScale, layout.drawScale, progress)
+    local currentScale = Utils.lerp(startScale, layout.drawScale, progress)
     local platformYOffset = (layout.platformH * currentScale) * 0.2
     local attackerStartX = state.transitionStartAttackerX or screenW / 2
     local attackerStartY = (state.transitionStartAttackerY or screenH / 2) + platformYOffset
@@ -127,19 +118,19 @@ function TransitionDraw.draw(state, screenW, screenH, drawUnit)
     local defenderTargetPlatformX = attackerOnRight and layout.leftCenterX or layout.rightCenterX
     local targetPlatformY = layout.platformCenterY
 
-    local attackerPlatformX = lerp(attackerStartX, attackerTargetPlatformX, progress)
-    local attackerPlatformY = lerp(attackerStartY, targetPlatformY, progress)
-    local defenderPlatformX = lerp(defenderStartX, defenderTargetPlatformX, progress)
-    local defenderPlatformY = lerp(defenderStartY, targetPlatformY, progress)
+    local attackerPlatformX = Utils.lerp(attackerStartX, attackerTargetPlatformX, progress)
+    local attackerPlatformY = Utils.lerp(attackerStartY, targetPlatformY, progress)
+    local defenderPlatformX = Utils.lerp(defenderStartX, defenderTargetPlatformX, progress)
+    local defenderPlatformY = Utils.lerp(defenderStartY, targetPlatformY, progress)
 
-    local attackerUnitX = lerp(state.transitionStartAttackerX or screenW / 2, layout.attackerTargetX, progress)
+    local attackerUnitX = Utils.lerp(state.transitionStartAttackerX or screenW / 2, layout.attackerTargetX, progress)
     local attackerUnitStartY = (state.transitionStartAttackerY or screenH / 2) - 280
-    local attackerUnitY = lerp(attackerUnitStartY, layout.unitTargetY, progress)
-    local defenderUnitX = lerp(state.transitionStartDefenderX or screenW / 2, layout.defenderTargetX, progress)
+    local attackerUnitY = Utils.lerp(attackerUnitStartY, layout.unitTargetY, progress)
+    local defenderUnitX = Utils.lerp(state.transitionStartDefenderX or screenW / 2, layout.defenderTargetX, progress)
     local defenderUnitStartY = (state.transitionStartDefenderY or screenH / 2) - 280
-    local defenderUnitY = lerp(defenderUnitStartY, layout.unitTargetY, progress)
+    local defenderUnitY = Utils.lerp(defenderUnitStartY, layout.unitTargetY, progress)
 
-    local unitScale = lerp(0.75, 1.0, progress)
+    local unitScale = Utils.lerp(0.75, 1.0, progress)
 
     love.graphics.setColor(0, 0, 0, 0.5)
     love.graphics.rectangle("fill", 0, 0, screenW, screenH)
