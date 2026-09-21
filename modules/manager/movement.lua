@@ -23,10 +23,12 @@ local function attach(UnitManager)
             local hasMoved = (unit.tileX ~= unit.prevX) or (unit.tileY ~= unit.prevY)
 
             if hasMoved then
+                local oldX, oldY = unit.tileX, unit.tileY
                 unit.tileX = unit.prevX
                 unit.tileY = unit.prevY
                 unit.isMoving = false
                 UnitManager.needsSort = true
+                UnitManager._updateGridPosition(unit, oldX, oldY)
             end
         end
 

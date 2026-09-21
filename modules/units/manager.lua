@@ -1,6 +1,7 @@
 -- modules/units/manager.lua
 local UnitManager = {
     units = {},
+    unitGrid = {},
     selectedUnit = nil,
     state = "idle",
     damageDisplays = {},

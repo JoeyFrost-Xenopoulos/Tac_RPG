@@ -8,16 +8,25 @@ local function getEnemiesInRange(attacker)
     local weapon = CombatSystem.getWeapon(attacker.weapon)
     local minRange = weapon.minRange or 1
     local enemies = {}
-    
-    for _, unit in ipairs(UnitManager.units) do
-        if unit ~= attacker and unit.isPlayer ~= attacker.isPlayer then
-            local dist = math.abs(unit.tileX - attacker.tileX) + math.abs(unit.tileY - attacker.tileY)
+
+    for dx = -attackRange, attackRange do
+        for dy = -attackRange, attackRange do
+            local dist = math.abs(dx) + math.abs(dy)
             if dist >= minRange and dist <= attackRange then
-                table.insert(enemies, unit)
+                local ax, ay = attacker.tileX + dx, attacker.tileY + dy
+                local k = UnitManager._gridKey(ax, ay)
+                local unitsAtTile = UnitManager.unitGrid[k]
+                if unitsAtTile then
+                    for _, unit in ipairs(unitsAtTile) do
+                        if unit ~= attacker and unit.isPlayer ~= attacker.isPlayer then
+                            table.insert(enemies, unit)
+                        end
+                    end
+                end
             end
         end
     end
-    
+
     return enemies
 end
 

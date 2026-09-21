@@ -8,17 +8,6 @@ applySwapsToImageData iterates every pixel with nested loops and per-pixel getPi
 
 Fix: Pre-process all palette swaps during load, cache the resulting Image objects, and never regenerate them per-instance. Consider using a shader for runtime palette swaps instead.
 
-1.8 getEnemiesInRange O(n) with no spatial index
-File/Line: modules/engine/attack.lua:4-22
-
-Linear scan of all units every time. For a full Fire Emblem map (30+ units), this runs dozens of times per turn.
-
-Fix: Maintain a spatial hash or 2D grid of units:
-
-UnitManager.unitGrid = {}  -- keyed by "x,y"
--- populate on add/remove/move
--- then look up by tile range instead of iterating all units
-
 2. Redundancy
 2.1 Duplicate clamp / lerp helpers
 Files:

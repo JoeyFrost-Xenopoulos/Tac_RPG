@@ -8,6 +8,7 @@ local function attach(UnitManager)
 
     function UnitManager.add(unit)
         table.insert(UnitManager.units, unit)
+        UnitManager._addToGrid(unit)
         UnitManager.needsSort = true
     end
 
@@ -53,6 +54,7 @@ local function attach(UnitManager)
         for i = #UnitManager.units, 1, -1 do
             local unit = UnitManager.units[i]
             if UnitManager._isUnitDead(unit) then
+                UnitManager._removeFromGrid(unit)
                 table.remove(UnitManager.units, i)
                 removed = true
             end
@@ -70,12 +72,51 @@ local function attach(UnitManager)
     end
 
     function UnitManager.getUnitAt(tileX, tileY)
-        for _, unit in ipairs(UnitManager.units) do
-            if unit.tileX == tileX and unit.tileY == tileY then
-                return unit
-            end
+        local k = UnitManager._gridKey(tileX, tileY)
+        local list = UnitManager.unitGrid[k]
+        if list then
+            return list[1]
         end
         return nil
+    end
+
+    function UnitManager._gridKey(x, y)
+        return x .. "," .. y
+    end
+
+    function UnitManager._addToGrid(unit)
+        local k = UnitManager._gridKey(unit.tileX, unit.tileY)
+        UnitManager.unitGrid[k] = UnitManager.unitGrid[k] or {}
+        table.insert(UnitManager.unitGrid[k], unit)
+    end
+
+    function UnitManager._removeFromGrid(unit, x, y)
+        x = x or unit.tileX
+        y = y or unit.tileY
+        local k = UnitManager._gridKey(x, y)
+        local list = UnitManager.unitGrid[k]
+        if list then
+            for i = #list, 1, -1 do
+                if list[i] == unit then
+                    table.remove(list, i)
+                    break
+                end
+            end
+            if #list == 0 then
+                UnitManager.unitGrid[k] = nil
+            end
+        end
+    end
+
+    function UnitManager._updateGridPosition(unit, oldX, oldY)
+        UnitManager._removeFromGrid(unit, oldX, oldY)
+        UnitManager._addToGrid(unit)
+    end
+
+    function UnitManager.clear()
+        UnitManager.units = {}
+        UnitManager.selectedUnit = nil
+        UnitManager.unitGrid = {}
     end
 
     function UnitManager.getSelected()

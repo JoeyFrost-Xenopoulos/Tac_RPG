@@ -39,12 +39,14 @@ function Movement.update(unit, dt)
 
     unit.moveTime = unit.moveTime + dt
     if unit.moveTime >= unit.moveDuration then
+        local oldX, oldY = unit.tileX, unit.tileY
         unit.tileX = unit.targetX
         unit.tileY = unit.targetY
         unit.isMoving = false
 
         local UnitManager = require("modules.units.manager")
         UnitManager.needsSort = true
+        UnitManager._updateGridPosition(unit, oldX, oldY)
 
         unit.pathIndex = unit.pathIndex + 1
         Movement._startNextStep(unit)

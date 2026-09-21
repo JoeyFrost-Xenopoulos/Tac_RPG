@@ -66,19 +66,18 @@ function UnitSpawner.spawnUnits(spawnConfig, UnitManager)
     end
 
     -- Clear existing units
-    UnitManager.units = {}
-    UnitManager.selectedUnit = nil
+    UnitManager.clear()
 
     -- Spawn each unit according to config
     for _, unitSpawn in ipairs(spawnConfig.units) do
         local unitModule = loadUnitModule(unitSpawn.type)
         local unitInstance, setPositionFunc = getUnitAndSetPosition(unitModule, unitSpawn.variant)
         
+        -- Set position before adding so the spatial grid is populated correctly
+        setPositionFunc(unitSpawn.x, unitSpawn.y)
+        
         -- Add to manager
         UnitManager.add(unitInstance)
-        
-        -- Set position
-        setPositionFunc(unitSpawn.x, unitSpawn.y)
     end
 end
 
