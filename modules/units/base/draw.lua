@@ -2,6 +2,8 @@ local Animation = require("modules.units.base.animation")
 
 local Draw = {}
 
+-- Interface stub: called by BaseUnit.new for mixin consistency.
+-- Draw module does not require per-instance initialization.
 function Draw.init(self) end
 
 function Draw.draw(self)

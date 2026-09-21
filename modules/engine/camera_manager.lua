@@ -124,12 +124,11 @@ function CameraManager._clampCamera(x, y)
 end
 
 function CameraManager.mousepressed(x, y, button)
-    -- Currently not using mouse for camera control
-    -- Using WASD instead
+    -- Stub: required by Input.mousepressed; camera control uses wheelmoved/keys.
 end
 
 function CameraManager.mousereleased(x, y, button)
-    -- Currently not using mouse for camera control
+    -- Stub: required by Input.mousereleased; no camera control on release.
 end
 
 function CameraManager.wheelmoved(x, y)

@@ -1,5 +1,7 @@
 local Interaction = {}
 
+-- Interface stub: called by BaseUnit.new for mixin consistency.
+-- Interaction module does not require per-instance initialization.
 function Interaction.init(self) end
 
 function Interaction.isHovered(self, mx, my)
