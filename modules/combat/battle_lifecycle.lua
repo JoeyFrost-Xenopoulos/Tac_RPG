@@ -16,7 +16,7 @@ function Lifecycle.startBattle(battle, attacker, defender)
     battle.attacker = attacker
     battle.defender = defender
     battle.visible = true
-    battle.resetTimers()
+    battle:resetTimers()
     
     -- Calculate distance between attacker and defender
     local distance = math.abs(attacker.tileX - defender.tileX) + math.abs(attacker.tileY - defender.tileY)
@@ -119,7 +119,7 @@ function Lifecycle.endBattle(battle)
     battle.visible = false
     battle.attacker = nil
     battle.defender = nil
-    battle.resetTimers()
+    battle:resetTimers()
 
     UnitManager.removeDeadUnits()
     
