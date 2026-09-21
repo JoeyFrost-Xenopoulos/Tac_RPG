@@ -22,21 +22,8 @@ Menu.textFadeDuration = 0.2
 
 function Menu.load()
     Menu.image = love.graphics.newImage("assets/ui/menu/menu.png")
-    local imgW, imgH = Menu.image:getDimensions()
-
-    Menu.variants = {
-        {
-            topLeft   = love.graphics.newQuad(0,   0,   105, 105, imgW, imgH),
-            topMid    = love.graphics.newQuad(128, 0,   64, 64, imgW, imgH),
-            topRight  = love.graphics.newQuad(256, 0,   64, 64, imgW, imgH),
-            midLeft   = love.graphics.newQuad(0,   128, 105, 105, imgW, imgH),
-            midMid    = love.graphics.newQuad(128, 128, 64, 64, imgW, imgH),
-            midRight  = love.graphics.newQuad(256, 128, 64, 64, imgW, imgH),
-            botLeft   = love.graphics.newQuad(0,   256, 105, 105, imgW, imgH),
-            botMid    = love.graphics.newQuad(128, 256, 64, 64, imgW, imgH),
-            botRight  = love.graphics.newQuad(256, 256, 64, 64, imgW, imgH)
-        }
-    }
+    local MenuQuads = require("modules.ui.menu_quads")
+    Menu.variants = { MenuQuads.get(Menu.image) }
 
     Menu.font = love.graphics.newFont("assets/ui/font/Pixel_Font.otf", 32)
     Menu.cursorImage = love.graphics.newImage("assets/ui/cursors/Cursor_02.png")
