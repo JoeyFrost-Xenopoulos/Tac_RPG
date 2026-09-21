@@ -1,3 +1,7 @@
+-- modules/units/enemy_soldier.lua
+-- Unit definition module (factory pattern).
+-- Returns a factory table with `createInstance(variant)` that produces BaseUnit instances.
+
 local UnitFactory = require("modules.units.unit_factory")
 
 local EnemyConfig = {
@@ -111,42 +115,10 @@ local function createEnemySoldier(variant)
     variant = variant or "unit"
     
     local config = (variant == "unit2") and EnemyConfig2 or EnemyConfig
-    local unit = UnitFactory.create(config)
-    
-    return {
-        unit = unit,
-        update = function(dt) unit:update(dt) end,
-        draw = function() unit:draw() end,
-        setPosition = function(x, y) unit:setPosition(x, y) end,
-        tryMove = function(x, y) return unit:tryMove(x, y) end,
-        setSelected = function(v) unit:setSelected(v) end,
-        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
-        isClicked = function(mx, my) return unit:isClicked(mx, my) end
-    }
+    return UnitFactory.create(config)
 end
 
--- Legacy singleton instances for backwards compatibility
+-- Export factory
 local Enemy = {}
-Enemy.unit = UnitFactory.create(EnemyConfig)
-Enemy.unit2 = UnitFactory.create(EnemyConfig2)
-
-function Enemy.update(dt) Enemy.unit:update(dt) end
-function Enemy.draw() Enemy.unit:draw() end
-function Enemy.setPosition(x, y) Enemy.unit:setPosition(x, y) end
-function Enemy.tryMove(x, y) return Enemy.unit:tryMove(x, y) end
-function Enemy.setSelected(v) Enemy.unit:setSelected(v) end
-function Enemy.isHovered(mx, my) return Enemy.unit:isHovered(mx, my) end
-function Enemy.isClicked(mx, my) return Enemy.unit:isClicked(mx, my) end
-
-function Enemy.update2(dt) Enemy.unit2:update(dt) end
-function Enemy.draw2() Enemy.unit2:draw() end
-function Enemy.setPosition2(x, y) Enemy.unit2:setPosition(x, y) end
-function Enemy.tryMove2(x, y) return Enemy.unit2:tryMove(x, y) end
-function Enemy.setSelected2(v) Enemy.unit2:setSelected(v) end
-function Enemy.isHovered2(mx, my) return Enemy.unit2:isHovered(mx, my) end
-function Enemy.isClicked2(mx, my) return Enemy.unit2:isClicked(mx, my) end
-
--- Export both the legacy singleton and the factory
 Enemy.createInstance = createEnemySoldier
-
 return Enemy

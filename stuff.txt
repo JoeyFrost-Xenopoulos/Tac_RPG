@@ -14,13 +14,6 @@ Or an explicit Context object passed to init:
 local Input = {}
 function Input.init(ctx) ctx.input = Input end
 return Input
-3.2 Inconsistent return patterns
-modules/engine/input.lua returns Input table
-modules/engine/mouse.lua returns Mouse table
-modules/manager/core.lua returns attach function
-modules/units/base/init.lua returns BaseUnit class
-modules/units/soldier.lua returns a hybrid table + singleton
-Fix: Standardize on one pattern. Given the existing mixin architecture, returning attach functions for mixins and tables for standalone modules is acceptable, but it should be documented and consistent.
 
 3.3 Magic numbers
 Examples:

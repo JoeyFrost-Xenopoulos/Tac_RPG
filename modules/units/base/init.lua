@@ -1,3 +1,6 @@
+-- modules/units/base/init.lua
+-- Base unit class (returns class table pattern).
+-- Unit classes use metatables and expose a `new(config)` constructor.
 local BaseUnit = {}
 BaseUnit.__index = BaseUnit
 

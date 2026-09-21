@@ -14,48 +14,35 @@ local function loadUnitModule(unitType)
     return unitModules[unitType]
 end
 
--- Helper to get unit and setPosition functions from module with variant
-local function getUnitAndSetPosition(unitModule, variant)
-    -- Check if module has a factory function (new system)
+-- Helper to get unit instance from module with variant
+local function getUnitInstance(unitModule, variant)
     if unitModule.createInstance then
-        local instance = unitModule.createInstance(variant)
-        return instance.unit, instance.setPosition
+        return unitModule.createInstance(variant)
     end
     
-    -- Fall back to legacy singleton system
-    local unitInstance, setPositionFunc
+    local unitInstance
     
     if variant then
         if variant == "unit" then
-            -- Special case for units named .unit
             unitInstance = unitModule.unit
-            setPositionFunc = unitModule.setPosition
         elseif variant == "unit2" then
-            -- Special case for units named .unit2
             unitInstance = unitModule.unit2
-            setPositionFunc = unitModule.setPosition2
         elseif unitModule[variant] and unitModule[variant].unit then
-            -- Standard nested structure (e.g., module.player.unit)
             unitInstance = unitModule[variant].unit
-            setPositionFunc = unitModule[variant].setPosition
         else
             error("Variant '" .. variant .. "' not found in unit module")
         end
     else
-        -- No variant - try to find the unit in different ways
         if unitModule.unit then
             unitInstance = unitModule.unit
-            setPositionFunc = unitModule.setPosition
         elseif unitModule.player then
-            -- Assume player variant if no explicit variant given
             unitInstance = unitModule.player.unit
-            setPositionFunc = unitModule.player.setPosition
         else
             error("Could not find unit in module")
         end
     end
     
-    return unitInstance, setPositionFunc
+    return unitInstance
 end
 
 -- Spawn all units for a given map
@@ -71,10 +58,9 @@ function UnitSpawner.spawnUnits(spawnConfig, UnitManager)
     -- Spawn each unit according to config
     for _, unitSpawn in ipairs(spawnConfig.units) do
         local unitModule = loadUnitModule(unitSpawn.type)
-        local unitInstance, setPositionFunc = getUnitAndSetPosition(unitModule, unitSpawn.variant)
+        local unitInstance = getUnitInstance(unitModule, unitSpawn.variant)
         
-        -- Set position before adding so the spatial grid is populated correctly
-        setPositionFunc(unitSpawn.x, unitSpawn.y)
+        unitInstance:setPosition(unitSpawn.x, unitSpawn.y)
         
         -- Add to manager
         UnitManager.add(unitInstance)

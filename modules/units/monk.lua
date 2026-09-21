@@ -1,3 +1,7 @@
+-- modules/units/monk.lua
+-- Unit definition module (factory pattern).
+-- Returns a factory table with `createInstance(variant)` that produces BaseUnit instances.
+
 local UnitFactory = require("modules.units.unit_factory")
 local Utils = require("modules.manager.utils")
 
@@ -153,75 +157,9 @@ local function createMonkInstance(variant)
         })
     end
 
-    local unit = UnitFactory.create(config)
-
-    return {
-        unit = unit,
-        update = function(dt) unit:update(dt) end,
-        draw = function() unit:draw() end,
-        setPosition = function(x, y) unit:setPosition(x, y) end,
-        tryMove = function(x, y) return unit:tryMove(x, y) end,
-        setSelected = function(v) unit:setSelected(v) end,
-        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
-        isClicked = function(mx, my) return unit:isClicked(mx, my) end
-    }
+    return UnitFactory.create(config)
 end
 
--- Enemy variant (legacy singleton)
-local MonkEnemy = createMonkConfig(
-    false,
-    "assets.units.monk.palettes.monk_avatar_swap",
-    "assets.units.monk.palettes.monk_main_swap",
-    {
-        name = "Hex",
-        maxHealth = 20,
-        health = 20,
-        strength = 6,
-        magic = 10,
-        skill = 6,
-        speed = 6,
-        luck = 3,
-        defense = 3,
-        resistance = 7,
-        constitution = 8
-    }
-)
-MonkEnemy.unit = UnitFactory.create(MonkEnemy)
-
-function MonkEnemy.update(dt) MonkEnemy.unit:update(dt) end
-function MonkEnemy.draw() MonkEnemy.unit:draw() end
-function MonkEnemy.setPosition(x, y) MonkEnemy.unit:setPosition(x, y) end
-function MonkEnemy.tryMove(x, y) return MonkEnemy.unit:tryMove(x, y) end
-function MonkEnemy.setSelected(v) MonkEnemy.unit:setSelected(v) end
-function MonkEnemy.isHovered(mx, my) return MonkEnemy.unit:isHovered(mx, my) end
-function MonkEnemy.isClicked(mx, my) return MonkEnemy.unit:isClicked(mx, my) end
-
--- Player variant (legacy singleton)
-local MonkPlayer = createMonkConfig(true, nil, nil, {
-    name = "Ari",
-    maxHealth = 21,
-    health = 21,
-    strength = 7,
-    magic = 12,
-    skill = 7,
-    speed = 7,
-    luck = 5,
-    defense = 4,
-    resistance = 8,
-    constitution = 8
-})
-MonkPlayer.unit = UnitFactory.create(MonkPlayer)
-
-function MonkPlayer.update(dt) MonkPlayer.unit:update(dt) end
-function MonkPlayer.draw() MonkPlayer.unit:draw() end
-function MonkPlayer.setPosition(x, y) MonkPlayer.unit:setPosition(x, y) end
-function MonkPlayer.tryMove(x, y) return MonkPlayer.unit:tryMove(x, y) end
-function MonkPlayer.setSelected(v) MonkPlayer.unit:setSelected(v) end
-function MonkPlayer.isHovered(mx, my) return MonkPlayer.unit:isHovered(mx, my) end
-function MonkPlayer.isClicked(mx, my) return MonkPlayer.unit:isClicked(mx, my) end
-
 return {
-    enemy = MonkEnemy,
-    player = MonkPlayer,
     createInstance = createMonkInstance
 }

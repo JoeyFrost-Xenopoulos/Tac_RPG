@@ -1,4 +1,6 @@
 -- modules/engine/mouse.lua
+-- Standalone mouse handler module (returns table pattern).
+-- Top-level engine modules return a table of functions/state.
 local Mouse = {}
 local Cursor = require("modules.ui.cursor")
 local UnitManager = require("modules.units.manager")

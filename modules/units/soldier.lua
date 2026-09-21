@@ -1,3 +1,7 @@
+-- modules/units/soldier.lua
+-- Unit definition module (factory pattern).
+-- Returns a factory table with `createInstance(variant)` that produces BaseUnit instances.
+
 local UnitFactory = require("modules.units.unit_factory")
 
 local SoldierConfig = {
@@ -106,28 +110,13 @@ local Soldier2Config = {
     }
 }
 
--- Factory function to create new soldier instances
 local function createSoldierInstance(variant)
     variant = variant or "unit"
     
     local config = (variant == "unit2") and Soldier2Config or SoldierConfig
-    local unit = UnitFactory.create(config)
-    
-    return {
-        unit = unit,
-        update = function(dt) unit:update(dt) end,
-        draw = function() unit:draw() end,
-        setPosition = function(x, y) unit:setPosition(x, y) end,
-        tryMove = function(x, y) return unit:tryMove(x, y) end,
-        setSelected = function(v) unit:setSelected(v) end,
-        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
-        isClicked = function(mx, my) return unit:isClicked(mx, my) end
-    }
+    return UnitFactory.create(config)
 end
 
 local Soldier = {}
-
--- Export factory
 Soldier.createInstance = createSoldierInstance
-
 return Soldier

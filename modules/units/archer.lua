@@ -1,3 +1,7 @@
+-- modules/units/archer.lua
+-- Unit definition module (factory pattern).
+-- Returns a factory table with `createInstance(variant)` that produces BaseUnit instances.
+
 local UnitFactory = require("modules.units.unit_factory")
 local Utils = require("modules.manager.utils")
 
@@ -112,18 +116,7 @@ local function createArcherInstance(variant)
         )
     end
     
-    local unit = UnitFactory.create(config)
-    
-    return {
-        unit = unit,
-        update = function(dt) unit:update(dt) end,
-        draw = function() unit:draw() end,
-        setPosition = function(x, y) unit:setPosition(x, y) end,
-        tryMove = function(x, y) return unit:tryMove(x, y) end,
-        setSelected = function(v) unit:setSelected(v) end,
-        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
-        isClicked = function(mx, my) return unit:isClicked(mx, my) end
-    }
+    return UnitFactory.create(config)
 end
 
 return {

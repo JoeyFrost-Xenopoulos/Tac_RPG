@@ -1,4 +1,6 @@
 -- modules/manager/core.lua
+-- Mixin module for UnitManager (returns attach function pattern).
+-- Mixin modules export an `attach(UnitManager)` function that adds methods to the target table.
 local function attach(UnitManager)
     local Menu = require("modules.ui.menu")
     local Arrows = require("modules.ui.movement_arrows")

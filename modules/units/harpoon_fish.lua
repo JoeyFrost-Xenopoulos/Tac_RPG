@@ -1,3 +1,7 @@
+-- modules/units/harpoon_fish.lua
+-- Unit definition module (factory pattern).
+-- Returns a factory table with `createInstance(variant)` that produces BaseUnit instances.
+
 local UnitFactory = require("modules.units.unit_factory")
 local Utils = require("modules.manager.utils")
 
@@ -117,78 +121,9 @@ local function createHarpoonFishInstance(variant)
         })
     end
     
-    local unit = UnitFactory.create(config)
-    
-    return {
-        unit = unit,
-        update = function(dt) unit:update(dt) end,
-        draw = function() unit:draw() end,
-        setPosition = function(x, y) unit:setPosition(x, y) end,
-        tryMove = function(x, y) return unit:tryMove(x, y) end,
-        setSelected = function(v) unit:setSelected(v) end,
-        isHovered = function(mx, my) return unit:isHovered(mx, my) end,
-        isClicked = function(mx, my) return unit:isClicked(mx, my) end
-    }
+    return UnitFactory.create(config)
 end
 
--- Enemy variant (legacy singleton)
-local HarpoonFishEnemy = createHarpoonFishConfig(
-    false,
-    {
-        "assets.units.harpoon_fish.palettes.enemy_pack_to_enemy",
-        "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap"
-    },
-    "assets.units.harpoon_fish.palettes.harpoon_fish_main_swap",
-    {
-        name = "Barb",
-        maxHealth = 22,
-        health = 22,
-        strength = 6,
-        magic = 6,
-        skill = 4,
-        speed = 4,
-        luck = 2,
-        defense = 5,
-        resistance = 4,
-        constitution = 10
-    }
-)
-HarpoonFishEnemy.unit = UnitFactory.create(HarpoonFishEnemy)
-
-function HarpoonFishEnemy.update(dt) HarpoonFishEnemy.unit:update(dt) end
-function HarpoonFishEnemy.draw() HarpoonFishEnemy.unit:draw() end
-function HarpoonFishEnemy.setPosition(x, y) HarpoonFishEnemy.unit:setPosition(x, y) end
-function HarpoonFishEnemy.tryMove(x, y) return HarpoonFishEnemy.unit:tryMove(x, y) end
-function HarpoonFishEnemy.setSelected(v) HarpoonFishEnemy.unit:setSelected(v) end
-function HarpoonFishEnemy.isHovered(mx, my) return HarpoonFishEnemy.unit:isHovered(mx, my) end
-function HarpoonFishEnemy.isClicked(mx, my) return HarpoonFishEnemy.unit:isClicked(mx, my) end
-
--- Player variant (legacy singleton)
-local HarpoonFishPlayer = createHarpoonFishConfig(true, "assets.units.harpoon_fish.palettes.enemy_pack_to_player", nil, {
-    name = "James",
-    maxHealth = 22,
-    health = 22,
-    strength = 9,
-    magic = 8,
-    skill = 6,
-    speed = 6,
-    luck = 3,
-    defense = 4,
-    resistance = 6,
-    constitution = 9
-})
-HarpoonFishPlayer.unit = UnitFactory.create(HarpoonFishPlayer)
-
-function HarpoonFishPlayer.update(dt) HarpoonFishPlayer.unit:update(dt) end
-function HarpoonFishPlayer.draw() HarpoonFishPlayer.unit:draw() end
-function HarpoonFishPlayer.setPosition(x, y) HarpoonFishPlayer.unit:setPosition(x, y) end
-function HarpoonFishPlayer.tryMove(x, y) return HarpoonFishPlayer.unit:tryMove(x, y) end
-function HarpoonFishPlayer.setSelected(v) HarpoonFishPlayer.unit:setSelected(v) end
-function HarpoonFishPlayer.isHovered(mx, my) return HarpoonFishPlayer.unit:isHovered(mx, my) end
-function HarpoonFishPlayer.isClicked(mx, my) return HarpoonFishPlayer.unit:isClicked(mx, my) end
-
 return {
-    enemy = HarpoonFishEnemy,
-    player = HarpoonFishPlayer,
     createInstance = createHarpoonFishInstance
 }

@@ -1,5 +1,6 @@
 -- modules/engine/input.lua
--- Handles all LÖVE input callbacks (mouse, keyboard, etc.)
+-- Standalone input handler module (returns table pattern).
+-- Top-level engine modules return a table of functions/state.
 
 local Input = {}
 
