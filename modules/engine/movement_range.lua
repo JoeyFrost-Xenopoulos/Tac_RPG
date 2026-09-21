@@ -69,20 +69,26 @@ function MovementRange.show(unit)
         end
     end
 
+    local attackOffsets = {}
+    for dx = -attackRange, attackRange do
+        for dy = -attackRange, attackRange do
+            local dist = math.abs(dx) + math.abs(dy)
+            if dist >= minRange and dist <= attackRange then
+                table.insert(attackOffsets, {dx, dy})
+            end
+        end
+    end
+
     local attackHighlighted = {}
 
     for _, tile in ipairs(moveTiles) do
-        for dx = -attackRange, attackRange do
-            for dy = -attackRange, attackRange do
-                local dist = math.abs(dx) + math.abs(dy)
-                if dist >= minRange and dist <= attackRange then
-                    local ax, ay = tile.x + dx, tile.y + dy
-                    local ak = key(ax, ay)
-                    if not visited[ak] and not attackHighlighted[ak] then
-                        Grid.highlightTile(ax, ay, {1.0, 0.2, 0.2, 0.4})
-                        attackHighlighted[ak] = true
-                    end
-                end
+        for _, offset in ipairs(attackOffsets) do
+            local dx, dy = offset[1], offset[2]
+            local ax, ay = tile.x + dx, tile.y + dy
+            local ak = key(ax, ay)
+            if not visited[ak] and not attackHighlighted[ak] then
+                Grid.highlightTile(ax, ay, {1.0, 0.2, 0.2, 0.4})
+                attackHighlighted[ak] = true
             end
         end
     end

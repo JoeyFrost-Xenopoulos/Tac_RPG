@@ -18,23 +18,6 @@ Fix: Maintain a spatial hash or 2D grid of units:
 UnitManager.unitGrid = {}  -- keyed by "x,y"
 -- populate on add/remove/move
 -- then look up by tile range instead of iterating all units
-1.9 MovementRange.show attack-range highlighting is O(moves × range²)
-File/Line: modules/engine/movement_range.lua:68-84
-
-For each reachable tile (up to ~50), it iterates attackRange*2+1 squared. With attackRange=3, that's ~7×7=49 per tile → ~2,450 iterations per call. Called on every unit selection.
-
-Fix: Pre-compute attack offsets once and use a set intersection:
-
-local attackOffsets = {}
-for dx = -attackRange, attackRange do
-    for dy = -attackRange, attackRange do
-        if math.abs(dx) + math.abs(dy) >= minRange
-           and math.abs(dx) + math.abs(dy) <= attackRange then
-            table.insert(attackOffsets, {dx, dy})
-        end
-    end
-end
--- then: for each reachable tile, apply offsets and check bounds
 
 2. Redundancy
 2.1 Duplicate clamp / lerp helpers
