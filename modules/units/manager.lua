@@ -22,6 +22,10 @@ function UnitManager.setFacing(attacker, target)
     end
 end
 
+function UnitManager.hasUnitMoved(unit)
+    return (unit.tileX ~= unit.prevX) or (unit.tileY ~= unit.prevY)
+end
+
 local Utils = require("modules.manager.utils")
 UnitManager._isUnitDead = Utils.isUnitDead
 

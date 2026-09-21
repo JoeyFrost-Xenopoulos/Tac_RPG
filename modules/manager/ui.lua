@@ -56,7 +56,7 @@ local function attach(UnitManager)
         if not resolvedUnit then return end
 
         -- Check if the unit has moved
-        local hasMoved = (resolvedUnit.tileX ~= resolvedUnit.prevX) or (resolvedUnit.tileY ~= resolvedUnit.prevY)
+        local hasMoved = UnitManager.hasUnitMoved(resolvedUnit)
 
         if UnitManager.selectedUnit ~= resolvedUnit then
             UnitManager.selectedUnit = resolvedUnit
@@ -167,7 +167,7 @@ local function attach(UnitManager)
         if not resolvedUnit then return end
 
         -- Check if the unit has moved
-        local hasMoved = (resolvedUnit.tileX ~= resolvedUnit.prevX) or (resolvedUnit.tileY ~= resolvedUnit.prevY)
+        local hasMoved = UnitManager.hasUnitMoved(resolvedUnit)
 
         if not hasMoved then
             UnitManager.state = "idle"

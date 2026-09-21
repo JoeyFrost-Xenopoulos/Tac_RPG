@@ -126,61 +126,6 @@ local function createArcherInstance(variant)
     }
 end
 
--- Player variant (legacy singleton)
-local ArcherPlayer = createArcherConfig(true, nil, nil, {
-    name = "Quickley",
-    maxHealth = 20,
-    health = 20,
-    strength = 10,
-    magic = 5,
-    skill = 6,
-    speed = 7,
-    luck = 8,
-    defense = 5,
-    resistance = 3,
-    constitution = 10
-})
-ArcherPlayer.unit = UnitFactory.create(ArcherPlayer)
-
-function ArcherPlayer.update(dt) ArcherPlayer.unit:update(dt) end
-function ArcherPlayer.draw() ArcherPlayer.unit:draw() end
-function ArcherPlayer.setPosition(x, y) ArcherPlayer.unit:setPosition(x, y) end
-function ArcherPlayer.tryMove(x, y) return ArcherPlayer.unit:tryMove(x, y) end
-function ArcherPlayer.setSelected(v) ArcherPlayer.unit:setSelected(v) end
-function ArcherPlayer.isHovered(mx, my) return ArcherPlayer.unit:isHovered(mx, my) end
-function ArcherPlayer.isClicked(mx, my) return ArcherPlayer.unit:isClicked(mx, my) end
-
--- Enemy variant (legacy singleton)
-local ArcherEnemy = createArcherConfig(
-    false,
-    "assets.units.archer.palettes.archer_avatar_swap",
-    "assets.units.archer.palettes.archer_main_swap",
-    {
-        name = "Kestrel",
-        maxHealth = 20,
-        health = 20,
-        strength = 8,
-        magic = 4,
-        skill = 4,
-        speed = 5,
-        luck = 6,
-        defense = 6,
-        resistance = 4,
-        constitution = 11
-    }
-)
-ArcherEnemy.unit = UnitFactory.create(ArcherEnemy)
-
-function ArcherEnemy.update(dt) ArcherEnemy.unit:update(dt) end
-function ArcherEnemy.draw() ArcherEnemy.unit:draw() end
-function ArcherEnemy.setPosition(x, y) ArcherEnemy.unit:setPosition(x, y) end
-function ArcherEnemy.tryMove(x, y) return ArcherEnemy.unit:tryMove(x, y) end
-function ArcherEnemy.setSelected(v) ArcherEnemy.unit:setSelected(v) end
-function ArcherEnemy.isHovered(mx, my) return ArcherEnemy.unit:isHovered(mx, my) end
-function ArcherEnemy.isClicked(mx, my) return ArcherEnemy.unit:isClicked(mx, my) end
-
 return {
-    player = ArcherPlayer,
-    enemy = ArcherEnemy,
     createInstance = createArcherInstance
 }

@@ -125,28 +125,9 @@ local function createSoldierInstance(variant)
     }
 end
 
--- Legacy singleton instances
 local Soldier = {}
-Soldier.unit = UnitFactory.create(SoldierConfig)
-Soldier.unit2 = UnitFactory.create(Soldier2Config)
 
-function Soldier.update(dt) Soldier.unit:update(dt) end
-function Soldier.draw() Soldier.unit:draw() end
-function Soldier.setPosition(x, y) Soldier.unit:setPosition(x, y) end
-function Soldier.tryMove(x, y) return Soldier.unit:tryMove(x, y) end
-function Soldier.setSelected(v) Soldier.unit:setSelected(v) end
-function Soldier.isHovered(mx, my) return Soldier.unit:isHovered(mx, my) end
-function Soldier.isClicked(mx, my) return Soldier.unit:isClicked(mx, my) end
-
-function Soldier.update2(dt) Soldier.unit2:update(dt) end
-function Soldier.draw2() Soldier.unit2:draw() end
-function Soldier.setPosition2(x, y) Soldier.unit2:setPosition(x, y) end
-function Soldier.tryMove2(x, y) return Soldier.unit2:tryMove(x, y) end
-function Soldier.setSelected2(v) Soldier.unit2:setSelected(v) end
-function Soldier.isHovered2(mx, my) return Soldier.unit2:isHovered(mx, my) end
-function Soldier.isClicked2(mx, my) return Soldier.unit2:isClicked(mx, my) end
-
--- Export both the legacy singleton and the factory
+-- Export factory
 Soldier.createInstance = createSoldierInstance
 
 return Soldier

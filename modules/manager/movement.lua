@@ -20,7 +20,7 @@ local function attach(UnitManager)
         local unit = UnitManager.selectedUnit
 
         if unit then
-            local hasMoved = (unit.tileX ~= unit.prevX) or (unit.tileY ~= unit.prevY)
+            local hasMoved = UnitManager.hasUnitMoved(unit)
 
             if hasMoved then
                 local oldX, oldY = unit.tileX, unit.tileY

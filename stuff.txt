@@ -30,32 +30,6 @@ Both build identical {Attack, Wait, Item, Cancel} option tables.
 
 Fix: Extract to UnitManager.buildWaitMenuOptions(unit) returning the options array.
 
-2.5 Duplicate facing-direction logic
-Files:
-
-modules/engine/turn.lua:175-185
-modules/manager/combat.lua:49-59
-Identical if target.tileX > attacker.tileX then ... blocks.
-
-Fix: UnitManager.setFacing(attacker, target).
-
-2.6 Legacy singleton wrappers in unit files
-Files:
-
-modules/units/soldier.lua:128-147
-modules/units/archer.lua:129-180
-Each file creates singleton .unit / .unit2 tables with manually delegated methods, duplicating the factory pattern.
-
-Fix: Remove the singleton layer entirely. UnitSpawner already uses createInstance. Delete lines 128-147 in soldier.lua and 129-180 in archer.lua, and update any callers to use the factory.
-
-2.7 Duplicate hasMoved checks
-Files:
-
-modules/manager/movement.lua:23
-modules/manager/ui.lua:59
-modules/manager/ui.lua:170
-Fix: UnitManager.hasUnitMoved(unit).
-
 2.8 Duplicate isMonkCaster checks
 Files:
 
