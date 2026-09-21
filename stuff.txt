@@ -15,23 +15,6 @@ local Input = {}
 function Input.init(ctx) ctx.input = Input end
 return Input
 
-3.3 Magic numbers
-Examples:
-
-modules/engine/camera_manager.lua:48 — panSpeed = 400
-modules/engine/camera_manager.lua:21 — zoomSpeed = 0.1
-modules/engine/movement.lua:27 — moveDuration = 0.25
-modules/combat/battle_state.lua:11-13 — runDuration = 0.8, etc.
-modules/world/clouds.lua:13-14 — 18 * 64, 15 * 64
-Fix: Group into a Config table or named constants:
-
-local CONFIG = {
-    PAN_SPEED = 400,
-    ZOOM_SPEED = 0.1,
-    MOVE_DURATION = 0.25,
-    MAP_WIDTH_TILES = 18,
-    MAP_HEIGHT_TILES = 15,
-}
 3.4 Long functions with deep nesting
 File/Line: modules/engine/mouse.lua:16-148 — 132-line Mouse.pressed with 7 levels of nesting.
 

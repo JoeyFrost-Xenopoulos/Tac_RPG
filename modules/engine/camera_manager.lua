@@ -2,6 +2,19 @@
 -- Responsible for: camera positioning, zooming, viewport management, and coordinate conversion
 local CameraManager = {}
 
+local CONFIG = {
+    PAN_SPEED = 400,
+    ZOOM_SPEED = 0.1,
+    MAP_WIDTH_TILES = 18,
+    MAP_HEIGHT_TILES = 15,
+    TILE_SIZE = 64,
+    VIEWPORT_WIDTH_TILES = 15,
+    VIEWPORT_HEIGHT_TILES = 12,
+    INITIAL_ZOOM = 1.0,
+    MIN_ZOOM = 0.8,
+    MAX_ZOOM = 2.0,
+}
+
 local Camera = require("libs.camera")
 local Menu = require("modules.ui.menu")
 local Options = require("modules.ui.options")
@@ -11,17 +24,17 @@ local UnitStats = require("modules.ui.unit_stats")
 CameraManager.camera = Camera()
 
 -- Configuration
-CameraManager.mapWidthTiles = 18
-CameraManager.mapHeightTiles = 15
-CameraManager.tileSize = 64
-CameraManager.viewportWidthTiles = 15
-CameraManager.viewportHeightTiles = 12
+CameraManager.mapWidthTiles = CONFIG.MAP_WIDTH_TILES
+CameraManager.mapHeightTiles = CONFIG.MAP_HEIGHT_TILES
+CameraManager.tileSize = CONFIG.TILE_SIZE
+CameraManager.viewportWidthTiles = CONFIG.VIEWPORT_WIDTH_TILES
+CameraManager.viewportHeightTiles = CONFIG.VIEWPORT_HEIGHT_TILES
 
 -- Zoom settings
-CameraManager.zoom = 1.0
-CameraManager.minZoom = 0.8  -- Prevent zooming out too far (shows entire map width/height without black)
-CameraManager.maxZoom = 2.0
-CameraManager.zoomSpeed = 0.1
+CameraManager.zoom = CONFIG.INITIAL_ZOOM
+CameraManager.minZoom = CONFIG.MIN_ZOOM
+CameraManager.maxZoom = CONFIG.MAX_ZOOM
+CameraManager.zoomSpeed = CONFIG.ZOOM_SPEED
 
 -- Drag settings
 CameraManager.isDragging = false
@@ -48,7 +61,7 @@ function CameraManager.update(dt)
     CameraManager.camera:zoomTo(CameraManager.zoom)
     
     -- Handle WASD keyboard panning
-    local panSpeed = 400  -- pixels per second
+    local panSpeed = CONFIG.PAN_SPEED  -- pixels per second
     local dx = 0
     local dy = 0
     

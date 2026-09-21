@@ -1,5 +1,9 @@
 local Stats = {}
 
+local CONFIG = {
+    MOVE_DURATION = 0.25,
+}
+
 local DEFAULT_GROWTH_RATES = {
     maxHealth = 70,
     strength = 70,
@@ -18,7 +22,7 @@ function Stats.init(self, config)
     self.type = config.type or "Unknown"
     self.isPlayer = config.isPlayer or false
     self.maxMoveRange = config.maxMoveRange or 4
-    self.moveDuration = config.moveDuration or 0.25
+    self.moveDuration = config.moveDuration or CONFIG.MOVE_DURATION
     self.tileSize = config.tileSize or 64
     self.scaleX = config.scaleX or 0.85
     self.scaleY = config.scaleY or 0.85

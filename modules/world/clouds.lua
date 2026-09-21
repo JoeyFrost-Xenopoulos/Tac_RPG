@@ -1,17 +1,25 @@
 local Clouds = {}
 
+local CONFIG = {
+    MAP_WIDTH = 18 * 64,
+    MAP_HEIGHT = 15 * 64,
+    MIN_SPEED = 10,
+    MAX_SPEED = 30,
+    MAX_CLOUDS = 8,
+}
+
 Clouds.images = {}
 Clouds.instances = {}
 
-Clouds.minSpeed = 10
-Clouds.maxSpeed = 30
+Clouds.minSpeed = CONFIG.MIN_SPEED
+Clouds.maxSpeed = CONFIG.MAX_SPEED
 Clouds.spawnDelay = 0
 Clouds.timer = 0
-Clouds.maxClouds = 8
+Clouds.maxClouds = CONFIG.MAX_CLOUDS
 
 -- Map bounds (in world pixels)
-Clouds.mapWidth = 18 * 64  -- 1152
-Clouds.mapHeight = 15 * 64  -- 960
+Clouds.mapWidth = CONFIG.MAP_WIDTH  -- 1152
+Clouds.mapHeight = CONFIG.MAP_HEIGHT  -- 960
 
 function Clouds.load()
     for i = 1, 6 do
