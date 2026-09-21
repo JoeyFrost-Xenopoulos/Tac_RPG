@@ -11,7 +11,7 @@ local AttackHelpers = require("modules.combat.battle_attack_helpers")
 local PhaseManager = require("modules.combat.battle_phase_manager")
 local Projectile = require("modules.combat.battle_projectile")
 
-local Battle = State
+local Battle = setmetatable({}, {__index = State})
 
 -- ============================================================================
 -- INITIALIZATION & LIFECYCLE

@@ -39,14 +39,6 @@ hasActed vs hasMoveOrderQueued
 selectingAttack vs combatSummary
 Fix: Adopt a naming convention (e.g., isX for booleans, hasX for state flags).
 
-3.9 Battle inherits from State via alias
-File/Line: modules/combat/battle.lua:13 — local Battle = State
-
-This makes Battle literally the same table as State, so any mutation to Battle.visible mutates State.visible globally. If State is ever reloaded, Battle breaks.
-
-Fix: Use composition or proper inheritance:
-
-local Battle = setmetatable({}, {__index = State})
 3.10 Inconsistent error handling
 File/Line: modules/units/unit_spawner.lua:42,54 — error("Variant '" .. variant .. "' not found")
 
